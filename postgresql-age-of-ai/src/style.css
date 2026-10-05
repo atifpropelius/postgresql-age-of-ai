@@ -39,7 +39,7 @@
 /* Short browser windows get a readable slide with a vertical scroll instead of compressed overlapping panels. */
 @media screen and (min-width:901px) and (max-height:640px){
 #stage{display:block;overflow:auto;padding:12px 18px}
-.slide{width:min(100%,900px);height:auto;min-height:550px;aspect-ratio:auto;margin:0 auto;grid-template-rows:auto minmax(320px,1fr) auto}
+.slide{width:min(100%,1100px);height:auto;min-height:550px;aspect-ratio:auto;margin:0 auto;grid-template-rows:auto minmax(320px,1fr) auto}
 .slide-body{min-height:320px}
 }
 /* Full course reader stays outside the 16:9 talk canvas. */
@@ -72,6 +72,45 @@
 .light .study-head{background:#e4f3f5}.light .study-list{background:#ecf5f7}.light .study-content pre{background:#e3eef1;color:#174b55}
 @media(max-width:700px){.study-overlay{padding:0}.study-sheet{width:100vw;height:100dvh;border-radius:0}.study-head{padding:.8rem 1rem}.study-layout{grid-template-columns:1fr;grid-template-rows:auto minmax(0,1fr)}.study-list{border-right:0;border-bottom:1px solid var(--line);display:flex;gap:.35rem;padding:.4rem;overflow:auto}.study-list button{min-width:145px}.study-list p{display:none}.study-content{padding:1rem}.study-foot{padding:.6rem}.study-foot span{display:none}}
 @media print{.study-overlay{display:none!important}}
+
+/* Foundation visuals keep definitions visible while the animation changes the example. */
+.choice-viz,.sql-families{width:100%;height:100%;min-height:0;display:grid;grid-template-rows:auto minmax(0,1fr) auto;gap:.55rem;padding:.45rem}
+.choice-head{display:flex;flex-wrap:wrap;align-items:baseline;gap:.4rem .8rem;border-bottom:1px solid var(--line);padding-bottom:.45rem}
+.choice-head b{color:var(--cyan);font:600 clamp(.85rem,1.2vw,1.15rem) 'Space Grotesk'}
+.choice-head span{color:var(--muted);font-size:clamp(.62rem,.78vw,.82rem)}
+.choice-grid{display:grid;grid-template-columns:1fr 1fr;gap:.5rem;min-height:0}
+.choice-column{display:grid;grid-template-rows:auto repeat(4,minmax(0,1fr));gap:.25rem;min-width:0}
+.choice-column strong{color:var(--lime);font:500 clamp(.55rem,.7vw,.7rem) 'DM Mono';letter-spacing:.08em}
+.choice-column.alternative strong{color:var(--orange)}
+.choice-row{display:flex;align-items:center;padding:.35rem .55rem;border:1px solid var(--line);border-radius:7px;background:#ffffff08;color:var(--muted);font-size:clamp(.61rem,.82vw,.88rem);line-height:1.2;min-height:0}
+.choice-row.active{border-color:var(--lime);color:var(--text);background:#c7f57a18}
+.choice-column.alternative .choice-row.active{border-color:var(--orange);background:#ffbf8015}
+.choice-viz p{margin:0;color:var(--muted);font-size:clamp(.6rem,.75vw,.75rem);line-height:1.3}
+.table-viz{display:grid;grid-template-rows:auto minmax(0,1fr) auto auto;gap:.25rem;align-items:center;padding:.5rem}
+.table-viz .viz-label{position:static;transform:none;align-self:start;font-size:.58rem}
+.table-viz table{align-self:center}
+.table-glossary{display:grid;grid-template-columns:repeat(4,1fr);gap:.25rem;width:100%}
+.table-glossary span{display:grid;gap:.1rem;padding:.32rem;border:1px solid var(--line);border-radius:6px;color:var(--muted);font-size:clamp(.52rem,.66vw,.68rem);line-height:1.15;text-align:center}
+.table-glossary b{color:var(--cyan);font:500 clamp(.48rem,.56vw,.6rem) 'DM Mono'}
+.table-caption{font-size:clamp(.58rem,.72vw,.75rem);line-height:1.25;color:var(--lime);text-align:center}
+.sql-families{grid-template-rows:auto minmax(0,1fr) auto}
+.sql-families .viz-label{position:static;transform:none;font-size:.58rem}
+.sql-job-list{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:.3rem;align-items:stretch;min-height:0}
+.sql-job{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.25rem;text-align:center;border:1px solid var(--line);border-radius:9px;background:#ffffff08;color:var(--muted);min-width:0;padding:.25rem}
+.sql-job b{font:600 clamp(.55rem,.78vw,.82rem) 'DM Mono';color:var(--cyan);overflow-wrap:anywhere}
+.sql-job span{font-size:clamp(.53rem,.68vw,.7rem)}
+.sql-job.active{border-color:var(--lime);background:#c7f57a1b;color:var(--text);box-shadow:0 0 0 2px #c7f57a10}
+.sql-job-detail{border-top:1px solid var(--line);padding:.45rem .2rem .2rem;min-height:0}
+.sql-job-meaning{color:var(--cyan);font:500 clamp(.55rem,.68vw,.7rem) 'DM Mono';letter-spacing:.08em;text-transform:uppercase;margin-bottom:.2rem}
+.sql-job-detail strong{color:var(--lime);font:600 clamp(.72rem,.9vw,.95rem) 'DM Mono'}
+.sql-job-detail p{margin:.3rem 0;color:var(--text);font-size:clamp(.63rem,.79vw,.82rem)}
+.sql-job-detail small{color:var(--muted);font-size:clamp(.57rem,.68vw,.7rem)}
+.study-why{border-left:3px solid var(--lime)!important;padding-left:1rem!important;background:#c7f57a0a}
+.study-why h4{color:var(--lime)!important}
+.study-workshop{border-left:3px solid var(--cyan)!important;padding-left:1rem!important;background:#70e7de0a}
+.study-workshop a{color:var(--cyan)}
+.study-workshop code{font:.78rem 'DM Mono';color:var(--lime)}
+@media(max-width:700px){.choice-row{font-size:.63rem}.sql-job-list{grid-template-columns:repeat(3,1fr)}.sql-job{min-height:42px}.table-glossary span{font-size:.52rem}}
 
 .chapter-outline{border-top:1px solid var(--line);margin-top:.7rem;padding-top:.55rem;display:flex;flex-direction:column;gap:.25rem}
 .chapter-outline>b{font:500 .62rem 'DM Mono';letter-spacing:.11em;color:var(--orange)}

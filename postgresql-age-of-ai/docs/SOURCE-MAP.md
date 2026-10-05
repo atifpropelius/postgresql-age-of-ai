@@ -48,32 +48,48 @@ The 2D vector plot, page cells, pool scheduler and production resource bars are 
 
 ## Study lesson source register
 
-Last reviewed: 2026-10-02. These technical claims map to primary project documentation. The supplied Zero-to-100 deck and System Design Crash Course informed scope and sequence; the wording and examples here are original. “Main” means the lesson is introduced on the timed screen; “Deep” means the full lesson is in Study path; “Demo” marks a related real local demo when configured.
+The original route was reviewed 2026-10-02; new foundation lessons were reviewed 2026-10-05. These technical claims map to primary project documentation. The supplied Zero-to-100 deck and System Design Crash Course informed scope and sequence; the wording and examples here are original. “Main” means the lesson is introduced on the timed screen; “Deep” means the full lesson is in Study path; “Demo” marks a related real local demo when configured.
 
 | Topic | Source | Source URL | Last reviewed | Confidence | Main | Deep | Demo |
 |---|---|---|---|---|---|---|---|
 | The whole data journey | PostgreSQL docs | https://www.postgresql.org/docs/current/tutorial.html | 2026-10-02 | High | Y | Y | N |
-| Why a database exists | PostgreSQL docs | https://www.postgresql.org/docs/current/intro-whatis.html | 2026-10-02 | High | Y | Y | N |
+| What PostgreSQL actually is | PostgreSQL docs | https://www.postgresql.org/docs/current/intro-whatis.html | 2026-10-05 | High | Y | Y | N |
+| Choose PostgreSQL for a concrete workload | PostgreSQL docs | https://www.postgresql.org/docs/current/intro-whatis.html | 2026-10-05 | High | N | Y | N |
+| When another primary store fits better | PostgreSQL docs | https://www.postgresql.org/docs/current/intro-whatis.html | 2026-10-05 | High | N | Y | N |
+| Why a database exists | PostgreSQL docs | https://www.postgresql.org/docs/current/intro-whatis.html | 2026-10-02 | High | N | Y | N |
 | PostgreSQL versus other data systems | PostgreSQL docs | https://www.postgresql.org/docs/current/intro-whatis.html | 2026-10-02 | Medium | N | Y | N |
 | Choosing PostgreSQL honestly | PostgreSQL docs | https://www.postgresql.org/docs/current/intro-whatis.html | 2026-10-02 | Medium | N | Y | N |
-| API process versus database process | PostgreSQL docs | https://www.postgresql.org/docs/current/tutorial-arch.html | 2026-10-02 | High | Y | Y | N |
+| What CPU, RAM and disk do in a database server | PostgreSQL docs | https://www.postgresql.org/docs/current/tutorial-arch.html | 2026-10-05 | High | Y | Y | N |
+| API process versus database process | PostgreSQL docs | https://www.postgresql.org/docs/current/tutorial-arch.html | 2026-10-02 | High | N | Y | N |
 | What happens to a SELECT | PostgreSQL docs | https://www.postgresql.org/docs/current/using-explain.html | 2026-10-02 | High | Y | Y | N |
 | Connection and process lifecycle | PostgreSQL docs | https://www.postgresql.org/docs/current/runtime-config-connection.html | 2026-10-02 | High | N | Y | N |
-| Create your own database | PostgreSQL docs | https://www.postgresql.org/docs/current/tutorial-createdb.html | 2026-10-02 | High | Y | Y | N |
+| Server, database, schema and table are four levels | PostgreSQL docs | https://www.postgresql.org/docs/current/tutorial-createdb.html | 2026-10-05 | High | Y | Y | N |
+| Create your own database | PostgreSQL docs | https://www.postgresql.org/docs/current/tutorial-createdb.html | 2026-10-02 | High | N | Y | N |
 | First psql habits | PostgreSQL docs | https://www.postgresql.org/docs/current/app-psql.html | 2026-10-02 | High | N | Y | N |
 | Install locally, use a container, or use a service | PostgreSQL docs | https://www.postgresql.org/docs/current/tutorial-start.html | 2026-10-02 | High | N | Y | N |
 | Schema changes are code | PostgreSQL docs | https://www.postgresql.org/docs/current/ddl-alter.html | 2026-10-02 | High | N | Y | N |
-| Table, row, column and physical tuple | PostgreSQL docs | https://www.postgresql.org/docs/current/ddl-basics.html | 2026-10-02 | High | Y | Y | N |
+| Read one table without jargon | PostgreSQL docs | https://www.postgresql.org/docs/current/ddl-basics.html | 2026-10-05 | High | Y | Y | N |
+| Why data types and constraints exist | PostgreSQL docs | https://www.postgresql.org/docs/current/ddl-constraints.html | 2026-10-05 | High | N | Y | N |
+| Table, row, column and physical tuple | PostgreSQL docs | https://www.postgresql.org/docs/current/ddl-basics.html | 2026-10-02 | High | N | Y | N |
 | Types, NULL and time | PostgreSQL docs | https://www.postgresql.org/docs/current/datatype.html | 2026-10-02 | High | N | Y | N |
 | Identity, UUID and sequence behavior | PostgreSQL docs | https://www.postgresql.org/docs/current/ddl-identity-columns.html | 2026-10-02 | High | N | Y | N |
 | Status values and domain rules | PostgreSQL docs | https://www.postgresql.org/docs/current/ddl-constraints.html | 2026-10-02 | High | N | Y | N |
 | Arrays and ranges have specific jobs | PostgreSQL docs | https://www.postgresql.org/docs/current/rangetypes.html | 2026-10-02 | High | N | Y | N |
 | Mathematical relation versus relationship | PostgreSQL docs | https://www.postgresql.org/docs/current/ddl-constraints.html | 2026-10-02 | High | Y | Y | N |
-| Model one-to-many and many-to-many | PostgreSQL docs | https://www.postgresql.org/docs/current/ddl-constraints.html | 2026-10-02 | High | Y | Y | N |
+| What primary keys, foreign keys and JOINs each do | PostgreSQL docs | https://www.postgresql.org/docs/current/ddl-constraints.html | 2026-10-05 | High | Y | Y | N |
+| Model one-to-many and many-to-many | PostgreSQL docs | https://www.postgresql.org/docs/current/ddl-constraints.html | 2026-10-02 | High | N | Y | N |
 | JOINs and missing matches | PostgreSQL docs | https://www.postgresql.org/docs/current/tutorial-join.html | 2026-10-02 | High | N | Y | N |
 | Normalize facts before duplicating them | PostgreSQL docs | https://www.postgresql.org/docs/current/tutorial-fk.html | 2026-10-02 | High | N | Y | N |
 | Foreign keys and delete actions | PostgreSQL docs | https://www.postgresql.org/docs/current/ddl-constraints.html | 2026-10-02 | High | N | Y | N |
-| Read SELECT in logical order | PostgreSQL docs | https://www.postgresql.org/docs/current/sql-select.html | 2026-10-02 | High | Y | Y | N |
+| What SQL is and what a query returns | PostgreSQL docs | https://www.postgresql.org/docs/current/tutorial-sql.html | 2026-10-05 | High | Y | Y | N |
+| Why SQL does not tell PostgreSQL how to scan | PostgreSQL docs | https://www.postgresql.org/docs/current/using-explain.html | 2026-10-05 | High | N | Y | N |
+| DDL: create and change database structure | PostgreSQL docs | https://www.postgresql.org/docs/current/ddl.html | 2026-10-05 | High | N | Y | N |
+| DML: insert, update, delete and return rows | PostgreSQL docs | https://www.postgresql.org/docs/current/dml.html | 2026-10-05 | High | N | Y | N |
+| SELECT: filter, sort and limit a result | PostgreSQL docs | https://www.postgresql.org/docs/current/queries-limit.html | 2026-10-05 | High | N | Y | N |
+| JOIN and GROUP BY answer multi-table questions | PostgreSQL docs | https://www.postgresql.org/docs/current/tutorial-join.html | 2026-10-05 | High | N | Y | N |
+| Subqueries, CTEs, set operations and windows | PostgreSQL docs | https://www.postgresql.org/docs/current/queries-with.html | 2026-10-05 | High | N | Y | N |
+| Transaction and privilege commands | PostgreSQL docs | https://www.postgresql.org/docs/current/sql-grant.html | 2026-10-05 | High | N | Y | N |
+| Read SELECT in logical order | PostgreSQL docs | https://www.postgresql.org/docs/current/sql-select.html | 2026-10-02 | High | N | Y | N |
 | Subqueries and CTEs | PostgreSQL docs | https://www.postgresql.org/docs/current/queries-with.html | 2026-10-02 | High | N | Y | N |
 | Aggregation and windows | PostgreSQL docs | https://www.postgresql.org/docs/current/tutorial-window.html | 2026-10-02 | High | N | Y | N |
 | Recursive CTEs for hierarchies | PostgreSQL docs | https://www.postgresql.org/docs/current/queries-with.html | 2026-10-02 | High | N | Y | N |
@@ -96,7 +112,8 @@ Last reviewed: 2026-10-02. These technical claims map to primary project documen
 | Composite, partial and expression indexes | PostgreSQL docs | https://www.postgresql.org/docs/current/indexes-expressional.html | 2026-10-02 | High | N | Y | N |
 | Index-only scans and covering data | PostgreSQL docs | https://www.postgresql.org/docs/current/indexes-index-only-scans.html | 2026-10-02 | High | N | Y | N |
 | Index bloat and REINDEX | PostgreSQL docs | https://www.postgresql.org/docs/current/sql-reindex.html | 2026-10-02 | High | N | Y | N |
-| Read an execution plan | PostgreSQL docs | https://www.postgresql.org/docs/current/using-explain.html | 2026-10-02 | High | Y | Y | Y |
+| EXPLAIN versus EXPLAIN ANALYZE | PostgreSQL docs | https://www.postgresql.org/docs/current/using-explain.html | 2026-10-05 | High | Y | Y | Y |
+| Read an execution plan | PostgreSQL docs | https://www.postgresql.org/docs/current/using-explain.html | 2026-10-02 | High | N | Y | N |
 | Planner statistics and estimates | PostgreSQL docs | https://www.postgresql.org/docs/current/planner-stats.html | 2026-10-02 | High | N | Y | N |
 | Scan, join, sort and aggregate nodes | PostgreSQL docs | https://www.postgresql.org/docs/current/using-explain.html | 2026-10-02 | High | N | Y | N |
 | Extended statistics for correlated columns | PostgreSQL docs | https://www.postgresql.org/docs/current/planner-stats.html | 2026-10-02 | High | N | Y | N |
@@ -127,7 +144,8 @@ Last reviewed: 2026-10-02. These technical claims map to primary project documen
 | View versus materialized view | PostgreSQL docs | https://www.postgresql.org/docs/current/rules-materializedviews.html | 2026-10-02 | High | Y | Y | N |
 | Functions and triggers | PostgreSQL docs | https://www.postgresql.org/docs/current/triggers.html | 2026-10-02 | High | N | Y | N |
 | Refresh cost and concurrent readers | PostgreSQL docs | https://www.postgresql.org/docs/current/sql-refreshmaterializedview.html | 2026-10-02 | High | N | Y | N |
-| What Supabase builds on PostgreSQL | Supabase docs | https://supabase.com/docs/guides/getting-started/architecture | 2026-10-02 | High | Y | Y | N |
+| Why Supabase can expose PostgreSQL to an app | Supabase docs | https://supabase.com/docs/guides/getting-started/architecture | 2026-10-05 | High | Y | Y | N |
+| What Supabase builds on PostgreSQL | Supabase docs | https://supabase.com/docs/guides/getting-started/architecture | 2026-10-02 | High | N | Y | N |
 | Direct client access and RLS | Supabase docs | https://supabase.com/docs/guides/database/postgres/row-level-security | 2026-10-02 | High | N | Y | N |
 | Auth, API and RLS end to end | Supabase docs | https://supabase.com/docs/guides/database/postgres/row-level-security | 2026-10-02 | High | N | Y | N |
 | Realtime, Storage and Edge Functions are distinct services | Supabase docs | https://supabase.com/docs/guides/getting-started/architecture | 2026-10-02 | High | N | Y | N |

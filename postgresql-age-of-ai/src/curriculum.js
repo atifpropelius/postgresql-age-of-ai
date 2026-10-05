@@ -1,4 +1,5 @@
 import {advancedCurriculum} from './curriculum-advanced.js';
+import {foundationCurriculum} from './curriculum-foundations.js';
 // Original zero-to-hero study route. One presentation screen can contain several lessons.
 // Each lesson names the model, the mechanism, a runnable or inspectable example, and a production decision.
 const P='https://www.postgresql.org/docs/current/';
@@ -101,5 +102,6 @@ lesson('Safe schema evolution','Schema changes can block work or force backfills
 recap:[
 lesson('Capstone: explain one request end to end','Trace the same request through HTTP, pool, parse/plan, index or scan, row visibility, WAL for writes, page storage and possibly a replica or retrieval pipeline.','For every layer name its input, output, guarantee, resource cost and observable metric. That is a stronger mental model than memorizing feature names.','EXPLAIN (ANALYZE, BUFFERS) SELECT * FROM users WHERE id=42;','Build a small app, seed realistic data, measure a slow query, add a justified index, test concurrent writes and rehearse recovery.','A zero-to-hero course ends when you can explain and measure behavior, not when you recognize terms.',P+'tutorial.html')]
 };
+for(const [screen,lessons] of Object.entries(foundationCurriculum)){if(!curriculum[screen])throw Error(`Unknown foundation screen: ${screen}`);curriculum[screen].unshift(...lessons)}
 for(const [screen,lessons] of Object.entries(advancedCurriculum)){if(!curriculum[screen])throw Error(`Unknown advanced screen: ${screen}`);curriculum[screen].push(...lessons)}
 export const studyCount=Object.values(curriculum).reduce((n,items)=>n+items.length,0);

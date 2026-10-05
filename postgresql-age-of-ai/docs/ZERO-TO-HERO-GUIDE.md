@@ -1,6 +1,6 @@
 # PostgreSQL in the Age of AI — zero-to-hero guide
 
-This is the full study route behind the **35-screen, 45-minute** talk. It contains **96 original lessons** in dependency order, including 17 guided experiments, followed by 20 exercises in the interactive deck. Follow one lesson at a time: read the model, inspect the mechanism, type the example into a disposable PostgreSQL database when its referenced tables exist, then explain the production decision and common mistake in your own words. Examples are teaching fragments; some require tables introduced in earlier lessons.
+This is the full study route behind the **35-screen, 45-minute** talk. It contains **114 original lessons** in dependency order, including 17 guided experiments, followed by 20 exercises in the interactive deck. Follow one lesson at a time: read the model, inspect the mechanism, type the example into a disposable PostgreSQL database when its referenced tables exist, then explain the production decision and common mistake in your own words. Examples are teaching fragments; some require tables introduced in earlier lessons.
 
 The main presentation stays concise. The interactive **Study path** reader exposes these lessons, SQL/commands and primary references on every screen.
 
@@ -38,11 +38,75 @@ SELECT current_database(), current_user, version();
 
 **Primary source:** https://www.postgresql.org/docs/current/tutorial.html
 
-## 2. When should you choose PostgreSQL?
+## 2. What is PostgreSQL—and when should you choose it?
 
-**Talk focus:** Choose it when relationships, constraints, SQL and reliable transactions matter; measure when a specialized store is a better fit.
+**Talk focus:** PostgreSQL is open-source database server software: it stores related data, runs SQL and protects changes with transactions.
 
-### 2.1 Why a database exists
+### 2.1 What PostgreSQL actually is
+
+**What it means.** PostgreSQL is open-source database server software. An application sends it SQL; it stores data and returns query results. A PostgreSQL database is one named collection managed by that server.
+
+**Why it matters.** A text file can hold data, but it does not by itself coordinate concurrent writers, enforce relationships or recover transactions after a crash.
+
+**How it works.** A running PostgreSQL instance accepts connections, manages databases and schemas, plans queries, maintains table and index files, and writes recovery records. You may run it yourself or use a managed provider.
+
+**Example**
+
+```sql
+SELECT version(), current_database(), current_user;
+```
+
+**Production decision.** Start with PostgreSQL when related application records need SQL, constraints and reliable transactions.
+
+**Common mistake.** PostgreSQL is not the same as psql (the client), your API server, or the Supabase platform.
+
+**Primary source:** https://www.postgresql.org/docs/current/intro-whatis.html
+
+### 2.2 Choose PostgreSQL for a concrete workload
+
+**What it means.** An order system needs customers, orders, line items, stock and payments to agree. PostgreSQL can connect these records with keys and change related rows in one transaction.
+
+**Why it matters.** The decision follows the data and guarantees, not the popularity of a database logo.
+
+**How it works.** List the reads, writes, joins, invariants, traffic pattern and recovery requirement. Test representative queries and write contention before choosing instance size.
+
+**Example**
+
+```sql
+-- A runnable transfer in the seeded study database.
+BEGIN;
+UPDATE accounts SET balance=balance-100 WHERE id=1;
+UPDATE accounts SET balance=balance+100 WHERE id=2;
+COMMIT;
+```
+
+**Production decision.** Choose it for transactional systems, flexible reporting over related data, and mixed relational/JSON workloads.
+
+**Common mistake.** A benchmark of one point lookup does not prove the whole application will fit.
+
+**Primary source:** https://www.postgresql.org/docs/current/intro-whatis.html
+
+### 2.3 When another primary store fits better
+
+**What it means.** A cache, object store, analytical warehouse and search engine each optimize a different job. They may complement PostgreSQL or, for a specialized workload, be the primary system.
+
+**Why it matters.** Using PostgreSQL for every byte and every access pattern can increase cost or latency without improving correctness.
+
+**How it works.** Large file bytes usually belong in object storage; short-lived repeated reads can use a cache; massive column-oriented scans can favor a warehouse. The source of truth and synchronization path must remain clear.
+
+**Example**
+
+```sql
+-- Example: keep file metadata in PostgreSQL; keep file bytes in object storage.
+```
+
+**Production decision.** Ask what must be transactional, what can be derived, and which workload dominates. Use measurements before adding another system.
+
+**Common mistake.** “Not PostgreSQL” is not a single alternative: Redis, an object store and a warehouse solve different problems.
+
+**Primary source:** https://www.postgresql.org/docs/current/intro-whatis.html
+
+### 2.4 Why a database exists
 
 **What it means.** A file stores bytes. A database adds a data model, concurrent access, constraints, queries, recovery and operational tools.
 
@@ -60,7 +124,7 @@ CREATE TABLE orders (id bigint PRIMARY KEY, total numeric(12,2) CHECK (total >= 
 
 **Primary source:** https://www.postgresql.org/docs/current/intro-whatis.html
 
-### 2.2 PostgreSQL versus other data systems
+### 2.5 PostgreSQL versus other data systems
 
 **What it means.** Choose by the shape of data and the guarantees you need. PostgreSQL is a strong default when joins, constraints and transactions are central; another engine may be a better primary store for a different workload.
 
@@ -79,7 +143,7 @@ CREATE TABLE orders (id bigint PRIMARY KEY, total numeric(12,2) CHECK (total >= 
 
 **Primary source:** https://www.postgresql.org/docs/current/intro-whatis.html
 
-### 2.3 Choosing PostgreSQL honestly
+### 2.6 Choosing PostgreSQL honestly
 
 **What it means.** PostgreSQL is an open-source relational database with JSON, text search and extension support. It is a strong general-purpose choice, not a promise to fit every workload.
 
@@ -101,7 +165,28 @@ SELECT * FROM pg_available_extensions LIMIT 10;
 
 **Talk focus:** The API runs application code. PostgreSQL is a separate server process with its own CPU, RAM, storage and connections.
 
-### 3.1 API process versus database process
+### 3.1 What CPU, RAM and disk do in a database server
+
+**What it means.** PostgreSQL is a process running on a computer or container. CPU executes queries; RAM holds active work and cached pages; disk stores table, index and WAL files.
+
+**Why it matters.** This explains why a fast API server can still wait on a slow database, and why adding API replicas may leave the database bottleneck unchanged.
+
+**How it works.** The API sends SQL over a connection. PostgreSQL may read a page from shared buffers or storage, use CPU to filter or join rows, and write WAL for changes. The two processes can share one host but have different jobs.
+
+**Example**
+
+```sql
+SELECT pg_size_pretty(pg_database_size(current_database()));
+SELECT state, count(*) FROM pg_stat_activity GROUP BY state;
+```
+
+**Production decision.** Size API and database resources from separate CPU, memory, I/O and connection measurements.
+
+**Common mistake.** RAM is not the permanent database. A cache hit also does not mean a query performed no CPU work.
+
+**Primary source:** https://www.postgresql.org/docs/current/tutorial-arch.html
+
+### 3.2 API process versus database process
 
 **What it means.** The API server handles HTTP and application rules. PostgreSQL runs its own server processes and owns the data files. Both consume CPU and RAM on whichever host runs them.
 
@@ -163,7 +248,30 @@ SELECT state, count(*) FROM pg_stat_activity GROUP BY state;
 
 **Talk focus:** Start the server, create a database, connect, create a schema and table, then insert and query a row.
 
-### 5.1 Create your own database
+### 5.1 Server, database, schema and table are four levels
+
+**What it means.** The PostgreSQL server is running software. A database is a named container inside it. A schema groups objects inside a database. A table defines named typed columns and stores rows.
+
+**Why it matters.** You must know which level you are changing; creating a schema does not create a new server, and creating a database does not automatically create your application tables.
+
+**How it works.** Connect to a running server first. CREATE DATABASE creates a new database; reconnect to it. CREATE SCHEMA creates a namespace; CREATE TABLE creates an object in that namespace.
+
+**Example**
+
+```sql
+CREATE DATABASE learning;
+-- reconnect: psql -d learning
+CREATE SCHEMA app;
+CREATE TABLE app.users (id bigint PRIMARY KEY, name text NOT NULL);
+```
+
+**Production decision.** Use one disposable database for exercises. Use migrations for reproducible schemas in real projects.
+
+**Common mistake.** A database is not the same thing as an entire PostgreSQL installation.
+
+**Primary source:** https://www.postgresql.org/docs/current/tutorial-createdb.html
+
+### 5.2 Create your own database
 
 **What it means.** A PostgreSQL server cluster holds databases; each database holds schemas; schemas organize tables, views and functions.
 
@@ -196,7 +304,7 @@ INSERT INTO app.users VALUES (1, 'Atif');
 
 **Primary source:** https://www.postgresql.org/docs/current/tutorial-createdb.html
 
-### 5.2 First psql habits
+### 5.3 First psql habits
 
 **What it means.** psql is a client, not the database server. Its backslash commands inspect your environment.
 
@@ -218,7 +326,7 @@ INSERT INTO app.users VALUES (1, 'Atif');
 
 **Primary source:** https://www.postgresql.org/docs/current/app-psql.html
 
-### 5.3 Install locally, use a container, or use a service
+### 5.4 Install locally, use a container, or use a service
 
 **What it means.** PostgreSQL is open-source server software. You can run it on a laptop or VM, in a container, or through a managed provider; psql connects to any of them.
 
@@ -237,7 +345,7 @@ SELECT current_database(), current_user;
 
 **Primary source:** https://www.postgresql.org/docs/current/tutorial-start.html
 
-### 5.4 Schema changes are code
+### 5.5 Schema changes are code
 
 **What it means.** Creating a database once by hand is easy; keeping test and production identical requires ordered migrations.
 
@@ -256,11 +364,53 @@ ALTER TABLE users ADD COLUMN IF NOT EXISTS display_name text;
 
 **Primary source:** https://www.postgresql.org/docs/current/ddl-alter.html
 
-## 6. Database → schema → table → row → column
+## 6. Tables, columns, rows—and tuples
 
-**Talk focus:** A column is one named, typed field; a row (tuple) is one record; a table groups rows of the same shape.
+**Talk focus:** A table defines a shape. Columns are named typed fields; rows are records; a cell is one value. “Tuple” is the database term for a row or stored row version.
 
-### 6.1 Table, row, column and physical tuple
+### 6.1 Read one table without jargon
+
+**What it means.** In users(id, name, email), each column is a named field with a type. One horizontal row is one user record. A cell is the value at one row and column.
+
+**Why it matters.** A shared shape lets PostgreSQL validate values and lets you ask precise questions such as “which user has this email?”
+
+**How it works.** CREATE TABLE declares columns and rules. INSERT adds rows. SELECT returns a result table, which may contain only selected columns and rows. A primary key identifies a logical row.
+
+**Example**
+
+```sql
+CREATE TABLE users (id bigint PRIMARY KEY, name text NOT NULL, email text UNIQUE);
+INSERT INTO users VALUES (1, 'Atif', 'atif@example.com');
+SELECT name FROM users WHERE id = 1;
+```
+
+**Production decision.** Choose column types, NULL rules and keys before data grows; changing them later can require a migration.
+
+**Common mistake.** A displayed row is logical. An UPDATE can leave multiple physical tuple versions until cleanup.
+
+**Primary source:** https://www.postgresql.org/docs/current/ddl-basics.html
+
+### 6.2 Why data types and constraints exist
+
+**What it means.** A type says what values and operations a column supports. Constraints state rules that every writer must obey.
+
+**Why it matters.** Without database rules, two APIs or scripts can insert contradictory or invalid data even if one frontend validates correctly.
+
+**How it works.** NOT NULL rejects missing values; UNIQUE prevents duplicate key values; CHECK tests a condition; PRIMARY KEY identifies rows; FOREIGN KEY checks referenced values.
+
+**Example**
+
+```sql
+CREATE TABLE products (id bigint PRIMARY KEY, price numeric(12,2) NOT NULL CHECK (price >= 0));
+```
+
+**Production decision.** Encode invariants close to the data, then also validate inputs for good user feedback.
+
+**Common mistake.** A type or constraint cannot express every business rule; transactions and application logic still matter.
+
+**Primary source:** https://www.postgresql.org/docs/current/ddl-constraints.html
+
+### 6.3 Table, row, column and physical tuple
 
 **What it means.** A table has named typed columns. Each row is one logical record. In relational language row means tuple; in PostgreSQL storage a heap tuple is a physical row version.
 
@@ -288,7 +438,7 @@ CREATE TABLE customers (id bigint PRIMARY KEY, email text NOT NULL UNIQUE, joine
 
 **Primary source:** https://www.postgresql.org/docs/current/ddl-basics.html
 
-### 6.2 Types, NULL and time
+### 6.4 Types, NULL and time
 
 **What it means.** Types define valid values and operations; NULL means unknown or absent, not zero or empty text.
 
@@ -317,7 +467,7 @@ SELECT now() AT TIME ZONE 'UTC';
 
 **Primary source:** https://www.postgresql.org/docs/current/datatype.html
 
-### 6.3 Identity, UUID and sequence behavior
+### 6.5 Identity, UUID and sequence behavior
 
 **What it means.** An identity column asks PostgreSQL to generate keys. UUIDs are useful when IDs must be generated across services or before a database round trip.
 
@@ -335,7 +485,7 @@ CREATE TABLE invoices (id bigint GENERATED ALWAYS AS IDENTITY PRIMARY KEY, amoun
 
 **Primary source:** https://www.postgresql.org/docs/current/ddl-identity-columns.html
 
-### 6.4 Status values and domain rules
+### 6.6 Status values and domain rules
 
 **What it means.** An enum, CHECK constraint and lookup table all restrict values, but they support different change patterns.
 
@@ -353,7 +503,7 @@ CREATE TABLE jobs (id bigint PRIMARY KEY, status text NOT NULL CHECK (status IN 
 
 **Primary source:** https://www.postgresql.org/docs/current/ddl-constraints.html
 
-### 6.5 Arrays and ranges have specific jobs
+### 6.7 Arrays and ranges have specific jobs
 
 **What it means.** Arrays store a small collection in one column; range types represent intervals. Neither replaces every relational table.
 
@@ -410,7 +560,28 @@ CREATE TABLE donors (id bigint PRIMARY KEY, agency_id bigint REFERENCES agencies
 
 **Talk focus:** A primary key identifies a row. A foreign key checks that a value refers to an allowed row in another table.
 
-### 8.1 Model one-to-many and many-to-many
+### 8.1 What primary keys, foreign keys and JOINs each do
+
+**What it means.** A primary key identifies one row. A foreign key makes a referenced value valid. A JOIN combines matching rows in a query result.
+
+**Why it matters.** These solve three distinct needs: identity, integrity and retrieval. Mixing them up leads to missing constraints or slow reads.
+
+**How it works.** If donors.agency_id references agencies.id, an invalid agency ID is rejected. A SELECT JOIN later matches their values. An index can help the JOIN; the foreign key does not automatically add an index on donors.agency_id.
+
+**Example**
+
+```sql
+SELECT d.id, a.name FROM donors d
+JOIN agencies a ON a.id = d.agency_id;
+```
+
+**Production decision.** Use a foreign key when the relationship must always be valid; add a referencing-column index when real query or delete/update patterns justify it.
+
+**Common mistake.** An FK does not merge the tables or store a direct pointer to the parent row.
+
+**Primary source:** https://www.postgresql.org/docs/current/ddl-constraints.html
+
+### 8.2 Model one-to-many and many-to-many
 
 **What it means.** One-to-many places the FK on the many side. Many-to-many uses a bridge table. One-to-one uses a UNIQUE FK.
 
@@ -428,7 +599,7 @@ CREATE TABLE enrollments (student_id bigint REFERENCES students(id), course_id b
 
 **Primary source:** https://www.postgresql.org/docs/current/ddl-constraints.html
 
-### 8.2 JOINs and missing matches
+### 8.3 JOINs and missing matches
 
 **What it means.** INNER JOIN keeps matching pairs; LEFT JOIN keeps all left rows and uses NULL for a missing right match.
 
@@ -456,7 +627,7 @@ SELECT a.id, d.id FROM agencies a LEFT JOIN donors d ON d.agency_id = a.id;
 
 **Primary source:** https://www.postgresql.org/docs/current/tutorial-join.html
 
-### 8.3 Normalize facts before duplicating them
+### 8.4 Normalize facts before duplicating them
 
 **What it means.** Normalization asks where each fact belongs. A customer name belongs to the customer; an order points to the customer instead of copying the name into every row.
 
@@ -474,7 +645,7 @@ SELECT o.id,u.name FROM orders o JOIN users u ON u.id=o.user_id;
 
 **Primary source:** https://www.postgresql.org/docs/current/tutorial-fk.html
 
-### 8.4 Foreign keys and delete actions
+### 8.5 Foreign keys and delete actions
 
 **What it means.** ON DELETE RESTRICT/NO ACTION, SET NULL and CASCADE express different domain behavior. A cascade can touch many more rows than the parent delete suggests.
 
@@ -492,11 +663,190 @@ SELECT conname,confdeltype FROM pg_constraint WHERE contype='f';
 
 **Primary source:** https://www.postgresql.org/docs/current/ddl-constraints.html
 
-## 9. What happens when we run SQL?
+## 9. What can you do with SQL?
 
-**Talk focus:** PostgreSQL turns text into a plan, then the executor visits the needed pages and returns rows.
+**Talk focus:** Define tables, read results, change rows, control transactions and grant access. PostgreSQL chooses how to execute each statement.
 
-### 9.1 Read SELECT in logical order
+### 9.1 What SQL is and what a query returns
+
+**What it means.** SQL is the language used to define data, read it and change it. SELECT reads; INSERT adds; UPDATE changes; DELETE removes.
+
+**Why it matters.** The same language works from psql, an API server, an admin tool and a migration, so the database can enforce one consistent set of rules.
+
+**How it works.** A SELECT statement describes the desired result. PostgreSQL parses it, chooses a plan and executes it. A result is a new set of rows and columns; it does not have to match one stored table.
+
+**Example**
+
+```sql
+SELECT name, email FROM users WHERE id = 1;
+INSERT INTO users(id,tenant_id,name,email) VALUES (20,1,'Mira','mira20@example.com');
+UPDATE users SET name='Mira K' WHERE id=20;
+DELETE FROM users WHERE id=20;
+```
+
+**Production decision.** Learn SELECT and WHERE first; then JOIN, GROUP BY and transactions. Always inspect affected rows before running UPDATE or DELETE on real data.
+
+**Common mistake.** SELECT * and missing WHERE clauses are convenient while learning but can be costly or dangerous in production.
+
+**Primary source:** https://www.postgresql.org/docs/current/tutorial-sql.html
+
+### 9.2 Why SQL does not tell PostgreSQL how to scan
+
+**What it means.** SQL states which rows you want; the planner chooses a physical path such as a sequential scan or index scan.
+
+**Why it matters.** A query can return one row but still examine many rows. This is why correct SQL and fast SQL are separate questions.
+
+**How it works.** The planner uses table statistics and cost estimates; the executor performs the selected operators. EXPLAIN displays the plan, and ANALYZE executes it to show observed work.
+
+**Example**
+
+```sql
+EXPLAIN SELECT name FROM users WHERE email='atif@example.com';
+```
+
+**Production decision.** Check the actual plan and representative data before adding an index.
+
+**Common mistake.** An EXPLAIN cost number is not elapsed milliseconds.
+
+**Primary source:** https://www.postgresql.org/docs/current/using-explain.html
+
+### 9.3 DDL: create and change database structure
+
+**What it means.** DDL means data definition language. CREATE, ALTER and DROP define or change objects such as schemas, tables, indexes and views.
+
+**Why it matters.** The structure is a contract for every writer. A missing column, wrong type or missing constraint changes what data is allowed.
+
+**How it works.** CREATE TABLE declares typed columns and constraints; ALTER TABLE evolves the definition. Most PostgreSQL DDL is transactional, but particular commands such as CREATE DATABASE cannot run inside a transaction block.
+
+**Example**
+
+```sql
+CREATE SCHEMA IF NOT EXISTS app;
+CREATE TABLE app.products (id bigint PRIMARY KEY, name text NOT NULL);
+ALTER TABLE app.products ADD COLUMN price numeric(12,2) CHECK (price >= 0);
+```
+
+**Production decision.** Put DDL in reviewed migration files and test it on representative data before production.
+
+**Common mistake.** DROP and TRUNCATE can remove data; do not run examples against a production database.
+
+**Primary source:** https://www.postgresql.org/docs/current/ddl.html
+
+### 9.4 DML: insert, update, delete and return rows
+
+**What it means.** DML means data manipulation language. INSERT adds rows, UPDATE changes matching rows and DELETE removes matching rows. RETURNING reports what changed.
+
+**Why it matters.** An application needs to change state, but those changes must stay scoped to the intended rows and rules.
+
+**How it works.** Each statement runs in a transaction. WHERE chooses affected rows for UPDATE and DELETE; constraints are checked. PostgreSQL normally creates new tuple versions for UPDATE.
+
+**Example**
+
+```sql
+INSERT INTO users(id,tenant_id,name,email) VALUES (30,1,'Sam','sam30@example.com') RETURNING id;
+UPDATE users SET name='Samir' WHERE id=30 RETURNING id,name;
+DELETE FROM users WHERE id=30 RETURNING id;
+```
+
+**Production decision.** Use parameterized values from an API. Preview the WHERE predicate with SELECT and inspect RETURNING when changing important data.
+
+**Common mistake.** An UPDATE or DELETE without WHERE can affect the whole table.
+
+**Primary source:** https://www.postgresql.org/docs/current/dml.html
+
+### 9.5 SELECT: filter, sort and limit a result
+
+**What it means.** SELECT chooses output columns. WHERE filters rows, ORDER BY sorts them and LIMIT keeps a chosen number.
+
+**Why it matters.** An API usually needs a small, specific result rather than every row and every column.
+
+**How it works.** PostgreSQL may use an index, a scan and/or a sort. ORDER BY is needed for predictable LIMIT results. OFFSET is simple for shallow pages but can become expensive deep into a result.
+
+**Example**
+
+```sql
+SELECT id,name FROM users
+WHERE name ILIKE 'a%'
+ORDER BY id DESC
+LIMIT 10;
+```
+
+**Production decision.** Return only needed columns and use a stable ordering for pagination.
+
+**Common mistake.** Without ORDER BY, LIMIT does not promise which ten rows you get.
+
+**Primary source:** https://www.postgresql.org/docs/current/queries-limit.html
+
+### 9.6 JOIN and GROUP BY answer multi-table questions
+
+**What it means.** JOIN combines matching rows from tables. GROUP BY collects rows into groups; aggregate functions such as count and sum summarize each group.
+
+**Why it matters.** Real applications ask questions such as “how many donors belong to each agency?” that cannot be answered from one row alone.
+
+**How it works.** A LEFT JOIN keeps agencies with no donors. GROUP BY produces one output row per agency. HAVING filters grouped results after aggregation.
+
+**Example**
+
+```sql
+SELECT a.id,a.name,count(d.id) AS donor_count
+FROM agencies a LEFT JOIN donors d ON d.agency_id=a.id
+GROUP BY a.id,a.name
+HAVING count(d.id) >= 0
+ORDER BY donor_count DESC;
+```
+
+**Production decision.** Check one-to-many row multiplication before adding aggregates, limits or counts.
+
+**Common mistake.** WHERE d.id IS NOT NULL after a LEFT JOIN removes agencies without a donor.
+
+**Primary source:** https://www.postgresql.org/docs/current/tutorial-join.html
+
+### 9.7 Subqueries, CTEs, set operations and windows
+
+**What it means.** A subquery nests one query in another. WITH names a query step. UNION combines compatible result sets. Window functions calculate across related rows while keeping each row.
+
+**Why it matters.** These tools express questions that a single simple SELECT cannot describe clearly.
+
+**How it works.** The planner may inline or materialize a CTE depending on the query. UNION removes duplicates, while UNION ALL preserves them. A window PARTITION BY defines the rows compared for each result.
+
+**Example**
+
+```sql
+WITH totals AS (SELECT agency_id,count(*) AS n FROM donors GROUP BY agency_id)
+SELECT agency_id,n,rank() OVER (ORDER BY n DESC) AS place FROM totals;
+```
+
+**Production decision.** Choose the clearest correct query first, then inspect its plan if it is slow.
+
+**Common mistake.** A CTE is not automatically a performance optimization, and a window function does not collapse rows.
+
+**Primary source:** https://www.postgresql.org/docs/current/queries-with.html
+
+### 9.8 Transaction and privilege commands
+
+**What it means.** BEGIN, COMMIT, ROLLBACK and SAVEPOINT control a transaction. GRANT and REVOKE control which roles may use database objects.
+
+**Why it matters.** Reliable changes and limited access are separate needs: a correct transaction can still be run by the wrong role if privileges are too broad.
+
+**How it works.** A transaction groups statements until commit or rollback. PostgreSQL roles own objects and can receive specific privileges on schemas and tables; RLS can further restrict rows.
+
+**Example**
+
+```sql
+BEGIN;
+UPDATE accounts SET balance=balance-100 WHERE id=1;
+UPDATE accounts SET balance=balance+100 WHERE id=2;
+COMMIT;
+-- Example privilege shape: GRANT SELECT ON app.users TO app_reader;
+```
+
+**Production decision.** Keep transactions short; grant only the operations a role needs and test as that role.
+
+**Common mistake.** BEGIN is not a security permission, and GRANT does not replace row-level policy when tenants share a table.
+
+**Primary source:** https://www.postgresql.org/docs/current/sql-grant.html
+
+### 9.9 Read SELECT in logical order
 
 **What it means.** Written SQL starts with SELECT; reasoning about rows starts with FROM and JOIN, then WHERE, GROUP BY, HAVING, SELECT, ORDER BY and LIMIT.
 
@@ -529,7 +879,7 @@ ORDER BY donors DESC;
 
 **Primary source:** https://www.postgresql.org/docs/current/sql-select.html
 
-### 9.2 Subqueries and CTEs
+### 9.10 Subqueries and CTEs
 
 **What it means.** A subquery is a query inside another query. A common table expression (WITH) gives a named intermediate result, making multi-step logic easier to read.
 
@@ -551,7 +901,7 @@ LEFT JOIN donor_totals t ON t.agency_id=a.id;
 
 **Primary source:** https://www.postgresql.org/docs/current/queries-with.html
 
-### 9.3 Aggregation and windows
+### 9.11 Aggregation and windows
 
 **What it means.** GROUP BY collapses rows into groups. Window functions calculate across a partition while retaining individual rows.
 
@@ -571,7 +921,7 @@ FROM donations;
 
 **Primary source:** https://www.postgresql.org/docs/current/tutorial-window.html
 
-### 9.4 Recursive CTEs for hierarchies
+### 9.12 Recursive CTEs for hierarchies
 
 **What it means.** A recursive WITH query starts with an anchor and repeatedly expands reachable rows until no new rows are produced.
 
@@ -1002,7 +1352,27 @@ SELECT indexrelid::regclass,idx_scan FROM pg_stat_user_indexes ORDER BY idx_scan
 
 **Talk focus:** Run the query, inspect its plan tree, then compare estimated rows with actual rows, time, loops and buffers.
 
-### 16.1 Read an execution plan
+### 16.1 EXPLAIN versus EXPLAIN ANALYZE
+
+**What it means.** EXPLAIN shows a predicted plan. EXPLAIN ANALYZE runs the statement and reports actual rows and time. BUFFERS adds page activity.
+
+**Why it matters.** It turns “the query feels slow” into a measurable question: where was work done, and did the planner estimate it correctly?
+
+**How it works.** Read the tree from child nodes upward. Compare estimated rows to actual rows, then inspect time, loops, rows removed by filters and buffer hits/reads. Running EXPLAIN ANALYZE on a write also performs the write.
+
+**Example**
+
+```sql
+EXPLAIN (ANALYZE, BUFFERS) SELECT * FROM users WHERE email='atif@example.com';
+```
+
+**Production decision.** Use the exact query on representative data; record before and after plans when changing SQL or indexes.
+
+**Common mistake.** Do not run EXPLAIN ANALYZE on UPDATE or DELETE in production as if it were read-only.
+
+**Primary source:** https://www.postgresql.org/docs/current/using-explain.html
+
+### 16.2 Read an execution plan
 
 **What it means.** EXPLAIN shows the chosen tree. ANALYZE executes the SQL and adds actual row counts and timing. BUFFERS adds cache and read activity.
 
@@ -1032,7 +1402,7 @@ SELECT * FROM demo_users WHERE email='user500000@example.test';
 
 **Primary source:** https://www.postgresql.org/docs/current/using-explain.html
 
-### 16.2 Planner statistics and estimates
+### 16.3 Planner statistics and estimates
 
 **What it means.** The optimizer estimates selectivity and row counts from table statistics, not by executing every candidate plan.
 
@@ -1051,7 +1421,7 @@ SELECT attname,n_distinct FROM pg_stats WHERE tablename='demo_users';
 
 **Primary source:** https://www.postgresql.org/docs/current/planner-stats.html
 
-### 16.3 Scan, join, sort and aggregate nodes
+### 16.4 Scan, join, sort and aggregate nodes
 
 **What it means.** A plan is an operator tree: scans produce rows; joins combine them; sorts order them; aggregates reduce or group them.
 
@@ -1070,7 +1440,7 @@ SELECT a.id,count(d.id) FROM agencies a LEFT JOIN donors d ON d.agency_id=a.id G
 
 **Primary source:** https://www.postgresql.org/docs/current/using-explain.html
 
-### 16.4 Extended statistics for correlated columns
+### 16.5 Extended statistics for correlated columns
 
 **What it means.** Single-column statistics may misestimate predicates when columns are dependent or share a joint distribution.
 
@@ -1089,7 +1459,7 @@ ANALYZE users;
 
 **Primary source:** https://www.postgresql.org/docs/current/planner-stats.html
 
-### 16.5 Buffers, cache and repeated measurement
+### 16.6 Buffers, cache and repeated measurement
 
 **What it means.** Shared hit means a block was found in PostgreSQL shared buffers; shared read means it was read into them. Neither number alone explains all CPU or OS cache effects.
 
@@ -1691,7 +2061,28 @@ REFRESH MATERIALIZED VIEW CONCURRENTLY daily_counts;
 
 **Talk focus:** PostgreSQL stores the data; Auth, PostgREST APIs, Realtime, Storage, Edge Functions and Studio add product services.
 
-### 28.1 What Supabase builds on PostgreSQL
+### 28.1 Why Supabase can expose PostgreSQL to an app
+
+**What it means.** Supabase uses PostgreSQL as its data core and adds APIs, authentication, Realtime, Storage and functions around it.
+
+**Why it matters.** The platform can expose data quickly because PostgreSQL already has tables, SQL, transactions, roles and row-level security.
+
+**How it works.** Auth supplies identity; PostgREST translates HTTP requests to SQL; PostgreSQL grants and RLS decide allowed rows. Storage keeps file bytes separately while database tables hold metadata and policies.
+
+**Example**
+
+```sql
+-- In a Supabase project, test as the actual client role.
+SELECT auth.uid();
+```
+
+**Production decision.** Use RLS and grants deliberately, and keep elevated service credentials on a trusted server.
+
+**Common mistake.** Supabase is not a new database engine, and enabling Auth alone does not secure every table.
+
+**Primary source:** https://supabase.com/docs/guides/getting-started/architecture
+
+### 28.2 What Supabase builds on PostgreSQL
 
 **What it means.** Supabase uses PostgreSQL as the data core and provides Auth, API, Realtime, Storage, Edge Functions and Studio around it.
 
@@ -1720,7 +2111,7 @@ SELECT schemaname,tablename,rowsecurity FROM pg_tables WHERE schemaname='public'
 
 **Primary source:** https://supabase.com/docs/guides/getting-started/architecture
 
-### 28.2 Direct client access and RLS
+### 28.3 Direct client access and RLS
 
 **What it means.** A browser can call an auto-generated API safely only when exposed tables and functions have the intended privileges and policies.
 
@@ -1738,7 +2129,7 @@ CREATE POLICY own_rows ON documents FOR SELECT TO authenticated USING (owner_id 
 
 **Primary source:** https://supabase.com/docs/guides/database/postgres/row-level-security
 
-### 28.3 Auth, API and RLS end to end
+### 28.4 Auth, API and RLS end to end
 
 **What it means.** Supabase Auth signs users in and issues tokens. PostgREST exposes database objects. PostgreSQL roles and RLS enforce row access.
 
@@ -1757,7 +2148,7 @@ SELECT auth.uid();
 
 **Primary source:** https://supabase.com/docs/guides/database/postgres/row-level-security
 
-### 28.4 Realtime, Storage and Edge Functions are distinct services
+### 28.5 Realtime, Storage and Edge Functions are distinct services
 
 **What it means.** Realtime can stream database changes; Storage serves file objects with database metadata; Edge Functions run application logic outside PostgreSQL.
 

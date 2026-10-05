@@ -1,6 +1,6 @@
 # PostgreSQL in the Age of AI
 
-An interactive 35-screen, 45-minute presentation with a 96-lesson zero-to-hero study path. It runs as a static site. A separate localhost demo controller provides real PostgreSQL benchmark measurements and, when configured, pgvector retrieval and RAG.
+An interactive 35-screen, 45-minute presentation with a 114-lesson zero-to-hero study path. The main route now begins with PostgreSQL, tables, columns, rows, SQL command families and database choice before moving through internals, production systems and AI. It runs as a static site. A separate localhost demo controller provides real PostgreSQL benchmark measurements and, when configured, pgvector retrieval and RAG.
 
 ## Open the presentation
 
@@ -15,11 +15,11 @@ Open `http://127.0.0.1:4173`. No package installation or build step is needed. T
 
 Keep this command running in its own terminal. `npm run demo` starts only the separate API on port 8765; its root URL returns `{"error":"Not found"}` because it does not serve the presentation. If the browser says port 4173 refused the connection, start `npm run dev` in another terminal and check that it remains running.
 
-Use ←/→ or Space to navigate, Home/End to jump, `O` for overview, `N` for speaker notes and Escape to close overlays. The top controls open the 96-lesson **Study path**, simple and deep explanations, a light theme and a full-deck print/PDF view. Slides have shareable `?slide=17` URLs. Q&A includes the 100 supplied question-bank prompts plus curated questions; exercises contain 20 short tasks.
+Use ←/→ or Space to navigate, Home/End to jump, `O` for overview, `N` for speaker notes and Escape to close overlays. The top controls open the 114-lesson **Study path**, simple and deep explanations, a light theme and a full-deck print/PDF view. Slides have shareable `?slide=17` URLs. Q&A includes the 100 supplied question-bank prompts plus curated questions; exercises contain 20 short tasks.
 
 ## Follow the zero-to-hero study route
 
-Open **Study path** on any screen, or read [ZERO-TO-HERO-GUIDE.md](docs/ZERO-TO-HERO-GUIDE.md). It contains 96 lessons and 17 guided experiments from creating a database through SQL, transactions, internals, operations, Supabase and RAG. To run the small worked examples in a disposable local database:
+Open **Study path** on any screen, or read [ZERO-TO-HERO-GUIDE.md](docs/ZERO-TO-HERO-GUIDE.md). It contains 114 lessons and 17 guided experiments from creating a database through SQL, transactions, internals, operations, Supabase and RAG. To run the small worked examples in a disposable local database:
 
 ```bash
 createdb learning
@@ -28,6 +28,15 @@ psql -d learning
 ```
 
 In each new psql session run `SET search_path TO study, public;`. The separate million-row performance lab below has its own `pgai_demo` schema.
+
+For a complete, rerunnable SQL workshop covering DDL, INSERT/UPDATE/DELETE, SELECT, JOIN, GROUP BY, subqueries, CTEs, windows, views, transactions and EXPLAIN, use a disposable database:
+
+```bash
+createdb learning
+psql -v ON_ERROR_STOP=1 -d learning -f examples/sql-workshop.sql
+```
+
+The script creates only the `workshop` schema. It is also linked from the SQL screen's Study path.
 
 ## Start LIVE performance demos
 
@@ -52,7 +61,7 @@ Ollama's `/api/embed` and `/api/chat` endpoints are also supported. For example,
 
 ## Deployment
 
-The public presentation needs only `index.html`, `src/` and optionally `exports/` for the PDF. `npm run build` copies those files to `dist/` for **PREPARED** mode. No server-side runtime is needed.
+The public presentation needs `index.html`, `src/`, `examples/` and optionally `exports/` for the PDF. `npm run build` copies those files to `dist/` for **PREPARED** mode. No server-side runtime is needed.
 
 ### Render with automatic Git deployment
 
@@ -78,7 +87,7 @@ Use the print icon for a supporting PDF export. A 35-page, 16:9 copy is included
 ## Project guide
 
 - `src/slides.js`: 35 main screens and curated exercises
-- `src/curriculum.js` and `src/curriculum-advanced.js`: 96 lessons with mechanics, SQL, production decisions and sources
+- `src/curriculum.js`, `src/curriculum-foundations.js` and `src/curriculum-advanced.js`: 114 lessons with plain explanations, SQL, production decisions and sources
 - `src/walkthroughs.js`: 17 guided experiments with expected observations
 - `docs/ZERO-TO-HERO-GUIDE.md`: exportable full study text
 - `src/question-bank.js`: 100 questions extracted from the supplied Question Bank

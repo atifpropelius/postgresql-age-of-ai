@@ -2,7 +2,7 @@
 
 **Question:** What is PostgreSQL actually doing, from the first table to a production AI application?
 
-The 35-screen main route takes 45 minutes. Its Study path contains 96 lessons and 20 exercises for the full zero-to-hero route. The seven added screens make the missing concepts visible without lengthening the talk: API versus database resources, create your own database, mathematical relation versus foreign key, two writers and a snapshot reader, hosting choices, views/materialized views, and extensions. The presenter advances key animated states during the short main talk; self-study visitors can open SQL, Study path and questions.
+The 35-screen main route takes 45 minutes. Its Study path contains 114 lessons and 20 exercises for the full zero-to-hero route. The opening now defines PostgreSQL, when it fits, tables, columns, rows, tuples and the main SQL jobs before the talk moves through query planning, transactions, internals, scaling, Supabase and AI. The deeper lessons cover DDL, DML, SELECT forms and production decisions without adding screens. The presenter advances key animated states during the short main talk; self-study visitors can open SQL, Study path, the runnable SQL workshop and questions.
 
 1. **Foundation:** Choose PostgreSQL for the workload; show the API and database as separate processes; build server → database → schema → table → row; explain column, tuple, relation, FK and SQL flow.
 2. **Internals and performance:** Transfer money; watch T2 wait on T1 while a reader sees a committed version; explain MVCC. Grow the table, inspect EXPLAIN ANALYZE, then use the real benchmark lab. Show pages, VACUUM and WAL.
