@@ -1,0 +1,13 @@
+{
+  "name":"postgresql-age-of-ai",
+  "private":true,
+  "type":"module",
+  "scripts":{
+    "dev":"python3 -m http.server 4173 --bind 127.0.0.1",
+    "build":"sh scripts/build-static.sh",
+    "demo":"node demo/server.js",
+    "preflight":"node scripts/preflight.js",
+    "docs:study":"node scripts/build-study-docs.js",
+    "check":"node --check src/app.js && node --check src/slides.js && node --check src/deep-dives.js && node --check src/curriculum.js && node --check src/curriculum-advanced.js && node --check src/walkthroughs.js && node --check scripts/build-study-docs.js && node --check src/question-bank.js && node --check demo/server.js && node --check scripts/preflight.js"
+  }
+}

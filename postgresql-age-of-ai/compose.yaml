@@ -1,0 +1,17 @@
+services:
+  postgres:
+    image: pgvector/pgvector:0.8.7-pg17-bookworm
+    environment:
+      POSTGRES_USER: pgai
+      POSTGRES_PASSWORD: pgai_local_demo
+      POSTGRES_DB: pgai
+    ports:
+      - "127.0.0.1:5544:5432"
+    volumes:
+      - pgai_demo_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U pgai -d pgai"]
+      interval: 5s
+      retries: 10
+volumes:
+  pgai_demo_data:
