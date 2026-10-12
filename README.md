@@ -21,6 +21,6 @@ Open <http://127.0.0.1:4173/>. The presentation needs no database, API key, Dock
 | Build command | `npm run build` |
 | Publish directory | `dist` |
 
-Enable auto-deploy for pushes to `main`. If the existing Render service was created manually, update its root directory; `render.yaml` does not automatically change an existing manual service.
+Enable auto-deploy for pushes to `main`. An existing manually configured Static Site with root directory `postgresql-age-of-ai` and build command `npm run build` will also publish the Supabase talk through a compatibility build. You can change its root directory to `supabase-talk` later; `render.yaml` does not automatically change a manual service's settings.
 
 This presentation uses clearly labeled interactive illustrations. It does not connect to a live Supabase project or display fabricated measurements.

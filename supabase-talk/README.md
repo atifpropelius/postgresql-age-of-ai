@@ -31,4 +31,6 @@ Slide titles, timing, notes and sources live in `src/slides.js`. The visual rend
 
 Render is configured from the repository root in `../render.yaml`. For a manually created Static Site: root directory `supabase-talk`, build command `npm run build`, publish directory `dist`.
 
+If an existing manual Render site still builds from `postgresql-age-of-ai`, its `npm run build` now publishes this Supabase talk as well. This keeps the current site working while you switch its root directory when convenient.
+
 The previous PostgreSQL course remains under `../postgresql-age-of-ai/` for reference.

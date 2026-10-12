@@ -1,5 +1,7 @@
 # PostgreSQL in the Age of AI
 
+**Archived course:** the active talk is now [Supabase — From Idea to Production](../supabase-talk/). `npm run dev` here still opens this archived PostgreSQL course. `npm run build` publishes the Supabase talk for any existing Render site configured with this older root directory. To build this PostgreSQL course for a separate static host, run `npm run build:postgres-course`.
+
 An interactive 35-screen, 45-minute presentation with a 114-lesson zero-to-hero study path. The main route now begins with PostgreSQL, tables, columns, rows, SQL command families and database choice before moving through internals, production systems and AI. It runs as a static site. A separate localhost demo controller provides real PostgreSQL benchmark measurements and, when configured, pgvector retrieval and RAG.
 
 ## Open the presentation
@@ -61,24 +63,24 @@ Ollama's `/api/embed` and `/api/chat` endpoints are also supported. For example,
 
 ## Deployment
 
-The public presentation needs `index.html`, `src/`, `examples/` and optionally `exports/` for the PDF. `npm run build` copies those files to `dist/` for **PREPARED** mode. No server-side runtime is needed.
+The archived PostgreSQL presentation needs `index.html`, `src/`, `examples/` and optionally `exports/` for the PDF. `npm run build:postgres-course` copies those files to `dist/` for **PREPARED** mode. No server-side runtime is needed.
 
 ### Render with automatic Git deployment
 
-The Git repository's root is currently the parent `ppt/` directory. Its [`render.yaml`](../render.yaml) defines a Render static site with root directory `postgresql-age-of-ai`, build command `npm run build`, publish directory `dist`, and automatic deployment on each push to `main`. In Render, choose **New → Blueprint**, connect the GitHub repository, select `main`, review the one static site, then **Deploy Blueprint**. The resulting `*.onrender.com` URL serves the prepared presentation.
+The Git repository's root is the parent `ppt/` directory. Its [`render.yaml`](../render.yaml) now builds the active Supabase talk from `supabase-talk/`. A manually configured Render Static Site that still uses this older `postgresql-age-of-ai` root directory will also publish the Supabase talk because its `npm run build` is a compatibility build.
 
-If you prefer creating a Render **Static Site** without the Blueprint, use the same four settings above. Do not create a Web Service for this frontend.
+For a new Render **Static Site**, use the active talk's [deployment settings](../supabase-talk/README.md).
 
 For a free Cloudflare Pages direct upload, package only the public files from this directory:
 
 ```bash
 cd ~/Atif/Workspace/active/ppt/postgresql-age-of-ai
-npm run build
+npm run build:postgres-course
 ```
 
 In Cloudflare **Workers & Pages**, choose **Create application → Get started → Drag and drop your files** and upload the `dist/` folder. The resulting `*.pages.dev` URL serves the prepared presentation.
 
-For automatic deployment, put this project in its own GitHub or GitLab repository and connect it to Cloudflare Pages through **Import an existing Git repository**. Set the production branch to `main`, build command to `npm run build`, and build output directory to `dist`. Each push to `main` will publish the new presentation. The generated `dist/` folder is ignored by Git. This keeps the local demo controller and Compose configuration out of the public site.
+For an archived PostgreSQL deployment on Cloudflare Pages, use build command `npm run build:postgres-course` and output directory `dist`. The generated `dist/` folder is ignored by Git. This keeps the local demo controller and Compose configuration out of the public site.
 
 The LIVE controls call `127.0.0.1:8765` in the viewer's browser. They need the local demo controller and PostgreSQL on that same computer; uploading the static files does not host those services. Do not expose the current demo controller on the internet without authentication, rate limiting, TLS and resource controls.
 
