@@ -1,9 +1,26 @@
-# PostgreSQL in the Age of AI
+# Supabase — From Idea to Production
 
-The interactive presentation is in [`postgresql-age-of-ai/`](postgresql-age-of-ai/). See its [README](postgresql-age-of-ai/README.md) for local setup, live demos, and content.
+The active presentation is in [`supabase-talk/`](supabase-talk/). It is a concise, interactive Supabase talk built around one private taskboard app. The earlier PostgreSQL course remains in [`postgresql-age-of-ai/`](postgresql-age-of-ai/) as an archive and is no longer the Render target.
+
+## Run locally
+
+```bash
+cd supabase-talk
+npm run dev
+```
+
+Open <http://127.0.0.1:4173/>. The presentation needs no database, API key, Docker container, or `npm install`.
 
 ## Deploy on Render
 
-This repository includes [`render.yaml`](render.yaml) for a static site. In the Render dashboard, choose **New → Blueprint**, connect this GitHub repository, select `main`, review the one static site, and click **Deploy Blueprint**. Render will build `postgresql-age-of-ai/dist` and give you an `onrender.com` URL. Future pushes to `main` redeploy automatically.
+[`render.yaml`](render.yaml) now points to `supabase-talk/`. If creating a new **Static Site** manually, select this repository and `main`, then set:
 
-The published site runs the prepared presentation. Live PostgreSQL, pgvector, and RAG demos use a separate local demo controller and are not deployed by this Blueprint.
+| Setting | Value |
+| --- | --- |
+| Root directory | `supabase-talk` |
+| Build command | `npm run build` |
+| Publish directory | `dist` |
+
+Enable auto-deploy for pushes to `main`. If the existing Render service was created manually, update its root directory; `render.yaml` does not automatically change an existing manual service.
+
+This presentation uses clearly labeled interactive illustrations. It does not connect to a live Supabase project or display fabricated measurements.

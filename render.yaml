@@ -2,7 +2,7 @@ services:
   - type: web
     name: postgresql-age-of-ai-presentation
     runtime: static
-    rootDir: postgresql-age-of-ai
+    rootDir: supabase-talk
     buildCommand: npm run build
     staticPublishPath: ./dist
     autoDeployTrigger: commit
