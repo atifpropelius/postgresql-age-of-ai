@@ -2,13 +2,16 @@ export const sources = {
   architecture: 'https://supabase.com/docs/guides/getting-started/architecture',
   database: 'https://supabase.com/docs/guides/database/overview',
   api: 'https://supabase.com/docs/guides/api',
+  openapi: 'https://supabase.com/docs/reference/javascript/getopenapispec',
+  autoDocs: 'https://supabase.com/docs/guides/api/rest/auto-generated-docs',
   auth: 'https://supabase.com/docs/guides/auth/architecture',
   rls: 'https://supabase.com/docs/guides/database/postgres/row-level-security',
   keys: 'https://supabase.com/docs/guides/getting-started/api-keys',
   storage: 'https://supabase.com/docs/guides/storage/schema/design',
   realtime: 'https://supabase.com/docs/guides/realtime/architecture',
   functions: 'https://supabase.com/docs/guides/functions/architecture',
-  vectors: 'https://supabase.com/docs/guides/ai/vector-columns',
+  queues: 'https://supabase.com/docs/guides/queues',
+  cron: 'https://supabase.com/docs/guides/cron',
   local: 'https://supabase.com/docs/guides/local-development/cli-workflows',
   connect: 'https://supabase.com/docs/guides/database/connecting-to-postgres',
   compute: 'https://supabase.com/docs/guides/platform/compute-and-disk',
@@ -29,12 +32,12 @@ export const slides = [
   },
   {
     id:'stack', chapter:'THE IDEA', tag:'02 / THE IDEA', title:'What is Supabase?',
-    lead:'A ready-made backend around PostgreSQL: database, APIs, Auth, Storage, Realtime and functions.',
-    takeaway:'Postgres is the data core; Supabase services turn it into an application platform.', duration:125,
+    lead:'PostgreSQL at the core, with Data API, Auth, Storage, Realtime, Edge Functions, Queues and Cron around it.',
+    takeaway:'Each service has a distinct job; Postgres remains the shared data core.', duration:145,
     visual:'stack', steps:['Client','Gateway','Services','Postgres'],
-    notes:'Trace a request from the browser through an API service into Postgres. Name what each surrounding service does in one sentence.',
-    deep:'The gateway routes requests to dedicated services: Auth, PostgREST for the Data API, Realtime, Storage and Edge Functions. Storage file bytes live in object storage; its metadata lives in Postgres. Studio is a management UI, not the request path.',
-    source:['architecture','storage']
+    notes:'Trace a browser request through the gateway and a request service into Postgres. Explain the seven capabilities in one sentence each. Queues and Cron are Postgres-backed jobs, not gateway routes: a queue holds work for a consumer; Cron schedules recurring work.',
+    deep:'The gateway routes requests to dedicated services including Auth, PostgREST for the Data API, Realtime, Storage and Edge Functions. Supabase Queues builds on the pgmq Postgres extension; Cron uses pg_cron. Storage file bytes live in object storage while metadata lives in Postgres. Studio is a management UI, not the request path.',
+    source:['architecture','storage','queues','cron']
   },
   {
     id:'fit', chapter:'THE IDEA', tag:'03 / THE IDEA', title:'When is it a good fit?',
@@ -65,14 +68,14 @@ export const slides = [
     source:['database','auth','local']
   },
   {
-    id:'api', chapter:'BUILD THE APP', tag:'06 / BUILD THE APP', title:'A table becomes an API',
-    lead:'The client asks for tasks; the Data API translates the request into a Postgres query.',
-    takeaway:'Fast API setup does not remove the need for permissions and query design.', duration:120,
+    id:'api', chapter:'BUILD THE APP', tag:'06 / BUILD THE APP', title:'Data API + OpenAPI: request vs description',
+    lead:'The Data API serves task requests. OpenAPI describes the exposed REST endpoints for people and tools.',
+    takeaway:'Data API runs requests; OpenAPI documents the API surface. Neither replaces access policies.', duration:150,
     visual:'api', steps:['Client call','JWT + key','Data API','RLS + rows'],
     code:`const { data, error } = await supabase\n  .from('tasks')\n  .select('id, title, done')\n  .order('id', { ascending: false });`,
-    notes:'Show the exact client call. The frontend sends a publishable key plus a signed-in user token. The Data API asks Postgres for rows. The next slide explains why another user cannot read them.',
-    deep:'PostgREST provides the Data API over exposed schemas. Database grants and RLS policies both affect access. For a backend with long-lived connections, a direct or session connection may fit; browser code should use the Data API, not a raw database password.',
-    source:['api','connect','keys']
+    notes:'Show the exact client call and REST route. The frontend sends a publishable key plus a signed-in user token. PostgREST serves the Data API request; the generated OpenAPI document describes the routes, rather than processing a second request. In the dashboard, Data API Docs shows the generated endpoints. The next slide explains row access.',
+    deep:'PostgREST exposes tables, views and functions from configured schemas as REST endpoints, subject to grants and RLS. Its OpenAPI specification describes the endpoints visible to the requesting role, so an OpenAPI document is not an alternate database or an authorization layer. For a backend with long-lived connections, a direct or session connection may fit; browser code should not contain a raw database password.',
+    source:['api','openapi','autoDocs','connect','keys']
   },
   {
     id:'security', chapter:'TRUST', tag:'07 / TRUST', title:'Auth says who. RLS says which rows.',
@@ -113,13 +116,14 @@ export const slides = [
     source:['functions','keys']
   },
   {
-    id:'ai', chapter:'CAPABILITIES', tag:'11 / CAPABILITIES', title:'And if the app needs AI?',
-    lead:'Store embeddings with pgvector; retrieve useful records before passing context to an LLM.',
-    takeaway:'Supabase can support retrieval, but an embedding model and an LLM are separate pieces.', duration:120,
-    visual:'ai', steps:['Text','Embedding','Vector search','Context','Answer'],
-    notes:'Make AI optional to this story. The taskboard might search notes by meaning. The picture is a conceptual retrieval flow, not measured similarity results.',
-    deep:'pgvector is a Postgres extension. Embeddings must use a consistent model and dimensions. Search can be exact or indexed; metadata filters, RLS and result quality still matter. RAG retrieves context for a model; it is not the same as model fine-tuning.',
-    source:['vectors']
+    id:'async', chapter:'CAPABILITIES', tag:'11 / CAPABILITIES', title:'Queues + Cron: work later or on a schedule',
+    lead:'A queue holds background tasks until a consumer processes them. Cron starts recurring work at a chosen time.',
+    takeaway:'Queued work needs a consumer; a schedule can trigger SQL or a function. These solve different timing needs.', duration:180,
+    visual:'async', steps:['Request','Queue','Consumer','Schedule'],
+    sql:`-- Enable pgmq and pg_cron in the project first.\nselect pgmq.create('task_notifications');\nselect pgmq.send('task_notifications', '{"task_id":101}'::jsonb);\n\ncreate table if not exists public.daily_task_counts (\n  day date primary key, total bigint not null\n);\nselect cron.schedule('daily-task-count', '0 9 * * *',\n  $$ insert into public.daily_task_counts(day, total)\n     select current_date, count(*) from public.tasks\n     on conflict (day) do update set total = excluded.total $$);`,
+    notes:'Use a taskboard example: after a task is created, add an email job to the queue, return to the user immediately, then let a worker fetch and acknowledge the job after success. Cron is separate: each morning it runs a scheduled database job. A queue does not send email by itself, and Cron does not automatically consume queue messages.',
+    deep:'Supabase Queues uses the pgmq extension in Postgres. Its consumer must read messages, perform work, and archive or delete successfully processed messages. Plan for retries and idempotent side effects. Supabase Cron uses pg_cron and can schedule SQL, database functions, or HTTP/Edge Function calls; schedules use the database cron timezone. The SQL example creates the queue and count table but assumes pgmq and pg_cron are enabled and public.tasks exists. It illustrates commands rather than a connected live project.',
+    source:['queues','cron','functions']
   },
   {
     id:'workflow', chapter:'SHIP IT', tag:'12 / SHIP IT', title:'From laptop to production',
@@ -144,8 +148,8 @@ export const slides = [
     id:'finale', chapter:'SHIP IT', tag:'14 / SHIP IT', title:'One connected system',
     lead:'The entire request path now fits in one picture.',
     takeaway:'Start with data and access rules, then add the services the product actually needs.', duration:80,
-    visual:'finale', steps:['User','Auth','API + RLS','Postgres','Realtime + Storage'],
-    notes:'Recap the five ideas: Postgres at the core; services around it; Auth is identity; RLS is row permission; operations still matter. Invite questions about a real application the audience is building.',
+    visual:'finale', steps:['User','Auth','API + RLS','Postgres','Optional services'],
+    notes:'Recap the five ideas: Postgres at the core; Data API runs requests and OpenAPI describes them; Auth is identity; RLS is row permission; Storage, Realtime, Functions, Queues and Cron extend the app. Invite questions about a real application the audience is building.',
     deep:'The architecture is composable. Apps may connect through the generated API, custom services or direct SQL. Production quality comes from explicit authorization, versioned schema, tested queries and recovery planning.',
     source:['architecture','rls']
   }

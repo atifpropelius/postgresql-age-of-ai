@@ -2,6 +2,8 @@
 
 The active presentation is in [`supabase-talk/`](supabase-talk/). It is a concise, interactive Supabase talk built around one private taskboard app. The earlier PostgreSQL course remains in [`postgresql-age-of-ai/`](postgresql-age-of-ai/) as an archive and is no longer the Render target.
 
+The company session rules and topic boundaries are recorded in [SESSION-FORMAT.md](supabase-talk/docs/SESSION-FORMAT.md) and [TECH-TALK-SCOPE.md](supabase-talk/docs/TECH-TALK-SCOPE.md). The main deck is FS-03; Q&A and quiz content stay separate.
+
 ## Run locally
 
 ```bash
