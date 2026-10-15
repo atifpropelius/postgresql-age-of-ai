@@ -1,4 +1,4 @@
-import {slides, sources, totalMinutes} from './slides.js';
+import {slides, sources, totalMinutes, metricGlossary} from './slides.js';
 
 const $ = (selector) => document.querySelector(selector);
 const escapeHtml = (value) => String(value ?? '').replace(/[&<>"']/g, (char) => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
@@ -30,7 +30,13 @@ const captions = {
   functions:['The client calls a function.','The function checks the caller.','Trusted code uses a server-side secret.','The function returns a result to the client.'],
   async:['The request creates a task without waiting for email delivery.','A durable queue holds the message for a consumer.','A worker reads, performs the work, then acknowledges it.','Cron separately triggers recurring work on a schedule.'],
   workflow:['Run the local development stack.','Record schema changes as SQL migrations.','Review the diff and test the result.','Apply reviewed changes to the remote project.'],
-  production:['Check policies and secret placement.','Measure slow queries and their plans.','Control connection count for the workload.','Verify backups and a restore path.'],
+  'obs-intro':['Ask: what changed for users?','On a custom stack, collect metrics and logs from each service.','Supabase Cloud groups product reports and live database sessions.'],
+  'obs-overview':['These cards point to database pressure.','Service health shows where requests are flowing.','Choose a time window, then open the detailed report.'],
+  'obs-query':['Calls count how often a statement ran.','Mean, max and min describe one execution.','Total time reveals cumulative cost.','Role, app, rows and cache add context.'],
+  'obs-connections':['A session is connected to Postgres.','An active session is running SQL.','A transaction can stay open after its last statement.','The second update waits for the first transaction.','ROLLBACK releases the lock and the waiter proceeds.'],
+  'obs-database':['Memory shows used, cache, free and swap.','CPU separates process, system and waiting time.','Disk usage is occupied capacity.','Disk I/O is reads and writes over time.'],
+  'obs-apis':['Gateway shows all inbound API traffic.','Data API shows generated REST routes.','Auth shows sign-ins, errors and processing time.'],
+  'obs-services':['Edge Functions show runs, codes, time and region.','Storage shows file requests, bytes and caching.','Realtime shows clients, messages and delivery health.'],
   finale:['A person signs in.','Auth supplies identity.','The Data API and RLS gate records.','Postgres stores application data.','Storage, Realtime, Functions, Queues and Cron extend the app.']
 };
 
@@ -63,9 +69,54 @@ function visual(slide) {
     case 'functions': return `<div class="function-visual">${flow(['Browser','Edge Function','Mail API','Browser'],caption,'function-flow')}<div class="secret-box ${s===2?'active':''}"><span>SERVER SECRET</span><b>MAIL_API_KEY</b><small>never sent to the browser</small></div></div>`;
     case 'async': return `<div class="async-visual"><div class="async-lane"><span class="async-label">WHEN A TASK IS CREATED</span><div class="async-rail"><div class="async-box ${s===0?'active':''}"><b>API request</b><small>save task · respond</small></div><span class="async-arrow">→</span><div class="async-box ${s===1?'active':''}"><b>Queue</b><small>message waits safely</small></div><span class="async-arrow">→</span><div class="async-box ${s===2?'active':''}"><b>Consumer</b><small>send email · acknowledge</small></div></div></div><div class="async-lane cron-lane ${s===3?'active':''}"><span class="async-label">ON A RECURRING SCHEDULE</span><div class="async-rail"><div class="async-box"><b>Cron</b><small>09:00 · DB timezone</small></div><span class="async-arrow">→</span><div class="async-box"><b>SQL or function</b><small>run scheduled work</small></div></div></div><div class="async-footnote">ILLUSTRATIVE FLOW · QUEUE CONSUMER IS AN APPLICATION WORKER</div></div><p class="viz-caption">${escapeHtml(caption)}</p>`;
     case 'workflow': return `<div class="workflow-visual"><div class="workflow-rail">${[['LOCAL','CLI + Docker'],['GIT','SQL migration'],['REVIEW','test + diff'],['REMOTE','apply changes']].map(([label,detail],i)=>`<div class="workflow-stop ${highlight(i)}"><span>${String(i+1).padStart(2,'0')}</span><b>${label}</b><small>${detail}</small></div>`).join('')}</div><div class="workflow-stamp">SCHEMA HISTORY <b>001 → 002 → 003</b></div></div><p class="viz-caption">${escapeHtml(caption)}</p>`;
-    case 'production': {
-      const checks = [['SECURITY','RLS + keys','Can user B read user A’s task?'],['QUERIES','plans + indexes','Which query is slow and why?'],['CONNECTIONS','pooling','Are short-lived functions opening too many sessions?'],['RECOVERY','backups + restore','Can we restore the data we need?']];
-      return `<div class="production-visual"><div class="production-grid">${checks.map(([title,detail,question],i)=>`<div class="production-check ${highlight(i)}"><span>0${i+1}</span><b>${title}</b><small>${detail}</small><p>${question}</p></div>`).join('')}</div><div class="resource-line"><span>CPU</span><span>RAM</span><span>DISK I/O</span><span>CONNECTIONS</span><span>LATENCY</span></div></div><p class="viz-caption">${escapeHtml(caption)}</p>`;
+    case 'obs-intro': {
+      const columns = [
+        ['QUESTION', '“Why did saving a task get slow?”', 'Find the change and follow its path.'],
+        ['SELF-MANAGED', 'API logs → DB metrics → charts', 'The team wires collection, storage, alerts and access.'],
+        ['SUPABASE CLOUD', 'Observability → Reports', 'Start with built-in service reports; monitor your own code too.']
+      ];
+      return `<div class="obs-viz"><div class="obs-route">OPERATIONS <span>›</span> OBSERVABILITY</div><div class="obs-intro-grid">${columns.map(([kicker,title,detail],i)=>`<div class="obs-tile ${highlight(i)}"><small>${kicker}</small><strong>${title}</strong><p>${detail}</p></div>`).join('')}</div><div class="obs-signal"><span>METRICS <b>patterns</b></span><span>LOGS <b>events</b></span><span>SESSIONS <b>now</b></span></div><div class="obs-disclaimer">ILLUSTRATIVE RECONSTRUCTION · NO LIVE PROJECT DATA</div></div><p class="viz-caption">${escapeHtml(caption)}</p>`;
+    }
+    case 'obs-overview': {
+      const metrics = [['Slow queries','Statements to inspect'],['Peak connections','Most simultaneous sessions'],['Disk usage','Capacity occupied'],['Disk I/O','Read and write activity'],['Memory','RAM in use'],['CPU','Compute activity']];
+      const services = ['API GATEWAY','DATABASE','POSTGREST','AUTH','EDGE FUNCTIONS','STORAGE','REALTIME'];
+      return `<div class="obs-viz"><div class="obs-route">OBSERVABILITY <span>›</span> OVERVIEW <em>choose time range</em></div><div class="obs-overview-cards">${metrics.map(([name,meaning])=>`<div class="obs-mini ${s===0?'lit':''}"><b>${name}</b><small>${meaning}</small></div>`).join('')}</div><div class="obs-service-title">SERVICE HEALTH <span>requests and warnings by service</span></div><div class="obs-service-grid">${services.map((service,i)=>`<div class="obs-service ${s===1?'lit':''}"><small>${service}</small><div class="obs-bars">${[34,42,35,48,39,46,28,44].map((n,j)=>`<i style="height:${n+(i+j)%3*5}%"></i>`).join('')}</div></div>`).join('')}</div><div class="obs-disclaimer">ILLUSTRATIVE RECONSTRUCTION · OPEN A DETAIL PAGE FOR THE CAUSE</div></div><p class="viz-caption">${escapeHtml(caption)}</p>`;
+    }
+    case 'obs-query': {
+      const rows = [
+        ['SELECT tasks…','many','moderate','large','app role'],
+        ['UPDATE task…','few','high','smaller','app role']
+      ];
+      return `<div class="obs-viz"><div class="obs-route">OBSERVABILITY <span>›</span> QUERY PERFORMANCE <em>example patterns</em></div><div class="obs-query-grid"><div class="obs-q-head"><b>QUERY</b><b class="${s===0?'focus':''}">CALLS</b><b class="${s===1?'focus':''}">MEAN</b><b class="${s===2?'focus':''}">TOTAL TIME</b><b class="${s===3?'focus':''}">ROLE</b></div>${rows.map(row=>`<div class="obs-q-row">${row.map((cell,i)=>`<span class="${i===s+1?'focus':''}">${cell}</span>`).join('')}</div>`).join('')}</div><div class="obs-query-legend"><span><b>MAX / MIN</b> slowest / fastest call</span><span><b>ROWS</b> returned or changed</span><span><b>CACHE</b> data found in memory</span><span><b>APP</b> client name</span></div><div class="obs-callout">${['Many short calls can add up.','One slow call can hurt a user.','Investigate total cost and user impact.','Roles and cache give context, not a verdict.'][s]}</div><div class="obs-disclaimer">ILLUSTRATIVE PATTERNS · NO MEASURED QUERY TIMES</div></div><p class="viz-caption">${escapeHtml(caption)}</p>`;
+    }
+    case 'obs-connections': {
+      const states = [['CONNECTIONS','open sessions / limit'],['ACTIVE QUERIES','running SQL now'],['IDLE IN TRANSACTION','open transaction, no SQL now'],['BLOCKED QUERIES','waiting on a lock'],['TOP BLOCKER','session causing waits'],['LONGEST RUNNING','oldest running work']];
+      return `<div class="obs-viz"><div class="obs-route">OBSERVABILITY <span>›</span> DATABASE CONNECTIONS <em>LIVE snapshot</em></div><div class="obs-connection-cards">${states.map(([name,meaning],i)=>`<div class="obs-mini ${s<4&&(i===s||s===3&&i===4)?'lit':''}"><b>${name}</b><small>${meaning}</small></div>`).join('')}</div><div class="obs-session-scene"><div class="obs-session ${s===1?'running':s>=2&&s<4?'holding':''}"><b>SESSION A · holder</b><span>${s===0?'connected':s===1?'ACTIVE QUERY':s<4?'IDLE IN TRANSACTION':'ROLLBACK ✓'}</span><small>${s===1?'SELECT pg_sleep(20)':s===0?'session opened':'UPDATE task 101'}</small></div><div class="obs-lock ${s===3?'waiting':''}">${s===3?'LOCK HELD → WAITER BLOCKED':s===4?'LOCK RELEASED → CONTINUE':'ROW LOCK'}</div><div class="obs-session ${s===3?'waiting':''}"><b>SESSION B · waiter</b><span>${s<3?'connected':s===3?'WAITING':'QUERY COMPLETES ✓'}</span><small>UPDATE task 101</small></div></div><div class="obs-session-fields">SESSION TABLE: <b>State</b> · <b>Query / PID</b> · <b>Duration</b> · <b>Blocked by</b></div><div class="obs-disclaimer">ILLUSTRATIVE SESSION FLOW · USE A DISPOSABLE PROJECT FOR THE LIVE DEMO</div></div><p class="viz-caption">${escapeHtml(caption)}</p>`;
+    }
+    case 'obs-database': {
+      const panels = [
+        ['MEMORY','Used · Cache + Buffers · Free · Swap','Cache is useful RAM. Swap can signal pressure.'],
+        ['CPU','User · System · IOWait · Idle','High CPU or waiting needs workload context.'],
+        ['DISK USAGE','Occupied storage capacity','Capacity and speed answer different questions.'],
+        ['DISK I/O','Read / write activity over time','Heavy I/O can make requests wait.']
+      ];
+      return `<div class="obs-viz"><div class="obs-route">OBSERVABILITY <span>›</span> DATABASE <em>select primary database</em></div><div class="obs-resource-grid">${panels.map(([name,terms,meaning],i)=>`<div class="obs-resource ${highlight(i)}"><small>${name}</small><div class="obs-resource-bars">${[48,58,52,63,50,55,62,46,57,51,60,53].map((v,j)=>`<i style="height:${v+(j+i)%3*4}%"></i>`).join('')}</div><b>${terms}</b><p>${meaning}</p></div>`).join('')}</div><div class="obs-disclaimer">ILLUSTRATIVE SHAPES · NO LIVE UTILIZATION VALUES</div></div><p class="viz-caption">${escapeHtml(caption)}</p>`;
+    }
+    case 'obs-apis': {
+      const groups = [
+        ['API GATEWAY','Every incoming HTTP request','Geography · total requests · response errors · speed · ingress / egress'],
+        ['DATA API','Generated /rest/v1 routes','Endpoint count · status · response speed · network traffic'],
+        ['AUTH','Sign-in and identity requests','Attempts by type · sign-ups · resets · errors · processing time']
+      ];
+      return `<div class="obs-viz"><div class="obs-route">OBSERVABILITY <span>›</span> PRODUCT REPORTS</div><div class="obs-product-grid">${groups.map(([name,job,measure],i)=>`<button data-step="${i}" class="obs-product ${highlight(i)}"><small>${name}</small><strong>${job}</strong><span>${measure}</span></button>`).join('')}</div><div class="obs-callout">${['Gateway request ≠ database connection.','A Data API endpoint is a route into PostgREST.','A 403 needs route and auth context before diagnosis.'][s]}</div><div class="obs-disclaimer">ILLUSTRATIVE DASHBOARD GUIDE · EMPTY CHART MAY MEAN NO EVENTS OR REPORTING DELAY</div></div><p class="viz-caption">${escapeHtml(caption)}</p>`;
+    }
+    case 'obs-services': {
+      const groups = [
+        ['EDGE FUNCTIONS','Code ran','Invocations · HTTP codes · execution time · region'],
+        ['STORAGE','Files served','Requests · response speed · traffic · request caching'],
+        ['REALTIME','Live events delivered','WebSocket clients · Broadcast · Presence · Postgres Changes']
+      ];
+      return `<div class="obs-viz"><div class="obs-route">OBSERVABILITY <span>›</span> PRODUCT REPORTS</div><div class="obs-product-grid">${groups.map(([name,job,measure],i)=>`<button data-step="${i}" class="obs-product ${highlight(i)}"><small>${name}</small><strong>${job}</strong><span>${measure}</span></button>`).join('')}</div><div class="obs-callout">${['Check the code and logs for an invocation spike.','Storage traffic is file traffic, not table storage.','Connected WebSocket clients are not PostgreSQL sessions.'][s]}</div><div class="obs-disclaimer">ILLUSTRATIVE DASHBOARD GUIDE · READ THE SELECTED TIME WINDOW</div></div><p class="viz-caption">${escapeHtml(caption)}</p>`;
     }
     case 'finale': return `<div class="finale-visual"><div class="finale-title">THE CONNECTED BACKEND</div>${flow(['USER','AUTH','DATA API + RLS','POSTGRES','OPTIONAL SERVICES'],caption,'finale-flow')}<div class="finale-bottom"><span>Storage + Realtime</span><span>Edge Functions</span><span>Queues + Cron</span></div></div>`;
     default: return '';
@@ -75,7 +126,8 @@ function visual(slide) {
 function sourceLinks(slide) { return slide.source.map((key) => `<a href="${sources[key]}" target="_blank" rel="noopener noreferrer">${escapeHtml(key)} ↗</a>`).join(''); }
 function panelContent(slide) {
   const code = slide.sql || slide.code;
-  return `<div class="panel-inner"><div class="panel-heading"><span class="eyebrow">${state.overlay==='notes'?'PRESENTER NOTES':'TECHNICAL DETAILS'}</span><button data-action="close" aria-label="Close panel">✕</button></div><h2>${escapeHtml(slide.title)}</h2>${state.overlay==='notes'?`<p>${escapeHtml(slide.notes)}</p><div class="panel-time">Suggested time: ${Math.round(slide.duration/60*10)/10} min</div>`:`<p>${escapeHtml(slide.deep)}</p>${code?`<div class="code-head"><span>REAL ${slide.sql?'SQL':'CODE'}</span><button data-action="copy">Copy</button></div><pre><code>${escapeHtml(code)}</code></pre>`:''}`}<div class="panel-sources"><b>Official sources</b>${sourceLinks(slide)}</div></div>`;
+  const glossary = metricGlossary[slide.id];
+  return `<div class="panel-inner"><div class="panel-heading"><span class="eyebrow">${state.overlay==='notes'?'PRESENTER NOTES':'TECHNICAL DETAILS'}</span><button data-action="close" aria-label="Close panel">✕</button></div><h2>${escapeHtml(slide.title)}</h2>${state.overlay==='notes'?`<p>${escapeHtml(slide.notes)}</p><div class="panel-time">Suggested time: ${Math.round(slide.duration/60*10)/10} min</div>`:`<p>${escapeHtml(slide.deep)}</p>${glossary?`<h3 class="glossary-title">Dashboard fields</h3><dl class="metric-glossary">${glossary.map(([label,meaning])=>`<div><dt>${escapeHtml(label)}</dt><dd>${escapeHtml(meaning)}</dd></div>`).join('')}</dl>`:''}${code?`<div class="code-head"><span>REAL ${slide.sql?'SQL':'CODE'}</span><button data-action="copy">Copy</button></div><pre><code>${escapeHtml(code)}</code></pre>`:''}`}<div class="panel-sources"><b>Official sources</b>${sourceLinks(slide)}</div></div>`;
 }
 
 function renderOverlay() {

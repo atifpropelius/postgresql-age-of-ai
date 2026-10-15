@@ -15,6 +15,11 @@ export const sources = {
   local: 'https://supabase.com/docs/guides/local-development/cli-workflows',
   connect: 'https://supabase.com/docs/guides/database/connecting-to-postgres',
   compute: 'https://supabase.com/docs/guides/platform/compute-and-disk',
+  reports: 'https://supabase.com/docs/guides/observability/reports',
+  queryStats: 'https://supabase.com/docs/guides/database/extensions/pg_stat_statements',
+  connectionManagement: 'https://supabase.com/docs/guides/database/connection-management',
+  realtimeReports: 'https://supabase.com/docs/guides/realtime/reports',
+  timeouts: 'https://supabase.com/docs/guides/database/postgres/timeouts',
   funding: 'https://www.prnewswire.com/news-releases/supabase-raises-500m-at-10-5b-to-accelerate-lead-in-agentic-infrastructure-302791787.html',
   adoption: 'https://supabase.com/blog/series-f',
   billing: 'https://supabase.com/docs/guides/platform/billing-on-supabase'
@@ -136,23 +141,160 @@ export const slides = [
     source:['local']
   },
   {
-    id:'production', chapter:'SHIP IT', tag:'13 / SHIP IT', title:'Production is still engineering',
-    lead:'Observe queries, protect access, manage connections, plan backups and choose compute from measurements.',
-    takeaway:'Supabase removes setup work; it does not remove capacity or security decisions.', duration:155,
-    visual:'production', steps:['Security','Queries','Connections','Recovery'],
-    notes:'Walk through four production checks. RLS and secret placement; EXPLAIN for slow queries; pooling for short-lived serverless connections; backup and restore preparation. Start with measurements, not a universal instance size.',
-    deep:'For browser apps, use the Data API. For direct Postgres access from serverless functions, transaction pooling helps control short-lived connections but has session-state and prepared-statement limitations. Measure CPU, memory, disk I/O, connection counts and latency before resizing. Read replicas and other scaling tools are workload-specific; test recovery, not only backups.',
-    source:['connect','compute','rls']
+    id:'obs-intro', chapter:'OBSERVABILITY', tag:'13 / OBSERVABILITY', title:'What is observability?',
+    lead:'It means seeing how the running backend behaves: what is busy, what is slow, and what is failing.',
+    takeaway:'Metrics show patterns; logs show events; database activity shows what is happening right now.', duration:100,
+    visual:'obs-intro', steps:['Question','Build it yourself','Supabase reports'],
+    notes:'Use a car dashboard analogy: a speedometer tells you what is happening, but not automatically why. On a custom backend, the team wires up metrics collection, logs, charts and alerts for the API and database. Supabase Cloud provides built-in Reports, Query Performance and a live Connections view. Custom application code still needs its own logs and monitoring. Tell the audience that the next screens reconstruct the dashboard views they supplied; displayed examples are teaching illustrations, not live project metrics.',
+    deep:'Observability is the practice of using system outputs to understand behavior. Metrics aggregate measurements over time; logs record discrete events; database statistics and live session snapshots answer different questions. Supabase Cloud Reports are available in hosted projects, with time-range and plan limits. A report is a starting point for diagnosis, not a guaranteed explanation or automatic fix.',
+    source:['reports','connectionManagement']
   },
   {
-    id:'finale', chapter:'SHIP IT', tag:'14 / SHIP IT', title:'One connected system',
+    id:'obs-overview', chapter:'OBSERVABILITY', tag:'14 / OBSERVABILITY', title:'Overview: where should we look?',
+    lead:'Start with the summary: slow queries, connections, disk, CPU, memory and service health.',
+    takeaway:'A red flag tells you where to investigate; the detailed page tells you what happened.', duration:85,
+    visual:'obs-overview', steps:['Database cards','Service health','Drill down'],
+    notes:'In the supplied Overview screenshot, point at Slow Queries, Peak Connections, Disk Usage, Disk I/O, Memory and CPU, then the service health charts. Explain that 73% disk or 5% CPU are point-in-time project readings, not recommended targets. Select a time range, then open Query Performance, Database Connections or a product report. The screenshot itself does not list individual slow statements.',
+    deep:'Overview cards combine signals with different time windows and refresh characteristics. CPU is work on compute, memory is RAM use, disk usage is capacity, and disk I/O is read/write activity. A count of slow queries is a prompt to inspect the Query Performance page. Service health panels summarize API Gateway, Database, PostgREST, Auth, Edge Functions, Storage and Realtime, but low or missing chart data can reflect low traffic or reporting delay.',
+    source:['reports','compute']
+  },
+  {
+    id:'obs-query', chapter:'OBSERVABILITY', tag:'15 / OBSERVABILITY', title:'Query Performance: slow or frequent?',
+    lead:'One query may be slow per call. Another may be fast but run so often that its total cost is larger.',
+    takeaway:'Read calls, time per call and total time together before deciding what to optimize.', duration:150,
+    visual:'obs-query', steps:['Calls','Mean / max / min','Total time','Context'],
+    notes:'Use the supplied Query Performance screenshot. Read a row left to right: SQL text; Time consumed; Calls; Max, Mean and Min time; Rows processed; Cache hit rate; Role; Application. Calls means executions. Mean is average duration of one execution. Time consumed is cumulative time and share of tracked statement time, so a frequently used query may dominate even if one call is quick. A high cache hit is not proof that a query is fast. Do not read project-specific function names or measurements as universal benchmarks. Ask which query should be investigated first, then show the answer depends on user impact and total cost.',
+    deep:'The underlying pg_stat_statements statistics are cumulative since the last reset and group normalized statements, rather than representing one individual request or necessarily matching the Reports time filter. Rows processed counts rows returned or affected; Role is a PostgreSQL role, not the signed-in app user; Application depends on the client application_name. Query Performance lists successful slow-running statements, not timed-out statements, which require logs. For a candidate statement, inspect its plan and measure before and after a change. See docs/OBSERVABILITY-GUIDE.md for every column.',
+    source:['queryStats','reports','timeouts']
+  },
+  {
+    id:'obs-connections', chapter:'OBSERVABILITY', tag:'16 / OBSERVABILITY', title:'Connections: who is waiting for whom?',
+    lead:'A connection is a PostgreSQL session. It may be running SQL, waiting for work, or holding a transaction open.',
+    takeaway:'An idle transaction can hold a lock while another query waits. Trace the blocker, then close the demo transaction.', duration:220,
+    visual:'obs-connections', steps:['Connection','Active query','Idle transaction','Blocked query','Resolve'],
+    sql:`select pid, usename, application_name, state,\n       now() - coalesce(xact_start, query_start) as duration,\n       pg_blocking_pids(pid) as blocked_by, query\nfrom pg_stat_activity\nwhere datname = current_database()\n  and backend_type = 'client backend'\norder by xact_start nulls last;`,
+    notes:'Use the supplied Database Connections screenshot. Define all six cards: Connections is currently open database sessions versus the limit; Active Queries is SQL executing now; Idle in Transaction is an open transaction with no current statement; Blocked Queries are sessions waiting on a conflicting lock; Top Blocker points to a session causing waits; Longest Running highlights the oldest running work. In Sessions, explain State, Query/Session, Duration, Blocked By, plus PID, role and application. Demonstrate with separate SQL sessions in a disposable project using docs/OBSERVABILITY-DEMO.md. Opening another browser tab does not reliably add one database connection because the browser, API service and pooler are different layers.',
+    deep:'Postgres pg_stat_activity exposes session state. An idle connection is normal for a pool; idle in transaction can retain locks and delay cleanup. pg_blocking_pids(pid) finds direct blockers and chains may have a root blocker further upstream. One brief blocked query can be normal; a sustained wait, growing queue or user-facing latency deserves investigation. Never infer a blocker solely from long duration. The live dashboard is a snapshot and may include its own monitoring session. The runbook uses a demo table, timeout limits and ROLLBACK for cleanup.',
+    source:['connectionManagement','connect']
+  },
+  {
+    id:'obs-database', chapter:'OBSERVABILITY', tag:'17 / OBSERVABILITY', title:'Database: CPU, RAM, disk and I/O',
+    lead:'Postgres needs compute to execute queries, memory to work and cache pages, and disk to store durable data.',
+    takeaway:'A busy resource is a clue. Compare the chart with query load and user-visible latency.', duration:120,
+    visual:'obs-database', steps:['Memory','CPU','Disk capacity','Disk I/O'],
+    notes:'Use the supplied Database screenshot. Explain memory Used versus Cache + Buffers versus Free and Swap. Cache is useful memory, not automatically waste. Memory Commitment is memory promised to processes, compared with the commit limit; it is not the same as actual RAM used. CPU User is query/process work, System is kernel work, IOWait is time waiting on I/O, and Idle is spare time. Disk Usage means capacity occupied; Disk I/O means the rate of reads and writes. A chart spike alone is not enough to choose a bigger compute tier.',
+    deep:'The resource report contains time-series samples. Sustained swap or memory commitment near its limit can signal memory pressure; sustained CPU saturation with rising latency calls for workload diagnosis. Disk IOPS is operation rate rather than space used. Correlate with Query Performance, connections and application traffic before changing indexes, workload or compute. Some advanced telemetry and historical windows depend on plan.',
+    source:['reports','compute']
+  },
+  {
+    id:'obs-apis', chapter:'OBSERVABILITY', tag:'18 / OBSERVABILITY', title:'Requests, Data API and Auth',
+    lead:'A request passes through an API layer; sign-in is a separate Auth flow. Each has its own traffic and errors.',
+    takeaway:'Count, response speed and status codes tell you different things. Follow the route that owns the request.', duration:115,
+    visual:'obs-apis', steps:['API Gateway','Data API','Auth'],
+    notes:'Show the supplied API Gateway, Data API and Auth screenshots in sequence. Gateway: Requests by Geography, Total Requests, Response Errors, Response Speed and Network Traffic. Data API: PostgREST /rest/v1 requests, endpoint counts, errors, latency and bytes. Auth: sign-in attempts by type, sign-ups, password reset requests, errors by code and processing time. A 403 is a refusal, not proof the database is down; inspect its route and context. No data to show can mean no events in the selected period or reporting delay; it is not automatically a zero.',
+    deep:'An HTTP request is not one PostgreSQL connection, and API request latency includes more than SQL execution. Gateway, PostgREST and Auth reports describe different service boundaries. Status 4xx generally indicates a client/auth/permission outcome; 5xx indicates server-side failure, but investigate the actual log. Ingress is bytes received, egress is bytes sent; time range and filters affect charts.',
+    source:['reports','api','auth']
+  },
+  {
+    id:'obs-services', chapter:'OBSERVABILITY', tag:'19 / OBSERVABILITY', title:'Functions, Storage and Realtime',
+    lead:'The other product reports answer three simple questions: did code run, were files served, and were live events delivered?',
+    takeaway:'Watch the metric for the service that actually handles the feature.', duration:115,
+    visual:'obs-services', steps:['Edge Functions','Storage','Realtime'],
+    notes:'Show the supplied screenshots. Edge Functions: invocation count, status codes, execution time and region. Storage: request count, response speed, ingress/egress network traffic and request caching. Realtime: Connected Clients means WebSocket clients, not Postgres sessions; Broadcast Events are messages, Presence Events are online-state updates, Postgres Changes Events are delivered row changes. Also point to channel joins, payload size, database-to-broadcast lag and private-channel RLS execution time. A blank Realtime chart can mean no recent usage or delayed reporting, not necessarily a broken feature.',
+    deep:'Edge Function 403 responses are authorization outcomes and need endpoint/log context. Storage metrics describe the file service, not table bytes. One Realtime WebSocket may subscribe to multiple channels. Broadcast, Presence and Postgres Changes have distinct event semantics. Broadcast from Database Replication Lag measures median time from database commit to broadcast; private channel RLS execution times measure policy-check latency. See docs/OBSERVABILITY-GUIDE.md for the full glossary.',
+    source:['reports','realtimeReports','functions','storage']
+  },
+  {
+    id:'finale', chapter:'SHIP IT', tag:'20 / SHIP IT', title:'One connected system',
     lead:'The entire request path now fits in one picture.',
     takeaway:'Start with data and access rules, then add the services the product actually needs.', duration:80,
     visual:'finale', steps:['User','Auth','API + RLS','Postgres','Optional services'],
-    notes:'Recap the five ideas: Postgres at the core; Data API runs requests and OpenAPI describes them; Auth is identity; RLS is row permission; Storage, Realtime, Functions, Queues and Cron extend the app. Invite questions about a real application the audience is building.',
+    notes:'Recap the five ideas: Postgres at the core; Data API runs requests and OpenAPI describes them; Auth is identity; RLS is row permission; Storage, Realtime, Functions, Queues and Cron extend the app. Observability helps identify which part needs attention. Invite questions about a real application the audience is building.',
     deep:'The architecture is composable. Apps may connect through the generated API, custom services or direct SQL. Production quality comes from explicit authorization, versioned schema, tested queries and recovery planning.',
     source:['architecture','rls']
   }
 ];
 
 export const totalMinutes = Math.round(slides.reduce((sum, slide)=>sum+slide.duration,0)/60);
+
+// Definitions for the presenter's Observability screenshots. Rendered in the
+// Technical details panel, with longer teaching notes in OBSERVABILITY-GUIDE.md.
+export const metricGlossary = {
+  'obs-intro': [
+    ['Metrics','Numbers tracked over time, such as requests or CPU.'],
+    ['Logs','Records of individual events and errors.'],
+    ['Live sessions','Database connections and their current activity.']
+  ],
+  'obs-overview': [
+    ['Slow queries','A count that points to statements worth investigating.'],
+    ['Peak connections','Highest number of simultaneous database sessions in the selected period.'],
+    ['Disk usage','Share of storage capacity occupied.'],
+    ['Disk I/O','Read and write activity, separate from storage capacity.'],
+    ['Memory','RAM used by the database machine.'],
+    ['CPU','Compute activity on the database machine.'],
+    ['Service health','Traffic and warnings for Gateway, Database, PostgREST, Auth, Functions, Storage and Realtime.']
+  ],
+  'obs-query': [
+    ['Query','SQL statement or normalized statement group.'],
+    ['Time consumed','Total time spent running the statement and its share of tracked time.'],
+    ['Calls','Number of executions.'],
+    ['Max time','Slowest recorded call.'],
+    ['Mean time','Average duration per call.'],
+    ['Min time','Fastest recorded call.'],
+    ['Rows processed','Rows returned or affected; this is not the number of rows scanned.'],
+    ['Cache hit rate','Share of block accesses served from cache; a high rate does not prove the query is fast.'],
+    ['Role','PostgreSQL role running the query, usually not an individual app user.'],
+    ['Application','Client-reported application name when available.']
+  ],
+  'obs-connections': [
+    ['Connections','Open PostgreSQL sessions compared with the connection limit.'],
+    ['Active queries','Sessions currently executing SQL; an active query may be waiting.'],
+    ['Idle in transaction','Transaction remains open after its last statement; it may retain locks.'],
+    ['Blocked queries','Queries waiting for a conflicting lock.'],
+    ['Top blocker','Session identified as causing the most waits; inspect the full chain.'],
+    ['Longest running','Oldest running work in the current snapshot.'],
+    ['State','Current session state, such as active or idle.'],
+    ['Query · Session','Current or most recent SQL and identifying details.'],
+    ['Duration','How long the shown statement, state or transaction has lasted.'],
+    ['Blocked by','PID of a session this query waits for.'],
+    ['PID / Role / Application','Session ID, database role and client-reported name.'],
+    ['Root blockers','Filter for sessions at the start of blocking chains.']
+  ],
+  'obs-database': [
+    ['Memory used','RAM currently in use.'],
+    ['Cache + buffers','RAM holding reusable cached data.'],
+    ['Free / swap','Unused RAM / disk used as memory overflow.'],
+    ['Memory commitment / limit','Memory promised to processes compared with the commit limit.'],
+    ['CPU user / system','Time in database code / operating-system code.'],
+    ['CPU IOWait / IRQs / idle','Time waiting for I/O / handling interrupts / unused.'],
+    ['Disk usage','Storage capacity occupied.'],
+    ['Disk I/O / IOPS','Read-write activity / operations per second.']
+  ],
+  'obs-apis': [
+    ['Gateway requests by geography','Approximate origin of incoming requests.'],
+    ['Gateway total requests','Number of requests during the selected period.'],
+    ['Response errors','Failed HTTP outcomes; inspect status, route and logs.'],
+    ['Response speed','HTTP response time, including work outside SQL.'],
+    ['Network ingress / egress','Bytes received / sent by the service.'],
+    ['Data API endpoint / count','Generated REST route and number of calls.'],
+    ['Data API status / speed','HTTP outcome and route response time.'],
+    ['Auth activity / sign-in type','Authentication actions and the method or provider used.'],
+    ['Sign-ups / password resets','Registration and recovery requests.'],
+    ['Auth errors by code','Failures grouped by error or HTTP status.'],
+    ['Sign-in processing time / percentiles','Time to complete sign-in; percentiles show slower tail requests.']
+  ],
+  'obs-services': [
+    ['Edge Function invocations','Number of times function code ran.'],
+    ['Edge Function status codes','HTTP outcomes, such as 200 or 403.'],
+    ['Edge Function execution time / region','Processing duration / location of execution.'],
+    ['Storage total requests / response speed','File-service request volume / response time.'],
+    ['Storage traffic / billable egress','Bytes received or sent / billing-related outbound traffic.'],
+    ['Storage request caching','Cache behavior for file requests.'],
+    ['Realtime connected clients','WebSocket clients, not PostgreSQL sessions.'],
+    ['Broadcast / Presence events','Channel messages / online-state changes.'],
+    ['Postgres Changes events','Delivered database row-change messages.'],
+    ['Channel joins / payload size','Subscription arrivals / event-message size.'],
+    ['Broadcast from DB replication lag','Delay between database commit and broadcast.'],
+    ['Private-channel RLS execution time','Time to check permission for a private channel subscription.']
+  ]
+};
