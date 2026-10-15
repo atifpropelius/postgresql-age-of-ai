@@ -23,7 +23,7 @@ Open <http://127.0.0.1:4173/>. For a static build, run `npm run build`; the depl
 - **N:** speaker notes
 - **Esc:** close a panel
 
-The **Play flow** button advances an illustration automatically. Interactive scenes are conceptual demonstrations, clearly labeled where they simulate a result. Real SQL and SDK examples are in the technical details panels; the deck does not connect to a live Supabase project. Product claims link to official Supabase docs; see [SOURCES.md](docs/SOURCES.md).
+Interactive scenes advance one step at a time and are conceptual demonstrations, clearly labeled where they simulate a result. Real SQL and SDK examples are in the technical details panels; the deck does not connect to a live Supabase project. Product claims link to official Supabase docs; see [SOURCES.md](docs/SOURCES.md).
 
 For the Observability section, use [OBSERVABILITY-GUIDE.md](docs/OBSERVABILITY-GUIDE.md) for every dashboard label and [OBSERVABILITY-DEMO.md](docs/OBSERVABILITY-DEMO.md) for a safe, optional live lock/wait demonstration. The in-slide dashboard views are illustrative reconstructions based on the screenshots supplied by the presenter. They contain no live project data.
 

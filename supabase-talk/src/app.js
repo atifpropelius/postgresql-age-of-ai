@@ -6,8 +6,6 @@ const params = new URLSearchParams(location.search);
 const state = {
   index: Math.max(0, Math.min(slides.length - 1, Number(params.get('slide') || 1) - 1 || 0)),
   step: 0,
-  playing: false,
-  timer: null,
   overlay: null,
   theme: localStorage.getItem('supabase-talk-theme') || 'dark'
 };
@@ -145,7 +143,7 @@ function renderOverlay() {
 
 function render() {
   const slide = current();
-  $('#stage').innerHTML = `<section class="slide slide-${slide.id}" aria-label="Slide ${state.index+1}: ${escapeHtml(slide.title)}"><div class="slide-head"><div class="eyebrow">${escapeHtml(slide.tag)}</div><h1>${escapeHtml(slide.title)}</h1><p class="lead">${escapeHtml(slide.lead)}</p></div><div class="slide-main"><div class="visual-panel" aria-label="Interactive illustration"><div class="illustration-label">INTERACTIVE ILLUSTRATION <span>· ${state.step+1} / ${slide.steps.length}</span></div><div class="visual-content" aria-live="polite">${visual(slide)}</div></div><aside class="slide-side"><div class="side-kicker">THE IDEA</div><p class="takeaway">${escapeHtml(slide.takeaway)}</p><div class="step-list"><span class="micro-label">FOLLOW THE FLOW</span>${slide.steps.map((step,index)=>`<button data-step="${index}" class="${highlight(index)}"><small>${String(index+1).padStart(2,'0')}</small>${escapeHtml(step)}</button>`).join('')}</div></aside></div><div class="slide-foot"><div class="scene-controls"><button data-action="reset" aria-label="Restart animation">↺</button><button data-action="play" class="play-button">${state.playing?'Pause':'Play flow'} ${state.playing?'Ⅱ':'▶'}</button><button data-action="step">Next step →</button></div><div class="slide-source"><span>FACT CHECKED AGAINST OFFICIAL DOCS</span> ${sourceLinks(slide)}</div></div></section>`;
+  $('#stage').innerHTML = `<section class="slide slide-${slide.id}" aria-label="Slide ${state.index+1}: ${escapeHtml(slide.title)}"><div class="slide-head"><div class="eyebrow">${escapeHtml(slide.tag)}</div><h1>${escapeHtml(slide.title)}</h1><p class="lead">${escapeHtml(slide.lead)}</p></div><div class="slide-main"><div class="visual-panel" aria-label="Interactive illustration"><div class="illustration-label">INTERACTIVE ILLUSTRATION <span>· ${state.step+1} / ${slide.steps.length}</span></div><div class="visual-content" aria-live="polite">${visual(slide)}</div></div><aside class="slide-side"><div class="side-kicker">THE IDEA</div><p class="takeaway">${escapeHtml(slide.takeaway)}</p><div class="step-list"><span class="micro-label">FOLLOW THE FLOW</span>${slide.steps.map((step,index)=>`<button data-step="${index}" class="${highlight(index)}"><small>${String(index+1).padStart(2,'0')}</small>${escapeHtml(step)}</button>`).join('')}</div></aside></div><div class="slide-foot"><div class="scene-controls"><button data-action="reset" aria-label="Restart illustration">↺</button><button data-action="step">Next step →</button></div><div class="slide-source"><span>FACT CHECKED AGAINST OFFICIAL DOCS</span> ${sourceLinks(slide)}</div></div></section>`;
   $('#chapterName').textContent = slide.chapter;
   $('#counter').textContent = `${String(state.index+1).padStart(2,'0')} / ${slides.length}`;
   $('#talkTime').textContent = `≈ ${totalMinutes} MIN TALK`;
@@ -158,20 +156,10 @@ function render() {
   renderOverlay();
 }
 
-function stop() { if (state.timer) clearInterval(state.timer); state.timer = null; state.playing = false; }
-function go(index) { stop(); state.index = Math.max(0,Math.min(slides.length-1,index)); state.step = 0; state.overlay = null; render(); $('#stage').focus({preventScroll:true}); }
-function stepTo(index) { stop(); state.step = Math.max(0,Math.min(current().steps.length-1,index)); render(); }
+function go(index) { state.index = Math.max(0,Math.min(slides.length-1,index)); state.step = 0; state.overlay = null; render(); $('#stage').focus({preventScroll:true}); }
+function stepTo(index) { state.step = Math.max(0,Math.min(current().steps.length-1,index)); render(); }
 function nextStep() { if (state.step < current().steps.length-1) stepTo(state.step+1); else if (state.index < slides.length-1) go(state.index+1); }
-function play() {
-  if (state.playing) { stop(); render(); return; }
-  if (state.step===current().steps.length-1) state.step=0;
-  state.playing = true; render();
-  state.timer = setInterval(()=>{
-    if (state.step < current().steps.length-1) { state.step++; render(); }
-    else { stop(); render(); }
-  }, 1500);
-}
-function toggleOverlay(name) { stop(); state.overlay=state.overlay===name?null:name; render(); }
+function toggleOverlay(name) { state.overlay=state.overlay===name?null:name; render(); }
 
 document.addEventListener('click', async (event)=>{
   const button = event.target.closest('button,[data-action]');
@@ -183,7 +171,6 @@ document.addEventListener('click', async (event)=>{
   if (action==='close') { state.overlay=null; render(); return; }
   if (action==='reset') { stepTo(0); return; }
   if (action==='step') { nextStep(); return; }
-  if (action==='play') { play(); return; }
   if (action==='copy') {
     try { await navigator.clipboard.writeText(current().sql||current().code||''); button.textContent='Copied'; setTimeout(()=>{if(button.isConnected)button.textContent='Copy';},1500); }
     catch { button.textContent='Use manual copy'; }
@@ -199,7 +186,7 @@ $('#themeBtn').addEventListener('click',()=>{state.theme=state.theme==='dark'?'l
 document.addEventListener('keydown',(event)=>{
   if (event.target.closest('input,textarea,select,[contenteditable]')) return;
   const key=event.key.toLowerCase();
-  if (key==='escape') { state.overlay=null; stop(); render(); return; }
+  if (key==='escape') { state.overlay=null; render(); return; }
   if (key==='o') { toggleOverlay('overview'); return; }
   if (key==='d') { toggleOverlay('tech'); return; }
   if (key==='n') { toggleOverlay('notes'); return; }
