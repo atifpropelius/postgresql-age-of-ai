@@ -11,7 +11,10 @@ export const sources = {
   vectors: 'https://supabase.com/docs/guides/ai/vector-columns',
   local: 'https://supabase.com/docs/guides/local-development/cli-workflows',
   connect: 'https://supabase.com/docs/guides/database/connecting-to-postgres',
-  compute: 'https://supabase.com/docs/guides/platform/compute-and-disk'
+  compute: 'https://supabase.com/docs/guides/platform/compute-and-disk',
+  funding: 'https://www.prnewswire.com/news-releases/supabase-raises-500m-at-10-5b-to-accelerate-lead-in-agentic-infrastructure-302791787.html',
+  adoption: 'https://supabase.com/blog/series-f',
+  billing: 'https://supabase.com/docs/guides/platform/billing-on-supabase'
 };
 
 export const slides = [
@@ -20,9 +23,9 @@ export const slides = [
     lead:'One small app. One connected backend. The engineering decisions that make it safe to ship.',
     takeaway:'Supabase packages a Postgres database with the services applications commonly need.', duration:70,
     visual:'opening', steps:['Database','Auth','API','Storage','Realtime'],
-    notes:'Start with a taskboard example. It needs users, private tasks, attachments and live updates. We will build the mental model one request at a time.',
-    deep:'Supabase is an open source platform built around Postgres. Its services are separate processes that share one project database; it is not a new database engine.',
-    source:['architecture']
+    notes:'Open with scale, then move to the taskboard. In June 2026, Supabase reported nearly 10 million developers building on it and a $10.5 billion post-money valuation after its Series F. The developer figure does not mean 10 million paying customers. Supabase also reported more than 250,000 customers, without breaking out how many pay. Its plans include Free, Pro, Team and Enterprise. The example app needs users, private tasks, attachments and live updates.',
+    deep:'Supabase is an open source platform built around Postgres. Its services are separate processes that share one project database; it is not a new database engine. The June 2026 $500 million round had a $10 billion pre-money and $10.5 billion post-money valuation. The valuation is an investor pricing of the company, not annual revenue. The reported developer and customer counts are company figures; the cited sources do not disclose a paying-customer count. Paid plans charge a subscription plus applicable usage and compute costs.',
+    source:['architecture','adoption','funding','billing']
   },
   {
     id:'stack', chapter:'THE IDEA', tag:'02 / THE IDEA', title:'What is Supabase?',

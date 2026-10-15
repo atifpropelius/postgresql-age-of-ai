@@ -1,10 +1,11 @@
 # Supabase content and source map
 
-Reviewed: 2026-10-12. The official documentation is the source of record. The talk has no live project connection; illustrated users, tasks, and request flows are examples.
+Reviewed: 2026-10-15. The official documentation and Supabase's own announcement are the source of record. The talk has no live project connection; illustrated users, tasks, and request flows are examples.
 
 | Topic | Main screens | Official source | Confidence / limit |
 | --- | --- | --- | --- |
 | Platform architecture, Postgres core, service boundaries | 1, 2, 4, 14 | [Architecture](https://supabase.com/docs/guides/getting-started/architecture) | High. Diagram is simplified for teaching. |
+| Adoption, valuation, and business model | 1 | [Series F announcement](https://supabase.com/blog/series-f), [Supabase press release](https://www.prnewswire.com/news-releases/supabase-raises-500m-at-10-5b-to-accelerate-lead-in-agentic-infrastructure-302791787.html), [Billing](https://supabase.com/docs/guides/platform/billing-on-supabase) | High for Supabase-reported figures. In June 2026 the company said nearly 10M developers built on Supabase, more than 250K customers, and $10.5B post-money valuation. It did not disclose how many customers pay. Developer count, customer count, paying count, valuation, and revenue are different measures. |
 | Database, schema, tables and keys | 5 | [Database overview](https://supabase.com/docs/guides/database/overview) | High. SQL example is illustrative and not run against a Supabase project. |
 | Data API and client access | 6 | [Data API](https://supabase.com/docs/guides/api), [Connecting to Postgres](https://supabase.com/docs/guides/database/connecting-to-postgres) | High. Request example omits deployment-specific hostname. |
 | Auth identity and JWT | 7 | [Auth architecture](https://supabase.com/docs/guides/auth/architecture) | High. |
