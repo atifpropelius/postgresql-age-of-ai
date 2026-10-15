@@ -81,9 +81,9 @@ export const slides = [
     id:'security', chapter:'TRUST', tag:'07 / TRUST', title:'Auth says who. RLS says which rows.',
     lead:'Sign-in creates identity; a database policy decides what that identity may read or change.',
     takeaway:'The publishable key is safe for clients only when grants and RLS protect the data.', duration:175,
-    visual:'security', steps:['Asha','Atif'],
+    visual:'security', steps:['Muskan','Atif'],
     sql:`alter table public.tasks enable row level security;\n\ncreate policy "read own tasks" on public.tasks\nfor select to authenticated\nusing ((select auth.uid()) = owner_id);`,
-    notes:'Switch between Asha and Atif. The same query returns different task rows because the policy is checked inside Postgres. Explain that a secret or service-role key must never be shipped to the browser.',
+    notes:'Switch between Muskan and Atif. The same query returns different task rows because the policy is checked inside Postgres. Explain that a secret or service-role key must never be shipped to the browser.',
     deep:'RLS is PostgreSQL row-level security. Supabase Auth supplies JWT identity, and auth.uid() exposes the current user ID inside policy expressions. A SELECT policy alone does not grant INSERT/UPDATE/DELETE; add operation-specific policies. Grants are checked before RLS. Views can bypass underlying table RLS unless configured carefully, such as security_invoker on supported Postgres versions.',
     source:['auth','rls','keys']
   },
@@ -92,7 +92,7 @@ export const slides = [
     lead:'Storage handles file bytes; Postgres keeps bucket and object metadata. Policies govern access.',
     takeaway:'Use Storage APIs for file operations and RLS for private bucket access.', duration:110,
     visual:'storage', steps:['Upload','Policy','Metadata','Object'],
-    code:`await supabase.storage\n  .from('task-files')\n  .upload('users/asha/brief.pdf', file);`,
+    code:`await supabase.storage\n  .from('task-files')\n  .upload('users/muskan/brief.pdf', file);`,
     notes:'A PDF is not stored as a giant cell in our tasks table. A Storage request checks authorization, writes metadata and places the file bytes in object storage.',
     deep:'Storage metadata lives in the storage schema. Actual object bytes live in an object storage provider. Use the Storage API for upload, move and delete: direct SQL edits to storage metadata do not manage the underlying object. Private buckets use policies on storage.objects.',
     source:['storage']
