@@ -30,7 +30,7 @@ export const slides = [
     title:'What does a Supabase project provide?',
     lead:'PostgreSQL is the data core. The other capabilities have separate jobs.',
     columns:['Component','One-line definition','Typical task-app use'],
-    rows:[['PostgreSQL','Database that stores rows and executes SQL.','Store tasks and permissions.'],['Data API / PostgREST','HTTP API generated over exposed database objects.','Read or create task rows.'],['Authentication','Service that identifies users and issues sessions.','Sign Atif in.'],['Storage','File service backed by object storage and metadata.','Upload a PDF.'],['Realtime','Service that delivers live events over WebSockets.','Show a task update.'],['Edge Functions','Hosted server-side TypeScript request handlers.','Call a mail provider.'],['Queues','Durable messages in Postgres, powered by pgmq.','Wait for an email worker.'],['Cron','Scheduled jobs in Postgres, powered by pg_cron.','Run a daily reminder.'],['Functions / triggers','SQL routines and event-driven database actions.','Keep a related update atomic.'],['Extensions','Installable PostgreSQL capabilities.','Add pgmq or pg_cron.']],
+    rows:[['PostgreSQL','Database that stores rows and executes SQL.','Store tasks and permissions.'],['Data API / PostgREST','HTTP API generated over exposed database objects.','Read or create task rows.'],['Authentication','Service that identifies users and issues sessions.','Sign Atif in.'],['Storage','File service backed by object storage and metadata.','Upload a PDF.'],['Realtime','Service that delivers live events over WebSockets.','Show a task update.'],['Edge Functions','Hosted server-side TypeScript request handlers.','Call a mail provider.'],['Compute (private alpha)','Long-running Linux services or jobs beside Postgres.','Evaluate a task worker; no production use yet.'],['Queues','Durable messages in Postgres, powered by pgmq.','Wait for an email worker.'],['Cron','Scheduled jobs in Postgres, powered by pg_cron.','Run a daily reminder.'],['Functions / triggers','SQL routines and event-driven database actions.','Keep a related update atomic.'],['Extensions','Installable PostgreSQL capabilities.','Add pgmq or pg_cron.']],
     takeaway:'These pieces work together; they do not all run inside one process.'
   },
   {
@@ -38,7 +38,7 @@ export const slides = [
     title:'The central question: what runs where?',
     lead:'Follow Atif as he signs in, creates a task, attaches a PDF and sees an update.',
     columns:['Action','Entry point','Execution / destination'],
-    rows:[['Sign in','Auth API','Auth service; identity data in project database'],['Create or read task','Data API','Postgres validates, applies RLS and stores rows'],['Upload PDF','Storage API','File bytes in object storage; metadata in Postgres'],['Receive update','Realtime','Service pushes an event to subscribed clients'],['Send email','Edge Function','Hosted function calls external mail provider'],['Update related data','RPC / trigger','Postgres executes a function or trigger'],['Process queued work','Queue consumer','External worker reads a Postgres-backed queue']],
+    rows:[['Sign in','Auth API','Auth service; identity data in project database'],['Create or read task','Data API','Postgres validates, applies RLS and stores rows'],['Upload PDF','Storage API','File bytes in object storage; metadata in Postgres'],['Receive update','Realtime','Service pushes an event to subscribed clients'],['Send email','Edge Function','Hosted function calls external mail provider'],['Update related data','RPC / trigger','Postgres executes a function or trigger'],['Process queued work','Queue consumer','External worker today; Compute is private alpha']],
     takeaway:'An API request, a database function and a background worker run in different places.'
   },
   {
@@ -56,9 +56,19 @@ export const slides = [
     title:'Where should application logic run?',
     lead:'Place work where its data, trust boundary and timing make sense.',
     columns:['Place','Use it for','Example · limitation'],
-    rows:[['Database function / RPC','Logic near rows and transactions.','Create task + audit row · avoid long network calls.'],['Trigger','Automatic action invoked by a defined database event.','Stamp an audit row · hidden side effects need care.'],['Edge Function','TypeScript HTTP code in a Deno-compatible runtime.','Mail API · Express/Hono routing is optional; log failures.'],['External backend','Dedicated services and custom infrastructure.','Complex workflow · you operate the service.'],['Worker','Reliable work after the request returns.','Send queued email · needs consumer and retry plan.']],
+    rows:[['Database function / RPC','Logic near rows and transactions.','Create task + audit row · avoid long network calls.'],['Trigger','Automatic action invoked by a defined database event.','Stamp an audit row · hidden side effects need care.'],['Edge Function','TypeScript HTTP code in a Deno-compatible runtime.','Mail API · Express/Hono routing is optional; log failures.'],['Supabase Compute (alpha)','Long-running Linux API or worker beside Postgres.','Can host a full backend in principle; internal evaluation only today.'],['External backend','Production server you deploy and operate elsewhere.','NestJS on EC2 or Render for a long-running service today.'],['Queue worker','Reliable work after the request returns.','Send queued email · needs consumer and retry plan.']],
     example:'A task read can use the Data API. For email, keep the secret in an Edge Function; validate input and return useful errors.',
-    takeaway:'RPC executes in PostgreSQL. An Edge Function executes in a separate runtime.'
+    takeaway:'RPC runs in Postgres. Edge Functions and Compute run separately; Compute is not production-ready yet.'
+  },
+  {
+    id:'gateway', section:'ARCHITECTURE', duration:120, kind:'edge-gateway',
+    title:'A gateway before expensive requests',
+    lead:'An optional Cloudflare Worker can reject abusive traffic before it reaches selected Supabase endpoints.',
+    stages:[['Client','Task app request'],['Cloudflare Worker','api.example.com · rate check'],['Supabase API / Edge Function','Receives allowed request'],['PostgreSQL','Runs permitted data work']],
+    definitions:[['Cloudflare Worker','Code at Cloudflare’s edge; a separate service from Supabase.'],['Custom domain','Your hostname, such as api.example.com, routed to that Worker.'],['Rate limit','A rule that rejects requests after a chosen threshold.'],['Worker KV','Distributed key-value storage; not a strict global rate counter.']],
+    cost:'As of Oct 2026: Free has 100,000 requests/day and 10 ms CPU/request. Paid starts at $5/month per account, plus possible usage charges.',
+    caution:'Only routed traffic passes this gate. Secure direct Supabase endpoints, verify identity, keep secrets server-side, and enforce Auth + RLS.',
+    takeaway:'Use a Worker for a branded API entry point and abuse filtering; it does not replace Supabase authorization.'
   },
   {
     id:'migrations', section:'SHIP', duration:165, kind:'workflow',
@@ -89,7 +99,7 @@ export const slides = [
     takeaway:'The closest region is a starting point, not a universal answer.'
   },
   {
-    id:'dashboard-start', section:'STUDIO', duration:100, kind:'dashboard',
+    id:'dashboard-start', section:'STUDIO', duration:80, kind:'dashboard',
     title:'Open the right project, then inspect data',
     lead:'These first three menu areas help you find the project, see rows and run a query.',
     path:'FIND THE PROJECT → INSPECT THE TASK',
@@ -99,7 +109,7 @@ export const slides = [
     takeaway:'Confirm the project first; use Table Editor to inspect and SQL Editor for deliberate queries.'
   },
   {
-    id:'dashboard-data', section:'STUDIO', duration:100, kind:'dashboard',
+    id:'dashboard-data', section:'STUDIO', duration:80, kind:'dashboard',
     title:'Find database rules, users and files',
     lead:'A task row, a signed-in identity and an uploaded PDF have different homes.',
     path:'ROW → IDENTITY → FILE',
@@ -109,17 +119,17 @@ export const slides = [
     takeaway:'Database decides row access, Auth supplies identity, and Storage serves files.'
   },
   {
-    id:'dashboard-runtime', section:'STUDIO', duration:100, kind:'dashboard',
-    title:'See server code, capacity and live events',
-    lead:'These areas show work outside a normal table read.',
-    path:'SERVER CODE → DATABASE CAPACITY → LIVE DELIVERY',
+    id:'dashboard-runtime', section:'STUDIO', duration:80, kind:'dashboard',
+    title:'See server code, Compute and live events',
+    lead:'Edge Functions and the new Compute service run outside PostgreSQL.',
+    path:'REQUEST CODE → LONG-RUNNING SERVICE → LIVE DELIVERY',
     columns:['Dashboard section','What you get','When Atif opens it'],
-    rows:[['Edge Functions','Deployments, invocations, logs and server-side secrets.','Trace a failed task-email call.'],['Compute','Database size, CPU, memory and disk capacity controls.','Check sustained load before resizing.'],['Realtime','Broadcast, Presence and Postgres Changes channels and reports.','Find why another task screen stayed stale.']],
-    caution:'An Edge Function is separate from a Postgres RPC. Resizing compute changes cost; Realtime delivery needs configuration.',
-    takeaway:'A function error, a busy database and a missed live event need different checks.'
+    rows:[['Edge Functions','Request handlers, deployments, invocations and logs.','Trace a failed task-email call.'],['Compute (private alpha)','Linux API services and background jobs beside Postgres.','See the waitlist; this project has no access yet.'],['Realtime','Broadcast, Presence and Postgres Changes channels and reports.','Find why another task screen stayed stale.']],
+    caution:'Compute is for internal evaluation only today, not production. Database CPU/RAM sizing is a separate setting; Realtime delivery needs configuration.',
+    takeaway:'For a production long-running backend today, keep using suitable external hosting.'
   },
   {
-    id:'dashboard-diagnose', section:'STUDIO', duration:100, kind:'dashboard',
+    id:'dashboard-diagnose', section:'STUDIO', duration:80, kind:'dashboard',
     title:'Find why a request failed or slowed down',
     lead:'Use recommendations, trends and individual events together.',
     path:'FINDING → TREND → EVENT',
@@ -129,7 +139,7 @@ export const slides = [
     takeaway:'Observability shows a pattern; Logs help identify the specific event behind it.'
   },
   {
-    id:'dashboard-configure', section:'STUDIO', duration:100, kind:'dashboard',
+    id:'dashboard-configure', section:'STUDIO', duration:80, kind:'dashboard',
     title:'Connect tools and configure the project',
     lead:'The final menu areas change how this project connects to other systems and clients.',
     path:'EXTERNAL TOOL → PROJECT CONFIGURATION',
@@ -139,11 +149,11 @@ export const slides = [
     takeaway:'Next, use organization Usage and Billing to see what these services consume.'
   },
   {
-    id:'usage', section:'OPERATE', duration:260, kind:'usage',
+    id:'usage', section:'OPERATE', duration:240, kind:'usage',
     title:'Read the Usage page before costs surprise you',
     lead:'Usage is measured activity. An allowance is the amount included in a plan; overage rules differ by metric.',
     snapshot:[['Edge invocations','199,095 / 2,000,000','function calls'],['Egress','0.79 / 250 GB','outgoing data'],['Log ingestion','3.07 / 20 GB','collected logs']],
-    metrics:[['Egress','GB sent out; big downloads increase it.'],['Cached egress','GB served from CDN cache hits.'],['Storage size','GB of stored file objects.'],['Database disk','GB of database disk used or provisioned; read the chart label.'],['MAU','Distinct Auth users active in a billing period.'],['Edge invocations','Number of function executions.'],['Realtime messages','Messages delivered to subscribers.'],['Peak connections','Highest simultaneous Realtime clients.'],['Log ingestion','GB of logs collected.'],['Log query','GB of log data scanned by searches.'],['Compute hours','Hours project compute runs at its selected size.']],
+    metrics:[['Egress','GB sent out; big downloads increase it.'],['Cached egress','GB served from CDN cache hits.'],['Storage size','GB of stored file objects.'],['Database disk','GB of database disk used or provisioned; read the chart label.'],['MAU','Distinct Auth users active in a billing period.'],['Edge invocations','Number of function executions.'],['Realtime messages','Messages delivered to subscribers.'],['Peak connections','Highest simultaneous Realtime clients.'],['Log ingestion','GB of logs collected.'],['Log query','GB of log data scanned by searches.'],['Database compute hours','Hours the Postgres instance runs at its selected size.']],
     spendCap:'Pro defaults to ON. Turning it OFF permits billable overages for covered usage; keeping it ON may restrict usage at quota. Compute and branch compute remain billable.',
     example:'A PDF repeatedly downloaded without caching can raise egress while storage size barely changes.',
     takeaway:'Before changing Spend Cap, review Usage and Upcoming Invoice. It does not cap the whole bill.'

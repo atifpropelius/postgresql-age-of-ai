@@ -9,7 +9,7 @@ Use an existing, disposable or sanitized demo project for a live walkthrough. Do
 1. Confirm the task demo has a small `public.tasks` table with `id`, `owner_id`, `title` and `done`, a synthetic Auth user named **Atif**, a **private** `task-files` bucket, and a reviewed migration file in the demo repository. These are example requirements, not instructions to alter production.
 2. If you plan a live Data API request, sign in through the demo application as Atif beforehand. Check that the returned task belongs to that demo identity. The SQL Editor runs with different privileges and cannot prove a browser user's RLS behavior.
 3. Prepare a sanitized Edge Function error or an intentionally failing disposable-demo invocation, and know where to find its **Invocations** and **Logs**. Do not trigger a failure in a shared project.
-4. Open presentation slide 18 and the demo dashboard in separate tabs. Zoom so one line of data and each location label is readable from the back of the room. Close tabs with credentials, real messages or customer data.
+4. Open presentation slide 19 and the demo dashboard in separate tabs. Zoom so one line of data and each location label is readable from the back of the room. Close tabs with credentials, real messages or customer data.
 5. Test the [standalone fallback viewer](../assets/demo-fallback/index.html) without network access. It contains six sanitized screenshots of the deck's prepared illustration and works when opened as a local file. It must still communicate all six locations below.
 
 ## Six stops, 4:30 total

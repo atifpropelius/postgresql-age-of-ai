@@ -14,7 +14,7 @@ The adoption and valuation claims are time-sensitive company statements. Present
 
 ## Production-practice source checks
 
-The 19-slide talk adds a compact best-practices slide after Usage. These are practical operational lessons, with source limits:
+The 20-slide talk includes a compact best-practices slide after Usage. These are practical operational lessons, with source limits:
 
 | Practice | Verified point and qualification | Official source |
 | --- | --- | --- |
@@ -25,22 +25,29 @@ The 19-slide talk adds a compact best-practices slide after Usage. These are pra
 | Use official docs first | The [Supabase Developer Docs](https://supabase.com/docs) are the primary source for current commands and product behavior. Dashboard screenshots and third-party guides may be stale. | [Supabase Developer Docs](https://supabase.com/docs) |
 | Use familiar HTTP routing where useful | Edge Functions use TypeScript on a Deno runtime. Supabase documents optional Express, Oak and Hono routing inside a function; this is not a Node/EC2 deployment. | [Edge Functions quickstart](https://supabase.com/docs/guides/functions/quickstart), [routing](https://supabase.com/docs/guides/functions/routing) |
 
-## Optional engineering extension: throttle requests before Supabase
+## The new Supabase Compute product versus database compute
 
-One optional presenter note, only if time remains:
+Supabase's [October 2026 announcement](https://supabase.com/blog/select-2026-build-anything) describes a new Compute product for long-running web services, background jobs and agent sandboxes next to project data. It is different from **database compute**, the CPU/RAM/disk capability used by each project's Postgres instance and counted under [database compute usage](https://supabase.com/docs/guides/platform/manage-your-usage/compute). It is also different from Edge Functions, which run separately in a managed function runtime.
+
+The [Compute product page](https://supabase.com/compute) labels this feature **Private Alpha** and offers a waitlist. Its terms say access is for **internal evaluation only**, not production workloads or end customers, and that the preview may change or be discontinued. At this review, only projects created in `us-west-2` can access the private alpha. The user's dashboard screenshot says the project has **no access yet**. Therefore, the audience talk can explain why a managed long-running service might eventually replace an external application server for some workloads, but it must not recommend a production migration or claim general availability.
+
+## Slide 8: throttle requests before Supabase
+
+Use this as a brief architecture example, not a Cloudflare deployment tutorial:
 
 ```text
-Client → Cloudflare Worker rate check → Supabase Edge Function or protected API → Postgres
-             429 when over limit
+Client → api.example.com → Cloudflare Worker rate check → Supabase Edge Function or protected API → Postgres
+                                    └─ 429 when over limit
 ```
 
-- **Cloudflare Worker:** a separate platform's edge-executed server-side code; it can inspect and reject a request before forwarding it to a Supabase endpoint. [Cloudflare Workers pricing](https://developers.cloudflare.com/workers/platform/pricing/)
+- **Cloudflare Worker:** a separate platform's edge-executed server-side code; it can inspect and reject a request before forwarding it to a Supabase endpoint. It is not a native Supabase component. [Cloudflare Workers pricing](https://developers.cloudflare.com/workers/platform/pricing/)
+- **Cloudflare Worker Custom Domain:** maps an owned domain or subdomain such as `api.example.com` to a Worker in an **active Cloudflare zone**. This is a proxy entry point, not Supabase's own [paid Custom Domains add-on](https://supabase.com/docs/guides/platform/custom-domains). Cloudflare creates the needed DNS record and certificate for the Worker. It does not automatically rebrand all Supabase services, Auth callbacks, Storage URLs or WebSockets; test each route you proxy. [Worker Custom Domains](https://developers.cloudflare.com/workers/configuration/routing/custom-domains/)
 - **Workers KV:** Cloudflare's distributed key-value store for read-heavy, cache-friendly data. It is eventually consistent and lacks atomic read-modify-write transactions, so a KV counter is **not** a strict global rate limiter. [How KV works](https://developers.cloudflare.com/kv/concepts/how-kv-works/), [KV pricing](https://developers.cloudflare.com/kv/platform/pricing/)
 - **Workers Rate Limiting binding:** a rate-check API called in Worker code. Its limits are per Cloudflare location and its counters are intentionally approximate and eventually consistent. Good for shedding abusive traffic; not exact billing or a strict global quota. Wrangler 4.36.0 or later is required by the current guide. [Rate Limiting binding](https://developers.cloudflare.com/workers/runtime-apis/bindings/rate-limit/)
 - **Durable Object:** a Cloudflare coordination primitive to consider when the application needs a stronger per-key single coordinator than KV or an approximate edge counter. Validate its design and limits before using it for a global policy. [How KV works](https://developers.cloudflare.com/kv/concepts/how-kv-works/), [Durable Objects pricing](https://developers.cloudflare.com/durable-objects/platform/pricing/)
 
-As documented on 16 October 2026, Workers Free allows **100,000 Worker requests per day** and **10 ms CPU time per request**. KV Free separately allows **100,000 reads and 1,000 writes per day**. These are account/plan limits with separate reset and failure rules, not unlimited free capacity or Supabase allowances. Recheck before quoting. [Workers limits](https://developers.cloudflare.com/workers/platform/limits/), [KV pricing](https://developers.cloudflare.com/kv/platform/pricing/)
+As documented on 16 October 2026, Workers Free allows **100,000 Worker requests per day** and **10 ms CPU time per invocation**. Workers Paid has a **$5 USD per account per month minimum**, includes a larger request/CPU allotment and charges for usage beyond it; $5 is not a hard monthly cap. KV Free separately allows **100,000 reads and 1,000 writes per day**. These are Cloudflare plan limits with separate reset and failure rules, not unlimited free capacity or Supabase allowances. Recheck before quoting. [Workers pricing](https://developers.cloudflare.com/workers/platform/pricing/), [KV pricing](https://developers.cloudflare.com/kv/platform/pricing/)
 
-For a real design, rate-limit by a server-verified identity or carefully chosen route/key, **not a client-supplied user ID**. Keep Supabase and third-party credentials on the server. Make sure the target endpoint cannot be reached directly to bypass the Worker; otherwise the edge check protects only traffic that happens to use that route. Continue enforcing Supabase Auth, grants, and RLS inside the application and database. IP-only limits can affect unrelated users sharing an address. [Rate Limiting binding](https://developers.cloudflare.com/workers/runtime-apis/bindings/rate-limit/), [Securing the Data API](https://supabase.com/docs/guides/api/securing-your-api)
+For a real design, rate-limit by a server-verified identity or carefully chosen route/key, **not a client-supplied user ID**. Keep Supabase and third-party credentials on the server. The original Supabase URL can remain reachable; if a client can call it directly, they can bypass the Worker, so the gateway must not be described as complete origin protection without additional controls. Continue enforcing Supabase Auth, grants, and RLS inside the application and database. IP-only limits can affect unrelated users sharing an address. [Rate Limiting binding](https://developers.cloudflare.com/workers/runtime-apis/bindings/rate-limit/), [Securing the Data API](https://supabase.com/docs/guides/api/securing-your-api)
 
-**Decision for the main talk:** Keep this in presenter notes. It is a useful example of an external component but is outside the core “what runs where” flow and would displace higher-priority production concepts in a 40-minute presentation.
+**Decision for the main talk:** Show the route and one production caution on slide 8. Keep pricing, KV consistency, identity design and bypass details here and in the presenter guide; the talk remains 40 minutes.

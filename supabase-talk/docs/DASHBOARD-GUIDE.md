@@ -39,6 +39,7 @@ Reviewed: 16 October 2026. This is the deeper study aid for **Supabase as a Back
 - **Why:** Schema, roles, extensions, connection methods, backups and related database controls need their own home.
 - **Use:** Inspect tables, policies, functions, extensions or connection guidance before changing an app's data layer.
 - **Read:** A **schema** groups database objects; an **extension** adds Postgres capabilities; a **connection** is a database session; **backups** help recovery but have plan and scope limits. Names of submenus may move.
+- **Database compute:** This means the CPU and RAM assigned to the Postgres instance, plus its related disk capacity and throughput. A SQL function called through `rpc()` consumes these database resources. Inspect CPU, memory, disk I/O and connection pressure before changing the database compute size; a larger instance can cost more and will not fix a missing policy or poor query. The organization's Usage metric **database compute hours** measures this project database capacity, not the new Supabase Compute product. [Compute and disk](https://supabase.com/docs/guides/platform/compute-and-disk), [database compute usage](https://supabase.com/docs/guides/platform/manage-your-usage/compute).
 - **Example:** Verify that `public.tasks` has RLS enabled and that its owner policy exists.
 - **Caution:** A foreign key checks a relationship; it does not authorize a user to read the row. Database backups do not include Storage object bytes. [Database overview](https://supabase.com/docs/guides/database/overview), [connect to Postgres](https://supabase.com/docs/guides/database/connecting-to-postgres).
 
@@ -73,12 +74,12 @@ Reviewed: 16 October 2026. This is the deeper study aid for **Supabase as a Back
 
 ### 8. Compute
 
-- **What:** The project's database machine resources, including CPU, RAM and disk capability.
-- **Why:** Postgres workload capacity and direct connection limits depend in part on the compute size.
-- **Use:** Compare CPU, memory, disk I/O and connection pressure before deciding whether a compute change is warranted.
-- **Read:** **Compute size** selects capacity; **CPU** measures processing use; **memory** is working RAM; **IOPS/throughput** measure disk operations/bandwidth; **disk size** is capacity. Displayed charts and upgrade controls vary.
-- **Example:** If task requests slow while database CPU is sustained high, investigate expensive queries and then size compute from measured demand.
-- **Caution:** Scaling compute can change costs and may involve a restart or downtime. More compute does not repair a missing policy, a bad query or a blocked transaction. [Compute and disk](https://supabase.com/docs/guides/platform/compute-and-disk), [compute usage](https://supabase.com/docs/guides/platform/manage-your-usage/compute).
+- **What:** A new Supabase-managed runtime for isolated web services, long-running jobs and agent sandboxes next to project data. This is a separate product from the Postgres CPU/RAM setting and from Edge Functions.
+- **Why:** Some applications need a full Linux environment or a service that can run longer than an Edge Function; historically a team would host this application code on EC2, Render or another provider.
+- **Use:** Explain the future placement choice, then show the waitlist rather than promising a deployment. The supplied dashboard screenshot labels Compute **Private Alpha** and says this project has no access yet.
+- **Read:** **Compute** and **Secrets** in the new menu refer to proposed application workloads and their configuration. Public product material describes HTTP services and private background work, but actual controls, availability, regions and pricing can change during the preview.
+- **Example:** A continuously running queue consumer or document-processing service could eventually live beside the database instead of on a separate host, after availability and operational requirements are verified.
+- **Caution:** Supabase currently limits this private alpha to internal evaluation; its terms say it must **not** serve production workloads or end customers. Keep an existing external backend for production if the workload needs one today. Do not call database `rpc()` “Supabase Compute”: it still executes inside Postgres. [Supabase Compute](https://supabase.com/compute), [October 2026 announcement](https://supabase.com/blog/select-2026-build-anything), [database compute usage](https://supabase.com/docs/guides/platform/manage-your-usage/compute).
 
 ### 9. Realtime
 

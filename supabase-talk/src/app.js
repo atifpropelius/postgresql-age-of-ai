@@ -50,6 +50,8 @@ function body(slide) {
       return `<div class="architecture-line"><span>Atif’s browser / mobile app</span><b aria-hidden="true">→</b><span>Auth · Data API · Storage · Realtime · Edge Functions</span><b aria-hidden="true">→</b><span>Postgres rows · file bytes · worker</span></div>${table(slide, 'architecture-table')}`;
     case 'request':
       return `<div class="request-grid">${slide.stages.map(([number, title, detail]) => `<div class="request-stage"><small>${text(number)}</small><strong>${text(title)}</strong><p>${text(detail)}</p></div>`).join('')}</div><div class="code-line"><span>CLIENT CODE</span><code>${text(slide.code)}</code></div>${note('RLS', slide.definition)}${note('OPENAPI', slide.openapi)}`;
+    case 'edge-gateway':
+      return `<div class="gateway-flow">${slide.stages.map(([name, detail]) => `<div><strong>${text(name)}</strong><span>${text(detail)}</span></div>`).join('')}</div>${definitions(slide.definitions, 'gateway-definitions')}${note('WORKERS PRICING', slide.cost)}${note('PRODUCTION CHECK', slide.caution)}`;
     case 'workflow':
       return `${definitions(slide.definitions, 'workflow-definitions')}${rail(slide.steps)}${slide.code ? `<div class="code-line"><span>CLI EXAMPLE</span><code>${text(slide.code)}</code></div>` : ''}${note('COST CHOICE', slide.cost)}${note('PRODUCTION CHECK', slide.caution)}`;
     case 'region':
