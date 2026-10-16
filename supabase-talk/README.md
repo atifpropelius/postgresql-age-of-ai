@@ -21,6 +21,12 @@ Open <http://127.0.0.1:4173/>. The site is static and uses no packages, credenti
 
 Slide number and section are shown in the footer. There are no audience-facing notes, theme controls or hidden content panels.
 
+## Supabase project-start references
+
+- [Official Supabase Developer Docs](https://supabase.com/docs) — start here for current product guidance.
+- [Official Supabase CLI reference](https://supabase.com/docs/reference/cli/introduction) — check command syntax and flags.
+- [Atif's Supabase project setup and command notes](https://docs.google.com/document/d/1BuuqS7D1_e4EBkRsocbWcxqVBCOK2_jKl3bIAOkuTyw/edit?tab=t.0#heading=h.93vq90vfy6sb) — personal reference when starting a project. Verify commands against the official CLI reference before running them.
+
 ## Presenter preparation
 
 Start with [PRESENTER-GUIDE.md](docs/PRESENTER-GUIDE.md): it has the exact slide timing and talk track. Study the [dashboard guide](docs/DASHBOARD-GUIDE.md), [Usage guide](docs/USAGE-GUIDE.md), [CLI reference](docs/CLI-REFERENCE.md), and retained [task-app code examples](docs/PRACTICAL-EXAMPLES.md) for questions. The [demo runbook](docs/DEMO-RUNBOOK.md) gives a 4–5 minute live route and a prepared offline fallback. [Facilitator guide](docs/FACILITATOR-GUIDE.md) has the quiz and Q&A separately. [Session format](docs/SESSION-FORMAT.md) and [scope](docs/TECH-TALK-SCOPE.md) preserve the company requirements.

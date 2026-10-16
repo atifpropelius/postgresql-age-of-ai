@@ -2,6 +2,8 @@
 
 Reviewed **16 October 2026** against the [current Supabase CLI reference](https://supabase.com/docs/reference/cli/supabase-init) and [local development workflow](https://supabase.com/docs/guides/local-development/cli-workflows). This is for presenter preparation, not an audience slide. Run `supabase --version` and `supabase <command> --help` before a live demo: CLI flags and default diff engines can change. If the CLI is installed in a project, use `npx supabase ...` in place of `supabase ...`. Local stack commands need Docker or a compatible running container engine.
 
+For a personal project-start checklist, keep [Atif's Supabase setup and command notes](https://docs.google.com/document/d/1BuuqS7D1_e4EBkRsocbWcxqVBCOK2_jKl3bIAOkuTyw/edit?tab=t.0#heading=h.93vq90vfy6sb) alongside this guide. The document's contents were not accessible for review here; use the [official Supabase Developer Docs](https://supabase.com/docs) and [CLI reference](https://supabase.com/docs/reference/cli/introduction) as the source of truth for current commands.
+
 ## The safe mental model
 
 - **Local project** is a repository with `supabase/config.toml`, migrations, and optional functions. **Local stack** is the set of containers started on your laptop.
