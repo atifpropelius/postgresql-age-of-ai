@@ -85,7 +85,8 @@ export const slides = [
     lead:'Make every table or column change a reviewed migration that can be replayed.',
     definitions:[['Schema','The structure of tables, views and other database objects.'],['Migration','A versioned SQL file that changes that structure.'],['Migration history','The record of changes already applied.'],['Local / staging / production','Developer machine / validation environment / live user environment.'],['Schema drift','A remote change that the migration files do not describe.']],
     steps:['Edit locally','Write migration','Commit + review','Validate in staging','Deploy to production'],
-    code:'supabase init  →  supabase start  →  supabase migration new add_tasks  →  supabase db reset',
+    code:'supabase init (once)  →  supabase start  →  supabase migration new add_tasks  →  supabase migration up --local',
+    caution:'After writing the SQL, apply pending migrations locally. db reset rebuilds the local database and deletes its data; never reset a production project.',
     takeaway:'Use CLI and Git together. Preview remote changes before applying them.'
   },
   {
