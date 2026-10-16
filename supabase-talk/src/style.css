@@ -29,6 +29,11 @@ button:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
 .overview-kicker { margin: 0 0 5px; color: #60676e; font-size: .63rem; font-weight: 750; letter-spacing: .1em; }
 .overview-head h2 { margin: 0; font-size: 1.55rem; line-height: 1.15; letter-spacing: -.025em; }
 .overview-summary { margin: 6px 0 0; color: #60676e; font-size: .78rem; }
+.overview-session { display: flex; align-items: baseline; flex-wrap: wrap; gap: 4px 22px; padding: 9px 26px; border-bottom: 1px solid #d9dcdf; font-size: .77rem; }
+.overview-session > strong { color: #5d656d; font-size: .65rem; letter-spacing: .08em; }
+.overview-session span { white-space: nowrap; }
+.overview-session b { margin-left: 4px; color: #22262a; }
+.overview-session small { flex-basis: 100%; color: #697078; font-size: .69rem; }
 .overview-groups { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 13px 28px; padding: 15px 26px 22px; }
 .overview-group { min-width: 0; border-top: 1px solid #cfd3d7; padding-top: 6px; }
 .overview-group h3 { display: flex; justify-content: space-between; gap: 15px; margin: 0 0 2px; color: #3d444b; font-size: .69rem; letter-spacing: .08em; }
@@ -269,6 +274,8 @@ table th:nth-child(2) { width: 37%; }
   .toolbar-actions { gap: 0; }
   .overview-dialog { width: calc(100vw - 20px); max-width: calc(100vw - 20px); max-height: calc(100dvh - 20px); }
   .overview-head { padding: 16px 15px 12px; }
+  .overview-session { gap: 5px 13px; padding: 9px 15px; }
+  .overview-session > strong { flex-basis: 100%; }
   .overview-groups { grid-template-columns: 1fr; gap: 13px; padding: 14px 15px 18px; }
   .transport-label, .talk-time { font-size: .6rem; }
   .hero-line { font-size: .65rem; }

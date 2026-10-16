@@ -1,6 +1,6 @@
 # Supabase as a Backend: What Runs Where
 
-A **21-slide, 41½-minute** internal engineering talk. It teaches the boundaries between Supabase's Postgres database, APIs, Auth, Storage, Realtime, Edge Functions and background work through Atif's private task app. A 90-second slide explains the new Supabase Compute private alpha and why our project cannot use it yet. One short example shows an optional Cloudflare Worker gateway for abuse protection and a branded API entry point. Five Studio slides explain every dashboard section shown in the project menu. A production-habits slide covers dashboard MFA recovery, migrations, Security Advisor and Observability. The audience deck uses a white presentation with a restrained accent; detailed field-by-field material remains in separate presenter documents.
+A **21-slide, 38-minute** internal engineering talk within a 60-minute session. It teaches the boundaries between Supabase's Postgres database, APIs, Auth, Storage, Realtime, Edge Functions and background work through Atif's private task app. A 90-second slide explains the new Supabase Compute private alpha and why our project cannot use it yet. One short example shows an optional Cloudflare Worker gateway for abuse protection and a branded API entry point. Five Studio slides explain every dashboard section shown in the project menu. A production-habits slide covers dashboard MFA recovery, migrations, Security Advisor and Observability. The audience deck uses a white presentation with a restrained accent; detailed field-by-field material remains in separate presenter documents.
 
 ## Run locally
 
@@ -20,7 +20,7 @@ Open <http://127.0.0.1:4173/>. The site is static and uses no packages, credenti
 | Browser Back / Forward | Return to previously visited slides |
 | Overview (top right) | See every section and slide title; select one to jump to it. Escape or Close returns to the slide. |
 
-Slide number and section are shown in the footer. The overview is generated from the slide list, so its titles stay in sync with the deck. There are no audience-facing notes or theme controls.
+Slide number and section are shown in the footer. The overview shows the company session format and is generated from the slide list, so its titles and talk time stay in sync with the deck. There are no audience-facing notes or theme controls.
 
 ## Supabase project-start references
 

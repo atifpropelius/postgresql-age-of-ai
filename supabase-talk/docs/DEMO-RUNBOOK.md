@@ -1,6 +1,6 @@
 # Five-minute taskboard walkthrough
 
-This is the **five-minute practical example inside the 41:30 talk**. The six stops take about 4:30, leaving 30 seconds to transition. They use one task story: Atif signs in, creates a task, attaches a PDF and investigates a failure. The presentation's prepared sequence is a **conceptual, offline fallback**, not a connected Supabase project or measured result. Say that aloud if you use it.
+This is the **five-minute practical example inside the 38:00 talk**. The six stops take about 4:30, leaving 30 seconds to transition. They use one task story: Atif signs in, creates a task, attaches a PDF and investigates a failure. The presentation's prepared sequence is a **conceptual, offline fallback**, not a connected Supabase project or measured result. Say that aloud if you use it.
 
 Use an existing, disposable or sanitized demo project for a live walkthrough. Do not create a production project during the talk. Keep credentials, connection strings, customer data and secret keys out of screen share and screenshots. Rehearse with the exact dashboard account and project first; menus and report availability can differ by plan and product version.
 

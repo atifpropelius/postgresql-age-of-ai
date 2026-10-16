@@ -20,7 +20,8 @@ function renderOverview() {
     }
     group.items.push({slide, slideIndex});
   });
-  $('#overviewSummary').textContent = `${slides.length} slides · ${totalSeconds / 60} min talk · slide ${String(index + 1).padStart(2, '0')} selected`;
+  $('#overviewSummary').textContent = `${slides.length} slides · slide ${String(index + 1).padStart(2, '0')} selected`;
+  $('#overviewTalkTime').textContent = `${totalSeconds / 60} min`;
   $('#overviewGroups').innerHTML = groups.map(({section, items}) =>
     `<section class="overview-group" aria-label="${text(section)}"><h3>${text(section)}<span>${String(items[0].slideIndex + 1).padStart(2, '0')}–${String(items[items.length - 1].slideIndex + 1).padStart(2, '0')}</span></h3><ol>${items.map(({slide, slideIndex}) =>
       `<li><button type="button" data-overview-slide="${slideIndex}" ${slideIndex === index ? 'aria-current="page"' : ''}><span class="overview-number">${String(slideIndex + 1).padStart(2, '0')}</span><span>${text(slide.title)}</span></button></li>`).join('')}</ol></section>`).join('');

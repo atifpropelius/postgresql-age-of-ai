@@ -18,7 +18,7 @@ export const slides = [
     takeaway:'Supabase saves setup time; your team still owns product logic and safe access.'
   },
   {
-    id:'context', section:'FOUNDATION', duration:45, kind:'context',
+    id:'context', section:'FOUNDATION', duration:30, kind:'context',
     title:'Why this platform is worth understanding',
     lead:'Adoption provides context. It does not decide whether the architecture fits.',
     facts:[['Nearly 10 million','developers building on Supabase, reported in June 2026'],['Lovable + Figma Make','Supabase powers many Lovable apps; Figma Make integrates with it. Mozilla and 1Password are also named customers.'],['$10.5 billion','post-money valuation implied by $500M at $10B pre-money, June 2026']],
@@ -26,7 +26,7 @@ export const slides = [
     takeaway:'Evaluate the platform by your workload, constraints and team skills.'
   },
   {
-    id:'components', section:'FOUNDATION', duration:135, kind:'services',
+    id:'components', section:'FOUNDATION', duration:120, kind:'services',
     title:'What does a Supabase project provide?',
     lead:'PostgreSQL is the data core. The other capabilities have separate jobs.',
     columns:['Component','One-line definition','Typical task-app use'],
@@ -42,7 +42,7 @@ export const slides = [
     takeaway:'An API request, a database function and a background worker run in different places.'
   },
   {
-    id:'request', section:'ARCHITECTURE', duration:150, kind:'request',
+    id:'request', section:'ARCHITECTURE', duration:135, kind:'request',
     title:'Trace one request: create a task',
     lead:'A signed-in client sends a token and a new task through the Data API.',
     stages:[['01','Frontend','Atif submits a task from the browser.'],['02','Data API','PostgREST receives the request and user token.'],['03','Identity','The token supplies the authenticated user context.'],['04','PostgreSQL','Grants, row policies and constraints decide the write.'],['05','Response','The API returns success or an error.'],['06','Realtime','If configured, subscribers receive a change event.']],
@@ -52,7 +52,7 @@ export const slides = [
     takeaway:'A token identifies the caller; database authorization still decides access.'
   },
   {
-    id:'logic', section:'ARCHITECTURE', duration:120, kind:'table',
+    id:'logic', section:'ARCHITECTURE', duration:105, kind:'table',
     title:'Where should application logic run?',
     lead:'Place work where its data, trust boundary and timing make sense.',
     columns:['Place','Use it for','Example · limitation'],
@@ -70,7 +70,7 @@ export const slides = [
     takeaway:'Compute could host a backend worker near Postgres later; keep production jobs on suitable external hosting for now.'
   },
   {
-    id:'gateway', section:'ARCHITECTURE', duration:120, kind:'edge-gateway',
+    id:'gateway', section:'ARCHITECTURE', duration:90, kind:'edge-gateway',
     title:'A gateway before expensive requests',
     lead:'An optional Cloudflare Worker can reject abusive traffic before it reaches selected Supabase endpoints.',
     stages:[['Client','Task app request'],['Cloudflare Worker','api.example.com · rate check'],['Supabase API / Edge Function','Receives allowed request'],['PostgreSQL','Runs permitted data work']],
@@ -80,7 +80,7 @@ export const slides = [
     takeaway:'Use a Worker for a branded API entry point and abuse filtering; it does not replace Supabase authorization.'
   },
   {
-    id:'migrations', section:'SHIP', duration:165, kind:'workflow',
+    id:'migrations', section:'SHIP', duration:150, kind:'workflow',
     title:'Change the schema safely',
     lead:'Make every table or column change a reviewed migration that can be replayed.',
     definitions:[['Schema','The structure of tables, views and other database objects.'],['Migration','A versioned SQL file that changes that structure.'],['Migration history','The record of changes already applied.'],['Local / staging / production','Developer machine / validation environment / live user environment.'],['Schema drift','A remote change that the migration files do not describe.']],
@@ -90,7 +90,7 @@ export const slides = [
     takeaway:'Use CLI and Git together. Preview remote changes before applying them.'
   },
   {
-    id:'branching', section:'SHIP', duration:105, kind:'workflow',
+    id:'branching', section:'SHIP', duration:90, kind:'workflow',
     title:'Branches are test environments',
     lead:'A feature branch can validate a migration before it reaches production.',
     definitions:[['Production branch','The main project serving live users.'],['Persistent branch','A long-lived branch for staging or QA.'],['Temporary branch','A preview branch removed after short-lived work.'],['Branch configuration','The branch-specific URLs, keys, secrets and service settings.']],
@@ -109,7 +109,7 @@ export const slides = [
     takeaway:'The closest region is a starting point, not a universal answer.'
   },
   {
-    id:'dashboard-start', section:'STUDIO', duration:80, kind:'dashboard',
+    id:'dashboard-start', section:'STUDIO', duration:70, kind:'dashboard',
     title:'Open the right project, then inspect data',
     lead:'These first three menu areas help you find the project, see rows and run a query.',
     path:'FIND THE PROJECT → INSPECT THE TASK',
@@ -119,7 +119,7 @@ export const slides = [
     takeaway:'Confirm the project first; use Table Editor to inspect and SQL Editor for deliberate queries.'
   },
   {
-    id:'dashboard-data', section:'STUDIO', duration:80, kind:'dashboard',
+    id:'dashboard-data', section:'STUDIO', duration:70, kind:'dashboard',
     title:'Find database rules, users and files',
     lead:'A task row, a signed-in identity and an uploaded PDF have different homes.',
     path:'ROW → IDENTITY → FILE',
@@ -129,7 +129,7 @@ export const slides = [
     takeaway:'Database decides row access, Auth supplies identity, and Storage serves files.'
   },
   {
-    id:'dashboard-runtime', section:'STUDIO', duration:80, kind:'dashboard',
+    id:'dashboard-runtime', section:'STUDIO', duration:70, kind:'dashboard',
     title:'See server code, Compute and live events',
     lead:'Edge Functions and the new Compute service run outside PostgreSQL.',
     path:'REQUEST CODE → LONG-RUNNING SERVICE → LIVE DELIVERY',
@@ -139,7 +139,7 @@ export const slides = [
     takeaway:'For a production long-running backend today, keep using suitable external hosting.'
   },
   {
-    id:'dashboard-diagnose', section:'STUDIO', duration:80, kind:'dashboard',
+    id:'dashboard-diagnose', section:'STUDIO', duration:70, kind:'dashboard',
     title:'Find why a request failed or slowed down',
     lead:'Use recommendations, trends and individual events together.',
     path:'FINDING → TREND → EVENT',
@@ -149,7 +149,7 @@ export const slides = [
     takeaway:'Follow up on Advisor findings and recurring errors in Logs.'
   },
   {
-    id:'dashboard-configure', section:'STUDIO', duration:80, kind:'dashboard',
+    id:'dashboard-configure', section:'STUDIO', duration:70, kind:'dashboard',
     title:'Connect tools and configure the project',
     lead:'The final menu areas change how this project connects to other systems and clients.',
     path:'EXTERNAL TOOL → PROJECT CONFIGURATION',
@@ -159,7 +159,7 @@ export const slides = [
     takeaway:'Next, use organization Usage and Billing to see what these services consume.'
   },
   {
-    id:'usage', section:'OPERATE', duration:240, kind:'usage',
+    id:'usage', section:'OPERATE', duration:210, kind:'usage',
     title:'Read the Usage page before costs surprise you',
     lead:'Usage is measured activity. An allowance is the amount included in a plan; overage rules differ by metric.',
     snapshot:[['Edge invocations','199,095 / 2,000,000','function calls'],['Egress','0.79 / 250 GB','outgoing data'],['Log ingestion','3.07 / 20 GB','collected logs']],
@@ -184,7 +184,7 @@ export const slides = [
     takeaway:'The same feature crosses data, identity, API, files and operations.'
   },
   {
-    id:'wrap', section:'FINISH', duration:100, kind:'wrap',
+    id:'wrap', section:'FINISH', duration:90, kind:'wrap',
     title:'Ship with a clear map of responsibilities',
     lead:'Start with the smallest set of Supabase capabilities the product needs.',
     takeaways:[['01','Know where work runs','Client, managed service, Postgres or external worker.'],['02','Make access and changes explicit','Auth, RLS, migrations, staging and region.'],['03','Operate what you ship','Review Advisors, error Logs, Observability and Usage.']],
