@@ -180,7 +180,7 @@ export const slides = [
     id:'demo', section:'OPERATE', duration:300, kind:'demo',
     title:'Five-minute task-app walkthrough',
     lead:'Use a disposable demo project. The prepared sequence also works offline.',
-    stops:[['Table Editor','Find public.tasks and identify one task row.'],['Authentication','Show the user ID; hide email and tokens.'],['Data API','Explain how a permitted row reaches the client.'],['Migration','Open the reviewed SQL file that created the table.'],['Storage','Point to the PDF object in a private bucket.'],['Logs + Usage','Locate a function error and invocation count.']],
+    stops:[['Table Editor','Find public.tasks and identify one task row.'],['Authentication','Show the user ID; hide email and tokens.'],['Task request','Data API, Edge Function or Compute (alpha).'],['Migration','Open the reviewed SQL file that created the table.'],['Storage','Point to the PDF object in a private bucket.'],['Logs + Usage','Locate a function error and invocation count.']],
     takeaway:'The same feature crosses data, identity, API, files and operations.'
   },
   {

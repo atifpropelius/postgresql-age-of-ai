@@ -18,12 +18,14 @@ Use an existing, disposable or sanitized demo project for a live walkthrough. Do
 | --- | --- | --- | --- |
 | 0:00–0:40 | **Table** | In Table Editor, point to `public.tasks`: one row is one task; `owner_id` references its user. In fallback, use the prepared task row in the deck. | Application rows are stored in PostgreSQL. |
 | 0:40–1:20 | **Identity** | In Authentication → Users, point only to a synthetic user's ID; never show a real email. Explain that Auth supplies identity and the task policy decides row access. | Authentication answers who; authorization answers which rows. |
-| 1:20–2:05 | **Data API** | Show the demo app's permitted `tasks` response or the generated Data API route, `GET /rest/v1/tasks`. Trace client → API → RLS → Postgres → response. | The Data API serves database requests; it is not a second data store. |
+| 1:20–2:05 | **Task request: Data API example** | Show the demo app's permitted `tasks` response or the generated Data API route, `GET /rest/v1/tasks`. Trace client → API → RLS → Postgres → response. Say this simple read could instead enter custom Edge Function code; Compute could host an HTTP API later, but this project has no access. | The Data API is one entry path; PostgreSQL remains the data store. |
 | 2:05–2:45 | **Migration** | Show a reviewed file such as `supabase/migrations/<timestamp>_create_tasks.sql`; point to `create table` and `alter table ... enable row level security`. | Schema changes should travel with code and be reviewed. |
 | 2:45–3:25 | **PDF** | In Storage, point to private bucket `task-files` and a synthetic `users/atif/brief.pdf` object or its prepared diagram. | Storage keeps file bytes; the task row can keep a path. |
 | 3:25–4:30 | **Investigate** | Open a sanitized function's Invocations/Logs, or point to Usage for invocation count. Explain status, duration and error message, then where a usage spike appears. | A production developer needs a place to diagnose failure and watch consumption. |
 
 **Transition back to the deck:** “We now know where each part runs, where a schema change belongs, and where we would look when an operation fails.”
+
+**Entry-point choice for questions:** This demo uses the generated Data API for a simple, permitted row read. An Edge Function can receive a custom HTTP request and then call the Data API or connect to Postgres. A Supabase Compute HTTP service is a possible future path, but Compute is in Private Alpha, unavailable to this project, and restricted to internal evaluation rather than production or end-customer workloads. In every path, verify the caller and enforce the intended row access; a privileged server key can bypass RLS. [Data API](https://supabase.com/docs/guides/api), [Edge Functions](https://supabase.com/docs/guides/functions), [securing Edge Functions](https://supabase.com/docs/guides/functions/auth), [Compute preview](https://supabase.com/compute).
 
 ### Optional example migration fragment
 
@@ -42,7 +44,7 @@ alter table public.tasks enable row level security;
 
 ## Fallback if the dashboard or network fails
 
-Stay in the deck and advance its prepared six-step sequence in this order: **table → identity → Data API → migration → Storage → function logs/Usage**. If the local slide server also fails, open [assets/demo-fallback/index.html](../assets/demo-fallback/index.html) directly in the browser and use its six PNG frames. Say “This is a prepared illustration of the request path, not a live project.” Do not narrate an illustrative status code, user count or chart as live telemetry. The supplied production screenshots are not part of this fallback.
+Stay in the deck and advance its prepared six-step sequence in this order: **table → identity → Data API example → migration → Storage → function logs/Usage**. If the local slide server also fails, open [assets/demo-fallback/index.html](../assets/demo-fallback/index.html) directly in the browser and use its six PNG frames. Say “This is a prepared illustration of one request path, not a live project.” Do not narrate an illustrative status code, user count or chart as live telemetry. The supplied production screenshots are not part of this fallback.
 
 At each step, speak the one-line definition before moving on. Rehearse once with the network disabled and a 4:30 timer. If a live dashboard page takes more than about 10 seconds to load, switch to the prepared sequence immediately. The screenshot viewer needs neither a web server nor Docker, database credentials or an active Supabase project.
 
@@ -53,6 +55,9 @@ For a separate, more advanced database lock demonstration, see [OBSERVABILITY-DE
 - [Supabase database and Table Editor](https://supabase.com/docs/guides/database/overview)
 - [Supabase Auth and user identity](https://supabase.com/docs/guides/auth)
 - [Data API](https://supabase.com/docs/guides/api)
+- [Edge Functions and database access](https://supabase.com/docs/guides/functions)
+- [Securing Edge Functions and RLS-scoped clients](https://supabase.com/docs/guides/functions/auth)
+- [Supabase Compute Private Alpha](https://supabase.com/compute)
 - [Local development and migrations](https://supabase.com/docs/guides/local-development/cli-workflows)
 - [Storage quickstart](https://supabase.com/docs/guides/storage/quickstart)
 - [Edge Function logging](https://supabase.com/docs/guides/functions/logging)
