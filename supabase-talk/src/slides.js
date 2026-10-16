@@ -144,9 +144,9 @@ export const slides = [
     lead:'Use recommendations, trends and individual events together.',
     path:'FINDING → TREND → EVENT',
     columns:['Dashboard section','What you get','When Atif opens it'],
-    rows:[['Advisors','Security and performance findings with suggested fixes.','Triage a task-policy error or index warning.'],['Observability','Slow queries, connections, resource and service-health reports.','Find slow writes or sessions waiting for a lock.'],['Logs','Searchable, timestamped API, database, Auth and function events.','Match a failed request to its error.']],
-    caution:'Review Security Advisor errors and warnings. Investigate each finding before changing permissions; select the right project and time range.',
-    takeaway:'Observability shows a pattern; Logs help identify the specific event behind it.'
+    rows:[['Advisors','Security and performance findings with suggested fixes.','Open errors and warnings; inspect affected objects.'],['Observability','Slow queries, connections, resource and service-health reports.','Find slow writes or sessions waiting for a lock.'],['Logs','Searchable, timestamped API, database, Auth and function events.','Filter by service and time to investigate an error.']],
+    caution:'0 Security Advisor errors can still leave warnings. Triage findings and check service error logs after releases and regularly.',
+    takeaway:'Follow up on Advisor findings and recurring errors in Logs.'
   },
   {
     id:'dashboard-configure', section:'STUDIO', duration:80, kind:'dashboard',
@@ -173,7 +173,7 @@ export const slides = [
     title:'Five habits for a reliable Supabase project',
     lead:'A small release routine prevents lockouts, schema drift and unseen failures.',
     columns:['Habit','What to do','Why it matters'],
-    rows:[['Protect dashboard access','Add and test a backup authenticator on another device; keep another organization owner.','Dashboard two-factor sign-in has no recovery codes. Losing every factor can lock out an account.'],['Change schema through migrations','Create, review and test a migration for each table or column change.','Direct remote edits bypass migration history.'],['Triage Security Advisor','Review errors and warnings; fix issues or document intentional exceptions.','Findings can expose unsafe access or configuration.'],['Watch Observability','Check query, connection and service trends regularly; use Logs to investigate.','A failed request or growing wait should be visible before it spreads.'],['Read official docs first','Check Supabase Developer Docs for behavior, commands and plan rules.','Dashboard and product details change.']],
+    rows:[['Protect dashboard access','Add and test a backup authenticator on another device; keep another organization owner.','Dashboard two-factor sign-in has no recovery codes. Losing every factor can lock out an account.'],['Change schema through migrations','Create, review and test a migration for each table or column change.','Direct remote edits bypass migration history.'],['Triage Security Advisor','Investigate errors and warnings; fix or document each finding.','Zero errors can still leave security warnings.'],['Watch Logs + Observability','Check error logs after releases and routinely; watch query and connection trends.','Recurring failures and waits affect users.'],['Read official docs first','Check Supabase Developer Docs for behavior, commands and plan rules.','Dashboard and product details change.']],
     takeaway:'Keep access recoverable, schema in code and production behavior visible.'
   },
   {
@@ -187,7 +187,7 @@ export const slides = [
     id:'wrap', section:'FINISH', duration:100, kind:'wrap',
     title:'Ship with a clear map of responsibilities',
     lead:'Start with the smallest set of Supabase capabilities the product needs.',
-    takeaways:[['01','Know where work runs','Client, managed service, Postgres or external worker.'],['02','Make access and changes explicit','Auth, RLS, migrations, staging and region.'],['03','Operate what you ship','Check Usage, Logs and real user impact.']],
+    takeaways:[['01','Know where work runs','Client, managed service, Postgres or external worker.'],['02','Make access and changes explicit','Auth, RLS, migrations, staging and region.'],['03','Operate what you ship','Review Advisors, error Logs, Observability and Usage.']],
     checklist:'Before release: test permissions · review migrations · validate staging · inspect usage · plan recovery.',
     takeaway:'Supabase supplies backend parts. Engineering choices make them a reliable product.'
   }
