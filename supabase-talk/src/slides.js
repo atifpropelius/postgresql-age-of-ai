@@ -75,7 +75,7 @@ export const slides = [
     lead:'A feature branch can validate a migration before it reaches production.',
     definitions:[['Production branch','The main project serving live users.'],['Persistent branch','A long-lived branch for staging or QA.'],['Temporary branch','A preview branch removed after short-lived work.'],['Branch configuration','The branch-specific URLs, keys, secrets and service settings.']],
     steps:['Feature branch','Preview project','Apply migration','Run tests','Merge after review'],
-    cost:'A short-lived preview branch can cost less than keeping a separate test project running all month. Branches still incur compute and usage charges; a persistent branch is not automatically cheaper.',
+    cost:'A short-lived preview branch can cost less than keeping a separate test project running all month. Branch usage is outside the Spend Cap; a persistent branch is not automatically cheaper.',
     caution:'Branches are data-less by default. Check secrets, integrations and cost; availability depends on plan and setup.',
     takeaway:'Use preview branches for temporary tests, then delete them. Compare actual branch usage with a separate project.'
   },
@@ -94,8 +94,9 @@ export const slides = [
     lead:'Usage is measured activity. An allowance is the amount included in a plan; overage rules differ by metric.',
     snapshot:[['Edge invocations','199,095 / 2,000,000','function calls'],['Egress','0.79 / 250 GB','outgoing data'],['Log ingestion','3.07 / 20 GB','collected logs']],
     metrics:[['Egress','GB sent out; big downloads increase it.'],['Cached egress','GB served from CDN cache hits.'],['Storage size','GB of stored file objects.'],['Database disk','GB of database disk used or provisioned; read the chart label.'],['MAU','Distinct Auth users active in a billing period.'],['Edge invocations','Number of function executions.'],['Realtime messages','Messages delivered to subscribers.'],['Peak connections','Highest simultaneous Realtime clients.'],['Log ingestion','GB of logs collected.'],['Log query','GB of log data scanned by searches.'],['Compute hours','Hours project compute runs at its selected size.']],
+    spendCap:'Pro defaults to ON. Turning it OFF permits billable overages for covered usage; keeping it ON may restrict usage at quota. Compute and branch compute remain billable.',
     example:'A PDF repeatedly downloaded without caching can raise egress while storage size barely changes.',
-    takeaway:'Check the period, plan allowance, billing rule and service driving the change.'
+    takeaway:'Before changing Spend Cap, review Usage and Upcoming Invoice. It does not cap the whole bill.'
   },
   {
     id:'demo', section:'OPERATE', duration:300, kind:'demo',

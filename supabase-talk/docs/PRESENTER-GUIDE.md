@@ -16,7 +16,7 @@ Reviewed **16 October 2026**. This is the private study route; the audience sees
 | 8. Schema workflow | 3:30 | 21:15 | Define migration/history/drift. Show local → reviewed SQL → staging → production. Do not run a remote write on stage. |
 | 9. Branching | 2:15 | 23:30 | Preview versus persistent; branches are isolated and data-less by default. A short-lived preview may save compute compared with an always-on test project, but it is billed for usage. |
 | 10. Region | 2:00 | 25:30 | Weigh user latency with residency and requirements. A later move needs a new project and migration. |
-| 11. Usage | 5:30 | 31:00 | Read example counters as used/allowance, then define all eleven metrics. Separate quantity, quota, bill and alert. |
+| 11. Usage | 5:30 | 31:00 | Read example counters as used/allowance, then define all eleven metrics. Explain Pro Spend Cap ON versus OFF and its exclusions; check Usage and Upcoming Invoice. |
 | 12. Task-app demo | 5:00 | 36:00 | Use the [demo runbook](DEMO-RUNBOOK.md) for six timed stops; the prepared slide sequence is the offline fallback. |
 | 13. Wrap | 2:00 | **38:00** | Repeat where work runs, how changes are reviewed and where to investigate. |
 
@@ -29,6 +29,8 @@ Atif signs in, creates a private task, uploads a PDF and sees an update on anoth
 **Data API:** PostgREST exposes allowed database tables, views and functions as HTTP routes. **OpenAPI:** a machine-readable description of the exposed API; it documents routes but does not execute them. A direct client call is suitable only when grants and tested RLS policies protect the object. Use trusted server code for privileged operations, external secrets and appropriate custom workflows.
 
 **Free versus Pro:** Free is useful for learning and low-stakes prototypes; a production service needs an availability, backup, support and capacity decision. Current plan terms and add-on costs change. Use the [pricing page](https://supabase.com/pricing), [billing guide](https://supabase.com/docs/guides/platform/billing-on-supabase) and [Usage guide](USAGE-GUIDE.md) instead of quoting a fixed bill on stage. If the app needs a dedicated backend, Supabase can still be its database/Auth/Storage layer.
+
+**Spend Cap talk track:** On Pro, the Spend Cap starts enabled by default. With it on, covered usage over the plan quota can bring notification, a grace period and service restrictions; it is not a promise that the entire invoice cannot rise. Turning it off allows covered usage to continue past allowances with billable overages. Database compute and branching compute are outside the Spend Cap, and Supabase says branch usage is not covered. Before changing it, check the organization's Usage page, Upcoming Invoice and expected traffic. The control is in the organization's **Billing → Cost Control** area, not an individual project setting. [Billing FAQ](https://supabase.com/docs/guides/platform/billing-faq), [Cost Control](https://supabase.com/docs/guides/platform/cost-control), [branching usage](https://supabase.com/docs/guides/platform/manage-your-usage/branching).
 
 ## Where to study before presenting
 

@@ -21,8 +21,8 @@ function table(slide, extraClass = '') {
     `<tr>${row.map((cell, col) => `<${col === 0 ? 'th scope="row"' : 'td'}>${text(cell)}</${col === 0 ? 'th' : 'td'}>`).join('')}</tr>`).join('')}</tbody></table></div>`;
 }
 
-function note(label, value) {
-  return value ? `<div class="inline-note"><strong>${text(label)}</strong><span>${text(value)}</span></div>` : '';
+function note(label, value, extraClass = '') {
+  return value ? `<div class="inline-note ${text(extraClass)}"><strong>${text(label)}</strong><span>${text(value)}</span></div>` : '';
 }
 
 function rail(steps) {
@@ -55,7 +55,7 @@ function body(slide) {
     case 'region':
       return `<div class="factor-grid">${slide.factors.map(([term, meaning]) => `<div><strong>${text(term)}</strong><p>${text(meaning)}</p></div>`).join('')}</div>${note('TASK APP EXAMPLE', slide.example)}${note('PLAN AHEAD', slide.caution)}`;
     case 'usage':
-      return `<div class="usage-snapshot"><div class="snapshot-label">ILLUSTRATIVE PRO DASHBOARD SNAPSHOT · ALLOWANCES CAN CHANGE</div><div class="snapshot-values">${slide.snapshot.map(([name, value, detail]) => `<div><small>${text(name)}</small><strong>${text(value)}</strong><span>${text(detail)}</span></div>`).join('')}</div></div><div class="metric-grid">${slide.metrics.map(([name, meaning]) => `<div><strong>${text(name)}</strong><span>${text(meaning)}</span></div>`).join('')}</div>${note('EXAMPLE', slide.example)}`;
+      return `<div class="usage-snapshot"><div class="snapshot-label">ILLUSTRATIVE PRO DASHBOARD SNAPSHOT · ALLOWANCES CAN CHANGE</div><div class="snapshot-values">${slide.snapshot.map(([name, value, detail]) => `<div><small>${text(name)}</small><strong>${text(value)}</strong><span>${text(detail)}</span></div>`).join('')}</div></div><div class="metric-grid">${slide.metrics.map(([name, meaning]) => `<div><strong>${text(name)}</strong><span>${text(meaning)}</span></div>`).join('')}</div>${note('SPEND CAP', slide.spendCap, 'spend-cap-note')}${note('EXAMPLE', slide.example)}`;
     case 'demo':
       return `<div class="demo-layout"><ol class="demo-list">${slide.stops.map(([place, action], i) => `<li class="${i === demoStep ? 'active' : ''}"><button data-demo-step="${i}"><span>${String(i + 1).padStart(2,'0')}</span><strong>${text(place)}</strong><small>${text(action)}</small></button></li>`).join('')}</ol><div class="demo-screen"><div class="demo-screen-head"><span>PREPARED ILLUSTRATION · NOT LIVE PROJECT DATA</span><b>${text(demoScenes[demoStep].location)}</b></div><div class="demo-screen-body ${demoScenes[demoStep].type}">${demoScenes[demoStep].content}</div><p>${text(demoScenes[demoStep].lesson)}</p><button class="demo-next" data-demo-next>${demoStep === demoScenes.length - 1 ? 'Restart walkthrough ↺' : 'Next stop →'}</button></div></div>`;
     case 'wrap':
