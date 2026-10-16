@@ -18,8 +18,9 @@ Open <http://127.0.0.1:4173/>. The site is static and uses no packages, credenti
 | Space (when the page has focus) | Next slide |
 | Footer arrows | Next / previous slide |
 | Browser Back / Forward | Return to previously visited slides |
+| Overview (top right) | See every section and slide title; select one to jump to it. Escape or Close returns to the slide. |
 
-Slide number and section are shown in the footer. There are no audience-facing notes, theme controls or hidden content panels.
+Slide number and section are shown in the footer. The overview is generated from the slide list, so its titles stay in sync with the deck. There are no audience-facing notes or theme controls.
 
 ## Supabase project-start references
 

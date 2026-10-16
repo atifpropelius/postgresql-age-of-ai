@@ -8,6 +8,23 @@ const text = (value) => escapeHtml(value);
 const initial = Number(new URLSearchParams(location.search).get('slide') || 1) - 1;
 let index = Number.isFinite(initial) ? Math.max(0, Math.min(slides.length - 1, initial)) : 0;
 let demoStep = 0;
+const overviewDialog = $('#overviewDialog');
+
+function renderOverview() {
+  const groups = [];
+  slides.forEach((slide, slideIndex) => {
+    let group = groups[groups.length - 1];
+    if (!group || group.section !== slide.section) {
+      group = {section: slide.section, items: []};
+      groups.push(group);
+    }
+    group.items.push({slide, slideIndex});
+  });
+  $('#overviewSummary').textContent = `${slides.length} slides · ${totalSeconds / 60} min talk · slide ${String(index + 1).padStart(2, '0')} selected`;
+  $('#overviewGroups').innerHTML = groups.map(({section, items}) =>
+    `<section class="overview-group" aria-label="${text(section)}"><h3>${text(section)}<span>${String(items[0].slideIndex + 1).padStart(2, '0')}–${String(items[items.length - 1].slideIndex + 1).padStart(2, '0')}</span></h3><ol>${items.map(({slide, slideIndex}) =>
+      `<li><button type="button" data-overview-slide="${slideIndex}" ${slideIndex === index ? 'aria-current="page"' : ''}><span class="overview-number">${String(slideIndex + 1).padStart(2, '0')}</span><span>${text(slide.title)}</span></button></li>`).join('')}</ol></section>`).join('');
+}
 
 function definitions(items, extraClass = '') {
   if (!items || !items.length) return '';
@@ -98,6 +115,23 @@ function go(next, historyMode = 'replace') {
 $('#homeBtn').addEventListener('click', () => go(0, 'push'));
 $('#prevBtn').addEventListener('click', () => go(index - 1, 'push'));
 $('#nextBtn').addEventListener('click', () => go(index + 1, 'push'));
+$('#overviewBtn').addEventListener('click', () => {
+  renderOverview();
+  overviewDialog.showModal();
+  $('#overviewBtn').setAttribute('aria-expanded', 'true');
+  $('#overviewClose').focus();
+});
+$('#overviewClose').addEventListener('click', () => overviewDialog.close());
+overviewDialog.addEventListener('close', () => $('#overviewBtn').setAttribute('aria-expanded', 'false'));
+overviewDialog.addEventListener('click', (event) => {
+  if (event.target === overviewDialog) overviewDialog.close();
+});
+$('#overviewGroups').addEventListener('click', (event) => {
+  const target = event.target.closest('button[data-overview-slide]');
+  if (!target) return;
+  overviewDialog.close();
+  go(Number(target.dataset.overviewSlide), 'push');
+});
 $('#stage').addEventListener('click', (event) => {
   const target = event.target.closest('button');
   if (!target) return;
@@ -110,6 +144,7 @@ $('#stage').addEventListener('click', (event) => {
   }
 });
 document.addEventListener('keydown', (event) => {
+  if (overviewDialog.open) return;
   if (event.target instanceof Element && event.target.closest('input, textarea, select, [contenteditable]')) return;
   if (event.key === 'ArrowRight' || (event.key === ' ' && (event.target === document.body || event.target === $('#stage')))) {
     event.preventDefault(); go(index + 1, 'push');
@@ -122,6 +157,7 @@ document.addEventListener('keydown', (event) => {
   }
 });
 window.addEventListener('popstate', () => {
+  if (overviewDialog.open) overviewDialog.close();
   const requested = Number(new URLSearchParams(location.search).get('slide') || 1) - 1;
   index = Number.isFinite(requested) ? Math.max(0, Math.min(slides.length - 1, requested)) : 0;
   render();

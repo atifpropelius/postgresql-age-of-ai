@@ -13,7 +13,10 @@
     <header class="toolbar">
       <button class="brand" id="homeBtn" aria-label="Go to first slide">SUPABASE <span>/ WHAT RUNS WHERE</span></button>
       <span class="chapter-name" id="chapterName"></span>
-      <span class="session-name">ENGINEERING TALK · FS-03</span>
+      <div class="toolbar-actions">
+        <button class="overview-trigger" id="overviewBtn" type="button" aria-haspopup="dialog" aria-controls="overviewDialog" aria-expanded="false">Overview</button>
+        <span class="session-name">ENGINEERING TALK · FS-03</span>
+      </div>
     </header>
     <main id="stage" tabindex="-1" aria-label="Presentation slide"></main>
     <footer class="transport">
@@ -21,6 +24,17 @@
       <div class="transport-right"><span class="talk-time" id="talkTime"></span><button id="prevBtn" aria-label="Previous slide">←</button><span id="counter"></span><button id="nextBtn" aria-label="Next slide">→</button></div>
       <div class="progress"><span id="progressFill"></span></div>
     </footer>
+    <dialog class="overview-dialog" id="overviewDialog" aria-labelledby="overviewTitle">
+      <div class="overview-head">
+        <div>
+          <p class="overview-kicker">SUPABASE / WHAT RUNS WHERE</p>
+          <h2 id="overviewTitle">Talk overview</h2>
+          <p class="overview-summary" id="overviewSummary"></p>
+        </div>
+        <button class="overview-close" id="overviewClose" type="button" aria-label="Close overview">Close ×</button>
+      </div>
+      <div class="overview-groups" id="overviewGroups"></div>
+    </dialog>
   </div>
   <script type="module" src="./src/app.js"></script>
 </body>
