@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Supabase demo fallback — prepared illustrations</title>
+  <style>
+    *{box-sizing:border-box}html,body{margin:0;min-height:100%;background:#fff;color:#202327;font-family:Inter,ui-sans-serif,Arial,sans-serif}
+    body{display:grid;grid-template-rows:auto minmax(0,1fr) auto;min-height:100dvh}
+    header,footer{display:flex;align-items:center;justify-content:space-between;gap:15px;padding:10px 18px;border-bottom:1px solid #d7dadd}
+    header strong{font-size:.9rem}header span,footer span{color:#596169;font-size:.8rem}
+    main{display:grid;place-items:center;min-height:0;padding:8px}img{display:block;max-width:100%;max-height:calc(100dvh - 105px);object-fit:contain}
+    footer{border-top:1px solid #d7dadd;border-bottom:0}button{border:1px solid #b7bdc2;background:#fff;padding:7px 13px;cursor:pointer}button:hover{background:#f2f3f4}button:disabled{opacity:.4;cursor:default}
+  </style>
+</head>
+<body>
+  <header><strong>Supabase task-app demo fallback</strong><span>Prepared illustrations · no live project data</span></header>
+  <main><img id="frame" src="01-table.png" alt="Prepared illustration: task row in PostgreSQL"></main>
+  <footer><button id="previous" aria-label="Previous frame">← Previous</button><span id="label">1 / 6 · Task table</span><button id="next" aria-label="Next frame">Next →</button></footer>
+  <script>
+    const frames=[
+      ['01-table.png','Task table','Prepared illustration: task row in PostgreSQL'],
+      ['02-auth.png','Authentication','Prepared illustration: synthetic user identity'],
+      ['03-data-api.png','Data API','Prepared illustration: task API request and response'],
+      ['04-migration.png','Migration','Prepared illustration: reviewed SQL migration'],
+      ['05-storage.png','Storage','Prepared illustration: private PDF object'],
+      ['06-logs-usage.png','Logs and Usage','Prepared illustration: function diagnostics']
+    ];
+    let index=0;
+    function show(next){
+      index=Math.max(0,Math.min(frames.length-1,next));
+      document.getElementById('frame').src=frames[index][0];
+      document.getElementById('frame').alt=frames[index][2];
+      document.getElementById('label').textContent=(index+1)+' / 6 · '+frames[index][1];
+      document.getElementById('previous').disabled=index===0;
+      document.getElementById('next').disabled=index===frames.length-1;
+    }
+    document.getElementById('previous').onclick=()=>show(index-1);
+    document.getElementById('next').onclick=()=>show(index+1);
+    document.addEventListener('keydown',event=>{
+      if(event.key==='ArrowLeft')show(index-1);
+      if(event.key==='ArrowRight'||event.key===' ')show(index+1);
+    });
+    show(0);
+  </script>
+</body>
+</html>

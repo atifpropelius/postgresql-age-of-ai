@@ -25,7 +25,7 @@ Slide number and section are shown in the footer. There are no audience-facing n
 
 Start with [PRESENTER-GUIDE.md](docs/PRESENTER-GUIDE.md): it has the exact slide timing and talk track. Study the [dashboard guide](docs/DASHBOARD-GUIDE.md), [Usage guide](docs/USAGE-GUIDE.md), [CLI reference](docs/CLI-REFERENCE.md), and retained [task-app code examples](docs/PRACTICAL-EXAMPLES.md) for questions. The [demo runbook](docs/DEMO-RUNBOOK.md) gives a 4–5 minute live route and a prepared offline fallback. [Facilitator guide](docs/FACILITATOR-GUIDE.md) has the quiz and Q&A separately. [Session format](docs/SESSION-FORMAT.md) and [scope](docs/TECH-TALK-SCOPE.md) preserve the company requirements.
 
-The main deck contains illustrative task data and a labeled example Pro Usage snapshot. It never represents them as live project data. Sources and qualifications are in [SOURCES.md](docs/SOURCES.md). The earlier [Observability reference](docs/OBSERVABILITY-GUIDE.md) remains for optional study.
+The main deck contains illustrative task data and a labeled example Pro Usage snapshot. It never represents them as live project data. If the local server fails during the demo, open the [standalone six-frame screenshot fallback](assets/demo-fallback/index.html) directly. Sources and qualifications are in [SOURCES.md](docs/SOURCES.md). The earlier [Observability reference](docs/OBSERVABILITY-GUIDE.md) remains for optional study.
 
 ## Build and deploy
 

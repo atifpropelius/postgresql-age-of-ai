@@ -10,7 +10,7 @@ Use an existing, disposable or sanitized demo project for a live walkthrough. Do
 2. If you plan a live Data API request, sign in through the demo application as Atif beforehand. Check that the returned task belongs to that demo identity. The SQL Editor runs with different privileges and cannot prove a browser user's RLS behavior.
 3. Prepare a sanitized Edge Function error or an intentionally failing disposable-demo invocation, and know where to find its **Invocations** and **Logs**. Do not trigger a failure in a shared project.
 4. Open the presentation slide and the demo dashboard in separate tabs. Zoom so one line of data and each location label is readable from the back of the room. Close tabs with credentials, real messages or customer data.
-5. Test the offline sequence without network access. It must still communicate all six locations below. Label every prepared diagram or illustrative record as such.
+5. Test the [standalone fallback viewer](../assets/demo-fallback/index.html) without network access. It contains six sanitized screenshots of the deck's prepared illustration and works when opened as a local file. It must still communicate all six locations below.
 
 ## Six stops, 4:30 total
 
@@ -42,9 +42,9 @@ alter table public.tasks enable row level security;
 
 ## Fallback if the dashboard or network fails
 
-Stay in the deck. Advance its prepared six-step sequence in this order: **table → identity → Data API → migration → Storage → function logs/Usage**. Say “This is a prepared illustration of the request path, not a live project.” Do not narrate an illustrative status code, user count or chart as live telemetry. No screenshot is required for the fallback, and no supplied production screenshot should be shown unless it has been sanitized and approved for internal presentation.
+Stay in the deck and advance its prepared six-step sequence in this order: **table → identity → Data API → migration → Storage → function logs/Usage**. If the local slide server also fails, open [assets/demo-fallback/index.html](../assets/demo-fallback/index.html) directly in the browser and use its six PNG frames. Say “This is a prepared illustration of the request path, not a live project.” Do not narrate an illustrative status code, user count or chart as live telemetry. The supplied production screenshots are not part of this fallback.
 
-At each step, speak the one-line definition before moving on. Rehearse once with the network disabled and a 4:30 timer. If a live dashboard page takes more than about 10 seconds to load, switch to the prepared sequence immediately. The fallback does not require Docker, database credentials or an active Supabase project.
+At each step, speak the one-line definition before moving on. Rehearse once with the network disabled and a 4:30 timer. If a live dashboard page takes more than about 10 seconds to load, switch to the prepared sequence immediately. The screenshot viewer needs neither a web server nor Docker, database credentials or an active Supabase project.
 
 For a separate, more advanced database lock demonstration, see [OBSERVABILITY-DEMO.md](OBSERVABILITY-DEMO.md); it is **outside this timed walkthrough** and must only run in a disposable project. For deeper dashboard vocabulary, see [DASHBOARD-GUIDE.md](DASHBOARD-GUIDE.md) and [OBSERVABILITY-GUIDE.md](OBSERVABILITY-GUIDE.md).
 

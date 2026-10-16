@@ -35,7 +35,7 @@ Atif signs in, creates a private task, uploads a PDF and sees an update on anoth
 - [Dashboard guide](DASHBOARD-GUIDE.md): every major dashboard area, what fields mean, one example and one caution.
 - [Usage guide](USAGE-GUIDE.md): units, calculation, quotas, billing distinctions and the supplied illustrative Pro snapshot.
 - [CLI reference](CLI-REFERENCE.md): essential commands, targets, migration workflow and remote-write warnings.
-- [Demo runbook](DEMO-RUNBOOK.md): 4–5 minute live sequence and offline fallback.
+- [Demo runbook](DEMO-RUNBOOK.md): 4–5 minute live sequence and [standalone six-frame screenshot fallback](../assets/demo-fallback/index.html).
 - [Task-app code examples](PRACTICAL-EXAMPLES.md): the useful SQL, SDK and service examples retained from the longer deck.
 - [Observability guide](OBSERVABILITY-GUIDE.md): detailed query, connection and service vocabulary for questions after the talk.
 - [Facilitator guide](FACILITATOR-GUIDE.md): quiz and likely Q&A, separate from the deck.
