@@ -1,6 +1,6 @@
 # Supabase as a Backend: What Runs Where
 
-A **18-slide, 40-minute** internal engineering talk. It teaches the boundaries between Supabase's Postgres database, APIs, Auth, Storage, Realtime, Edge Functions and background work through Atif's private task app. Five short Studio slides explain every dashboard section shown in the project menu. The audience deck uses a white presentation with a restrained accent; detailed field-by-field material remains in separate presenter documents.
+A **19-slide, 40-minute** internal engineering talk. It teaches the boundaries between Supabase's Postgres database, APIs, Auth, Storage, Realtime, Edge Functions and background work through Atif's private task app. Five short Studio slides explain every dashboard section shown in the project menu. A production-habits slide covers dashboard MFA recovery, migrations, Security Advisor and Observability. The audience deck uses a white presentation with a restrained accent; detailed field-by-field material remains in separate presenter documents.
 
 ## Run locally
 

@@ -19,7 +19,7 @@ Included at introductory depth:
 - **Usage in the main talk**: what the principal consumption metrics mean and how to read the example Pro dashboard snapshot. Detailed dashboard and Observability vocabulary are in the presenter guide for questions after the talk.
 - The optional Vector product may be named as part of the platform, but embedding search and RAG mechanics are reserved for AG-04.
 
-Keep this talk within the 45-minute hard stop. The current main route has 18 slides and a suggested duration of 40 minutes, including five short Studio menu slides and a five-minute demo; [PRESENTER-GUIDE.md](PRESENTER-GUIDE.md) carries extra depth. Avoid turning FS-03 into a PostgreSQL internals, RLS, Auth, queue architecture, or RAG deep dive. Do not add Q&A or quiz questions to the deck; those are prepared separately under [SESSION-FORMAT.md](SESSION-FORMAT.md).
+Keep this talk within the 45-minute hard stop. The current main route has 19 slides and a suggested duration of 40 minutes, including five short Studio menu slides, a production-habits recap and a five-minute demo; [PRESENTER-GUIDE.md](PRESENTER-GUIDE.md) carries extra depth. Mention dashboard-account MFA recovery as one operational lesson, leaving MFA protocol design to SEC-02. Avoid turning FS-03 into a PostgreSQL internals, RLS, Auth, queue architecture, or RAG deep dive. Do not add Q&A or quiz questions to the deck; those are prepared separately under [SESSION-FORMAT.md](SESSION-FORMAT.md).
 
 ## Boundaries with other talks
 

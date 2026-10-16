@@ -146,6 +146,12 @@ Dashboard path: **Observability → Database**.
 
 **Say:** “Which service owns this feature?” A Realtime chart can be blank because the feature is unused in the selected range or because reporting is delayed. Do not call it broken from that chart alone.
 
+## A practical monitoring routine
+
+- **After a deployment:** Check the selected time range and compare API/Edge Function errors, response speed and Query Performance with the preceding period. If a request fails, follow its route and timestamp into the corresponding service logs. [Reports](https://supabase.com/docs/guides/observability/reports), [logs](https://supabase.com/docs/guides/observability/logs).
+- **On a regular team cadence:** Review recurring slow queries, active or blocked sessions, connection pressure, CPU, memory and disk trends. Also review **Advisors → Security Advisor**; investigate Errors and Warnings rather than treating “0 errors” as a clean bill of health. Fix or document each finding, then rerun the advisor. [Inspect database activity](https://supabase.com/docs/guides/observability/inspect), [advisors](https://supabase.com/docs/guides/observability/advisors), [detection checks](https://supabase.com/docs/guides/observability/detecting).
+- **For continuous alerting:** Decide which symptoms matter to your app, such as sustained error rate, growing lock waits or connection saturation. The Studio reports help investigation, but a dashboard review is not an automatic pager. Supabase's Metrics API can feed a compatible external monitoring system where the team defines alert rules; its availability and metric names should be checked for the project. [Metrics API](https://supabase.com/docs/guides/observability/metrics).
+
 ## Use in the current 40-minute talk
 
 The audience deck gives the Studio Observability menu one short slide, the Usage page one substantive slide and the task app a five-minute demonstration. This detailed Observability glossary is presenter study material for follow-up questions; its old seven-screen walkthrough is outside the timed route. The optional [lock/wait demonstration](OBSERVABILITY-DEMO.md) is also outside the timed talk.

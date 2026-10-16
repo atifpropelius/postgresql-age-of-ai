@@ -60,3 +60,7 @@ This assumes a configured **private** bucket and suitable Storage policies. The 
 - **Database function / RPC:** SQL executes inside Postgres and uses database compute. It is suited to transactional row work, rather than slow external network calls. [Database functions](https://supabase.com/docs/guides/database/functions).
 
 The previous deck's longer Observability explanations remain in [OBSERVABILITY-GUIDE.md](OBSERVABILITY-GUIDE.md). The new audience route keeps these examples short to fit the session clock.
+
+## 6. Keep Edge Function code readable to your team
+
+Supabase Edge Functions run TypeScript in a Deno-compatible runtime. Start with a small request handler when it has one job. For several routes, Supabase also documents familiar **Express, Oak and Hono** routing styles. Choose a consistent structure your team understands; a routing framework is optional. Validate the caller and input, return useful HTTP errors, and log failures without exposing secrets. Test with `supabase functions serve`, then inspect **Invocations** and **Logs** after deployment. Familiar syntax helps maintainability, while tests and evidence reveal the actual error. [Routing in Functions](https://supabase.com/docs/guides/functions/routing), [error handling](https://supabase.com/docs/guides/functions/error-handling), [logging](https://supabase.com/docs/guides/functions/logging).

@@ -22,7 +22,7 @@ Reviewed: 16 October 2026. This is the deeper study aid for **Supabase as a Back
 - **Use:** Show that one task is a row, `title` is a column, and `owner_id` links the task to a user.
 - **Read:** Schema selector, table list, column names and types, row cells, **New table**, add/edit row and policy entry points; the precise controls depend on the current Studio UI.
 - **Example:** Inspect a sanitized `public.tasks` table with `id`, `owner_id`, `title` and `done`.
-- **Caution:** A dashboard edit changes the database; it does not automatically create a reviewed migration in Git. Avoid ad hoc production schema edits. [Tables and data](https://supabase.com/docs/guides/database/tables).
+- **Caution:** Once the team uses migrations, make table and column changes in a local migration, review and test it, then deploy it. A remote Table Editor change bypasses migration history and can cause schema drift. The local Studio UI can help design a change if you capture it with `supabase db diff`. [Database migrations](https://supabase.com/docs/guides/deployment/database-migrations).
 
 ### 3. SQL Editor
 
@@ -31,7 +31,7 @@ Reviewed: 16 October 2026. This is the deeper study aid for **Supabase as a Back
 - **Use:** Run a read-only `select id, title from public.tasks limit 5;` in the demo project; save repeatable schema changes as migration files.
 - **Read:** The editor text, selected query, run button, result grid and error text. Read the active project name again before running anything.
 - **Example:** Check that the task row exists after an insert through the app.
-- **Caution:** SQL Editor queries run with database privileges that may differ from an app user's RLS-limited request. A successful SQL Editor `SELECT` does **not** prove the client can access those rows. [Database overview](https://supabase.com/docs/guides/database/overview), [RLS](https://supabase.com/docs/guides/database/postgres/row-level-security).
+- **Caution:** SQL Editor queries run with database privileges that may differ from an app user's RLS-limited request. A successful SQL Editor `SELECT` does **not** prove the client can access those rows. Put remote schema changes, including a small `ALTER TABLE`, through reviewed migrations rather than editing production here; otherwise migration history can drift. [Database migrations](https://supabase.com/docs/guides/deployment/database-migrations), [RLS](https://supabase.com/docs/guides/database/postgres/row-level-security).
 
 ### 4. Database
 
@@ -50,6 +50,7 @@ Reviewed: 16 October 2026. This is the deeper study aid for **Supabase as a Back
 - **Read:** **Users** lists Auth identities; **Providers** configures sign-in methods; URL and email settings affect login flows. A JWT is a token carrying identity; it is not a row-access policy.
 - **Example:** Atif signs in; `auth.uid()` in a task policy can match the `owner_id` of his tasks.
 - **Caution:** `auth.users` is not exposed through the generated public Data API. Do not show emails or tokens from a real project. Signing in alone does not grant access to every table. [Auth overview](https://supabase.com/docs/guides/auth), [user management](https://supabase.com/docs/guides/auth/managing-user-data).
+- **Presenter best practice — your dashboard account:** The MFA setting for your *Supabase dashboard account* is separate from MFA for users of your app. Before relying on dashboard MFA, enroll and test a backup TOTP factor in a different app or device and keep its secret separately. Supabase does not issue dashboard recovery codes and says it cannot restore a non-SSO account if every second factor is lost. SSO users should contact support. For a company organization, consider more than one owner so another owner can still access the organization if one account is locked out; this does not recover the locked account. [Dashboard MFA](https://supabase.com/docs/guides/platform/multi-factor-authentication), [lost MFA device](https://supabase.com/docs/guides/troubleshooting/lost-accessforgot-the-mfa-device-nAPT-7), [production checklist](https://supabase.com/docs/guides/deployment/going-into-prod).
 
 ### 6. Storage
 
@@ -67,6 +68,7 @@ Reviewed: 16 October 2026. This is the deeper study aid for **Supabase as a Back
 - **Use:** Inspect a demo function's deployment, invocations and logs when a task notification fails.
 - **Read:** **Invocations** show request/response status and duration; **Logs** show platform events, exceptions and custom messages; **Secrets** supply environment values. Dashboard placement varies.
 - **Example:** A function sends a task-assignment email through an external mail API.
+- **Code style:** Edge Functions use Supabase's Deno-compatible runtime and TypeScript. You can write a small handler with `Deno.serve`, or use Express, Oak or Hono style routing when several HTTP routes genuinely belong together. Pick a structure the team can read, return meaningful HTTP errors, and inspect invocation logs and exceptions while debugging. This is server-side function code, not an Express server running inside Postgres. [Edge Functions](https://supabase.com/docs/guides/functions), [routing](https://supabase.com/docs/guides/functions/routing), [error handling](https://supabase.com/docs/guides/functions/error-handling).
 - **Caution:** Never print secrets or personal data in logs. A deployed function is separate from a Postgres function or trigger. Long, retry-heavy work may fit a queue/worker better. [Edge Functions](https://supabase.com/docs/guides/functions), [function logging](https://supabase.com/docs/guides/functions/logging).
 
 ### 8. Compute
@@ -94,7 +96,7 @@ Reviewed: 16 October 2026. This is the deeper study aid for **Supabase as a Back
 - **Use:** Review a warning about an exposed table, policy, duplicate index or inefficient database setting.
 - **Read:** Severity, affected object, explanation and suggested remediation are a starting point. An advisor finding is a recommendation, not proof that a specific user request failed.
 - **Example:** An advisor flags a table without appropriate RLS; inspect grants and policies before making it available to clients.
-- **Caution:** Do not apply every suggested index or policy change blindly; validate the workload and test in staging. [Observability](https://supabase.com/docs/guides/observability), [Supabase advisor announcement](https://supabase.com/blog/security-performance-advisor).
+- **Caution:** Do not ignore Security Advisor **Errors** or **Warnings**. Open each finding, identify the affected object and risk, fix it or document why the configuration is intentional, then rerun the advisor. “0 errors” does not mean “secure,” especially if warnings remain. Do not apply every suggested index or policy change blindly; validate and test in staging. [Advisors](https://supabase.com/docs/guides/observability/advisors), [detection checks](https://supabase.com/docs/guides/observability/detecting).
 
 ### 11. Observability
 
@@ -103,7 +105,7 @@ Reviewed: 16 October 2026. This is the deeper study aid for **Supabase as a Back
 - **Use:** Start with Overview, then choose Query Performance, Database Connections, API Gateway, Data API, Auth, Storage, Edge Functions or Realtime as the symptom suggests.
 - **Read:** Set the **time range** and, where offered, source/project before interpreting a chart. **Slow queries** are grouped database statements; **connections** are sessions, not browser tabs; **blocked** means waiting for a lock. Some views are live snapshots, some are aggregated reports.
 - **Example:** A task save stalls: inspect API errors, then active or blocked database sessions, then the grouped query report.
-- **Caution:** A blank graph can mean no events, a different time range or reporting delay. Report history and some charts depend on plan; Cloud reports are not guaranteed in self-hosted Supabase. The detailed, field-by-field explanation is in [OBSERVABILITY-GUIDE.md](OBSERVABILITY-GUIDE.md). [Reports](https://supabase.com/docs/guides/observability/reports).
+- **Caution:** Check Observability after deployments, during incidents and on a regular team cadence; compare errors, response times, connections, slow queries and resources with an earlier period. A blank graph can mean no events, a different time range or reporting delay. Report history and some charts depend on plan; Cloud reports are not guaranteed in self-hosted Supabase. The detailed, field-by-field explanation is in [OBSERVABILITY-GUIDE.md](OBSERVABILITY-GUIDE.md). [Reports](https://supabase.com/docs/guides/observability/reports), [detection checks](https://supabase.com/docs/guides/observability/detecting).
 
 ### 12. Logs
 

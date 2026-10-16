@@ -1,6 +1,6 @@
 # Presenter guide — Supabase as a Backend: What Runs Where
 
-Reviewed **16 October 2026**. This is the private study route; the audience sees an 18-slide deck. The company session is 60 minutes: **40:00 talk**, **5:00 Q&A**, **10–12:00 live quiz**, **2:00 feedback**, leaving 1–3 minutes for transitions. The host's talk hard stop is 45 minutes. Quiz and Q&A are in [FACILITATOR-GUIDE.md](FACILITATOR-GUIDE.md).
+Reviewed **16 October 2026**. This is the private study route; the audience sees a 19-slide deck. The company session is 60 minutes: **40:00 talk**, **5:00 Q&A**, **10–12:00 live quiz**, **2:00 feedback**, leaving 1–3 minutes for transitions. The host's talk hard stop is 45 minutes. Quiz and Q&A are in [FACILITATOR-GUIDE.md](FACILITATOR-GUIDE.md).
 
 ## Timing and talk track
 
@@ -8,24 +8,25 @@ Reviewed **16 October 2026**. This is the private study route; the audience sees
 | --- | ---: | ---: | --- |
 | 1. Title and objectives | 1:00 | 1:00 | Promise a map of execution and a practical task-app story. |
 | 2. What and why | 2:00 | 3:00 | Define BaaS. Compare Supabase with an owned NestJS backend without claiming it replaces application design. |
-| 3. Adoption context | 0:45 | 3:45 | Attribute the dated developer figure and funding terms. Udio is one published customer story, not proof that all its systems use Supabase. |
-| 4. Components | 2:30 | 6:15 | Give one-line jobs. Postgres stores rows; separate services expose API, identity, files, live events and code. Queues/Cron build on Postgres extensions. |
-| 5. What runs where | 3:00 | 9:15 | Trace Atif's sign-in, row, PDF and notification. Contrast row bytes, object bytes and worker execution. |
-| 6. One request | 2:30 | 11:45 | The user's token identifies the caller. The API serves the request; Postgres evaluates grants, policies and constraints. Realtime needs configuration. |
-| 7. Logic placement | 2:15 | 14:00 | SQL function/RPC and triggers run in Postgres; Edge Functions run separately; workers handle asynchronous work. Explain why a mail secret stays server-side. |
-| 8. Schema workflow | 2:45 | 16:45 | Define migration/history/drift. Show local → reviewed SQL → staging → production. Do not run a remote write on stage. |
-| 9. Branching | 1:45 | 18:30 | Preview versus persistent; branches are isolated and data-less by default. A short-lived preview may save compute compared with an always-on test project, but it is billed for usage. |
-| 10. Region | 1:30 | 20:00 | Weigh user latency with residency and requirements. A later move needs a new project and migration. |
-| 11. Studio: start and inspect | 1:40 | 21:40 | Project Overview confirms the environment; Table Editor shows rows/columns; SQL Editor runs a deliberate query. SQL Editor access differs from app RLS. |
-| 12. Studio: data, identity, files | 1:40 | 23:20 | Database holds schema/policies/functions; Auth shows user identity; Storage manages PDF objects. Distinguish task row, user and file bytes. |
-| 13. Studio: runtime services | 1:40 | 25:00 | Edge Functions show trusted handlers and invocations; Compute shows database capacity; Realtime shows live delivery. Each has a different failure mode. |
-| 14. Studio: diagnose | 1:40 | 26:40 | Advisors suggests findings; Observability shows trends; Logs show timed events. Trace one failed or slow task save. |
-| 15. Studio: configure | 1:40 | 28:20 | Integrations links outside tools; Project Settings holds project URL, keys and configuration. Organization billing is separate. |
-| 16. Usage | 5:00 | 33:20 | Read example counters as used/allowance, then define all eleven metrics. Explain Pro Spend Cap ON versus OFF and its exclusions; check Usage and Upcoming Invoice. |
-| 17. Task-app demo | 5:00 | 38:20 | Use the [demo runbook](DEMO-RUNBOOK.md) for six timed stops; the prepared slide sequence is the offline fallback. |
-| 18. Wrap | 1:40 | **40:00** | Repeat where work runs, how changes are reviewed and where to investigate. |
+| 3. Adoption context | 0:45 | 3:45 | Attribute the dated developer figure and funding terms. Lovable Cloud uses Supabase; Figma Make offers a Supabase integration. Do not claim that all Figma systems use Supabase. |
+| 4. Components | 2:15 | 6:00 | Give one-line jobs. Postgres stores rows; separate services expose API, identity, files, live events and code. Queues/Cron build on Postgres extensions. |
+| 5. What runs where | 2:45 | 8:45 | Trace Atif's sign-in, row, PDF and notification. Contrast row bytes, object bytes and worker execution. |
+| 6. One request | 2:30 | 11:15 | The user's token identifies the caller. The API serves the request; Postgres evaluates grants, policies and constraints. Realtime needs configuration. |
+| 7. Logic placement | 2:00 | 13:15 | SQL function/RPC and triggers run in Postgres; Edge Functions run separately; workers handle asynchronous work. Express/Hono routing can make TypeScript familiar, but this is a Deno runtime. Explain why a mail secret stays server-side. |
+| 8. Schema workflow | 2:45 | 16:00 | Define migration/history/drift. Show local → reviewed SQL → staging → production. Make remote table and column changes through migrations; do not write to the production project on stage. |
+| 9. Branching | 1:45 | 17:45 | Preview versus persistent; branches are isolated and data-less by default. A short-lived preview may save compute compared with an always-on test project, but it is billed for usage. |
+| 10. Region | 1:15 | 19:00 | Weigh user latency with residency and requirements. A later move needs a new project and migration. |
+| 11. Studio: start and inspect | 1:40 | 20:40 | Project Overview confirms the environment; Table Editor shows rows/columns; SQL Editor runs a deliberate query. SQL Editor access differs from app RLS. |
+| 12. Studio: data, identity, files | 1:40 | 22:20 | Database holds schema/policies/functions; Auth shows user identity; Storage manages PDF objects. Distinguish task row, user and file bytes. |
+| 13. Studio: runtime services | 1:40 | 24:00 | Edge Functions show trusted handlers and invocations; Compute shows database capacity; Realtime shows live delivery. Each has a different failure mode. |
+| 14. Studio: diagnose | 1:40 | 25:40 | Triage Security Advisor errors and warnings; Observability shows query and service trends; Logs show timed events. Trace one failed or slow task save. |
+| 15. Studio: configure | 1:40 | 27:20 | Integrations links outside tools; Project Settings holds project URL, keys and configuration. Organization billing is separate. |
+| 16. Usage | 4:20 | 31:40 | Read example counters as used/allowance, then define all eleven metrics. Explain Pro Spend Cap ON versus OFF and its exclusions; check Usage and Upcoming Invoice. |
+| 17. Production habits | 1:40 | 33:20 | Back up and test dashboard TOTP before an account lockout; use migrations; review Security Advisor; watch Observability; look in official developer docs first. |
+| 18. Task-app demo | 5:00 | 38:20 | Use the [demo runbook](DEMO-RUNBOOK.md) for six timed stops; the prepared slide sequence is the offline fallback. |
+| 19. Wrap | 1:40 | **40:00** | Repeat where work runs, how changes are reviewed and where to investigate. |
 
-**Rehearsal rule:** keep each Studio menu slide to its 1:40 window: one sentence per area, then the task-app use. If behind time, shorten slides 3 and 16 and use the prepared five-minute demo sequence. Preserve the architecture explanation on slide 5 and the production workflow on slide 8. The remaining five minutes before the 45-minute hard stop are a buffer, not planned content.
+**Rehearsal rule:** keep each Studio menu slide to its 1:40 window: one sentence per area, then the task-app use. If behind time, shorten slides 3 and 16 and use the prepared five-minute demo sequence. Preserve the architecture explanation on slide 5, the production workflow on slide 8 and the 2FA backup warning on slide 17. The remaining five minutes before the 45-minute hard stop are a buffer, not planned content.
 
 ## The one example and its boundaries
 
@@ -37,12 +38,22 @@ Atif signs in, creates a private task, uploads a PDF and sees an update on anoth
 
 **Spend Cap talk track:** On Pro, the Spend Cap starts enabled by default. With it on, covered usage over the plan quota can bring notification, a grace period and service restrictions; it is not a promise that the entire invoice cannot rise. Turning it off allows covered usage to continue past allowances with billable overages. Database compute and branching compute are outside the Spend Cap, and Supabase says branch usage is not covered. Before changing it, check the organization's Usage page, Upcoming Invoice and expected traffic. The control is in the organization's **Billing → Cost Control** area, not an individual project setting. [Billing FAQ](https://supabase.com/docs/guides/platform/billing-faq), [Cost Control](https://supabase.com/docs/guides/platform/cost-control), [branching usage](https://supabase.com/docs/guides/platform/manage-your-usage/branching).
 
+## Production habits to explain on slide 17
+
+- **Protect dashboard access:** Supabase account MFA currently uses TOTP and does not supply recovery codes. Enrol a second factor in a different app or device, then verify it works while the primary still works. For a non-SSO account, Supabase says it cannot restore account access if every factor is lost. A second organization owner helps the team retain project administration; it does **not** recover the locked personal account. A useful personal line is: “I lost access for a month; set up the backup before you need it.” [Account MFA](https://supabase.com/docs/guides/platform/multi-factor-authentication), [lost factor](https://supabase.com/docs/guides/troubleshooting/lost-accessforgot-the-mfa-device-nAPT-7), [organization access](https://supabase.com/docs/guides/platform/access-control).
+- **Change schema through migrations:** Create and test a versioned migration for each table, column, view or policy change before applying it remotely. Supabase advises local Dashboard edits can be captured with `db diff`; changing the remote SQL/Table Editor directly bypasses migration history and may break the next `db push`. [Database migrations](https://supabase.com/docs/guides/deployment/database-migrations).
+- **Triage Security Advisor:** Review errors and warnings, especially after Auth, RLS or schema changes. Read the affected object and recommended fix, decide whether the finding is real or intentional, and rerun the check after a change. A zero-error screenshot can still show warnings; a finding alone does not prove a breach. [Advisors](https://supabase.com/docs/guides/observability/advisors).
+- **Watch Observability:** Check query performance, connections, resource pressure and service health regularly. When a trend changes, select the right project and time window, then inspect Logs for the related event. Use the dashboard as part of backend monitoring, alongside application behavior and user reports. [Observability](https://supabase.com/docs/guides/observability), [Logs in Studio](https://supabase.com/docs/guides/observability/logs).
+- **Start with official Developer Docs:** Look up product behavior, commands, plan limits and troubleshooting in [Supabase Developer Docs](https://supabase.com/docs) before relying on old screenshots or third-party posts. The Studio menu and service details evolve.
+
+**Edge Function coding note for slide 7:** Edge Functions are TypeScript on a Deno runtime. Supabase documents Express, Oak and Hono as optional ways to route several HTTP paths inside one function; the framework is a coding style choice, not a switch to a Node/EC2 server. A small single-action function can use a plain handler. Use clear routes, validation and useful error logs so failures are easier to locate in Studio. [Edge Function quickstart](https://supabase.com/docs/guides/functions/quickstart), [routing](https://supabase.com/docs/guides/functions/routing), [logging](https://supabase.com/docs/guides/functions/logging).
+
 ## Where to study before presenting
 
 - [Dashboard guide](DASHBOARD-GUIDE.md): every major dashboard area, what fields mean, one example and one caution.
 - [Usage guide](USAGE-GUIDE.md): units, calculation, quotas, billing distinctions and the supplied illustrative Pro snapshot.
 - [CLI reference](CLI-REFERENCE.md): essential commands, targets, migration workflow and remote-write warnings.
-- [Demo runbook](DEMO-RUNBOOK.md): 4–5 minute live sequence and [standalone six-frame screenshot fallback](../assets/demo-fallback/index.html).
+- [Demo runbook](DEMO-RUNBOOK.md): five-minute live sequence and [standalone six-frame screenshot fallback](../assets/demo-fallback/index.html).
 - [Task-app code examples](PRACTICAL-EXAMPLES.md): the useful SQL, SDK and service examples retained from the longer deck.
 - [Observability guide](OBSERVABILITY-GUIDE.md): detailed query, connection and service vocabulary for questions after the talk.
 - [Facilitator guide](FACILITATOR-GUIDE.md): quiz and likely Q&A, separate from the deck.
@@ -58,4 +69,4 @@ Atif signs in, creates a private task, uploads a PDF and sees an update on anoth
 
 ## Primary references
 
-Official Supabase documentation is the source for product and CLI behavior: [architecture](https://supabase.com/docs/guides/getting-started/architecture), [Data API](https://supabase.com/docs/guides/api), [Auth](https://supabase.com/docs/guides/auth), [RLS](https://supabase.com/docs/guides/database/postgres/row-level-security), [Storage](https://supabase.com/docs/guides/storage), [Realtime](https://supabase.com/docs/guides/realtime), [Edge Functions](https://supabase.com/docs/guides/functions), [Queues](https://supabase.com/docs/guides/queues), [Cron](https://supabase.com/docs/guides/cron), [local development](https://supabase.com/docs/guides/local-development/cli-workflows), [branching](https://supabase.com/docs/guides/deployment/branching), [regions](https://supabase.com/docs/guides/platform/regions), [usage](https://supabase.com/docs/guides/platform/manage-your-usage). The [Series F announcement](https://supabase.com/blog/series-f) and [Udio customer story](https://supabase.com/customers/udio) support the dated context slide.
+Official Supabase documentation is the source for product and CLI behavior: [architecture](https://supabase.com/docs/guides/getting-started/architecture), [Data API](https://supabase.com/docs/guides/api), [Auth](https://supabase.com/docs/guides/auth), [RLS](https://supabase.com/docs/guides/database/postgres/row-level-security), [Storage](https://supabase.com/docs/guides/storage), [Realtime](https://supabase.com/docs/guides/realtime), [Edge Functions](https://supabase.com/docs/guides/functions), [Queues](https://supabase.com/docs/guides/queues), [Cron](https://supabase.com/docs/guides/cron), [local development](https://supabase.com/docs/guides/local-development/cli-workflows), [branching](https://supabase.com/docs/guides/deployment/branching), [regions](https://supabase.com/docs/guides/platform/regions), [usage](https://supabase.com/docs/guides/platform/manage-your-usage). The [Series F announcement](https://supabase.com/blog/series-f), [Lovable Cloud announcement](https://supabase.com/blog/lovable-cloud-launch) and [Figma Make integration](https://supabase.com/blog/figma-make-support-for-supabase) support the dated context slide.

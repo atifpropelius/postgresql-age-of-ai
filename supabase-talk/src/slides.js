@@ -21,12 +21,12 @@ export const slides = [
     id:'context', section:'FOUNDATION', duration:45, kind:'context',
     title:'Why this platform is worth understanding',
     lead:'Adoption provides context. It does not decide whether the architecture fits.',
-    facts:[['Nearly 10 million','developers building on Supabase, reported in June 2026'],['Udio','published a customer story describing Supabase in its backend'],['$10.5 billion','post-money valuation implied by $500M at $10B pre-money, June 2026']],
+    facts:[['Nearly 10 million','developers building on Supabase, reported in June 2026'],['Lovable + Figma','Lovable Cloud runs on Supabase; Figma Make offers a Supabase integration'],['$10.5 billion','post-money valuation implied by $500M at $10B pre-money, June 2026']],
     footnote:'Developers are not paying customers or monthly active users. These are dated, company-reported facts.',
     takeaway:'Evaluate the platform by your workload, constraints and team skills.'
   },
   {
-    id:'components', section:'FOUNDATION', duration:150, kind:'services',
+    id:'components', section:'FOUNDATION', duration:135, kind:'services',
     title:'What does a Supabase project provide?',
     lead:'PostgreSQL is the data core. The other capabilities have separate jobs.',
     columns:['Component','One-line definition','Typical task-app use'],
@@ -34,7 +34,7 @@ export const slides = [
     takeaway:'These pieces work together; they do not all run inside one process.'
   },
   {
-    id:'where', section:'ARCHITECTURE', duration:180, kind:'architecture',
+    id:'where', section:'ARCHITECTURE', duration:165, kind:'architecture',
     title:'The central question: what runs where?',
     lead:'Follow Atif as he signs in, creates a task, attaches a PDF and sees an update.',
     columns:['Action','Entry point','Execution / destination'],
@@ -52,18 +52,18 @@ export const slides = [
     takeaway:'A token identifies the caller; database authorization still decides access.'
   },
   {
-    id:'logic', section:'ARCHITECTURE', duration:135, kind:'table',
+    id:'logic', section:'ARCHITECTURE', duration:120, kind:'table',
     title:'Where should application logic run?',
     lead:'Place work where its data, trust boundary and timing make sense.',
     columns:['Place','Use it for','Example · limitation'],
-    rows:[['Database function / RPC','Logic near rows and transactions.','Create task + audit row · avoid long network calls.'],['Trigger','Automatic action invoked by a defined database event.','Stamp an audit row · hidden side effects need care.'],['Edge Function','Trusted HTTP code and external integrations.','Call mail API · execution time and secrets matter.'],['External backend','Dedicated services and custom infrastructure.','Complex workflow · you operate the service.'],['Worker','Reliable work after the request returns.','Send queued email · needs consumer and retry plan.']],
-    example:'A simple task read can use the Data API directly; a mail-provider secret stays in trusted server code.',
+    rows:[['Database function / RPC','Logic near rows and transactions.','Create task + audit row · avoid long network calls.'],['Trigger','Automatic action invoked by a defined database event.','Stamp an audit row · hidden side effects need care.'],['Edge Function','TypeScript HTTP code in a Deno-compatible runtime.','Mail API · Express/Hono routing is optional; log failures.'],['External backend','Dedicated services and custom infrastructure.','Complex workflow · you operate the service.'],['Worker','Reliable work after the request returns.','Send queued email · needs consumer and retry plan.']],
+    example:'A task read can use the Data API. For email, keep the secret in an Edge Function; validate input and return useful errors.',
     takeaway:'RPC executes in PostgreSQL. An Edge Function executes in a separate runtime.'
   },
   {
     id:'migrations', section:'SHIP', duration:165, kind:'workflow',
     title:'Change the schema safely',
-    lead:'Treat database changes as reviewed code that can be replayed.',
+    lead:'Make every table or column change a reviewed migration that can be replayed.',
     definitions:[['Schema','The structure of tables, views and other database objects.'],['Migration','A versioned SQL file that changes that structure.'],['Migration history','The record of changes already applied.'],['Local / staging / production','Developer machine / validation environment / live user environment.'],['Schema drift','A remote change that the migration files do not describe.']],
     steps:['Edit locally','Write migration','Commit + review','Validate in staging','Deploy to production'],
     code:'supabase init  →  supabase start  →  supabase migration new add_tasks  →  supabase db reset',
@@ -80,7 +80,7 @@ export const slides = [
     takeaway:'Use preview branches for temporary tests, then delete them. Compare actual branch usage with a separate project.'
   },
   {
-    id:'region', section:'SHIP', duration:90, kind:'region',
+    id:'region', section:'SHIP', duration:75, kind:'region',
     title:'Choose the project region deliberately',
     lead:'The primary region affects latency and where core project data is hosted.',
     factors:[['Users','Measure latency near the main audience.'],['Data location','Check residency and contractual requirements.'],['Capabilities','Confirm required compute and service availability.'],['Recovery','Plan backup and disaster recovery needs.']],
@@ -94,8 +94,8 @@ export const slides = [
     lead:'These first three menu areas help you find the project, see rows and run a query.',
     path:'FIND THE PROJECT → INSPECT THE TASK',
     columns:['Dashboard section','What you get','When Atif opens it'],
-    rows:[['Project Overview','Project identity, status and service shortcuts.','Confirm the demo project before any change.'],['Table Editor','Create or inspect tables, columns and rows visually.','Inspect public.tasks and task 101.'],['SQL Editor','Run or save SQL; inspect results and errors.','Check task rows with a read-only SELECT.']],
-    caution:'SQL Editor may use higher privileges than the app. A dashboard schema edit does not create a reviewed migration.',
+    rows:[['Project Overview','Project identity, status and service shortcuts.','Confirm the demo project before any change.'],['Table Editor','Inspect tables, columns and rows visually.','Inspect public.tasks and task 101.'],['SQL Editor','Run or save SQL; inspect results and errors.','Check task rows with a read-only SELECT.']],
+    caution:'Make deployed schema changes through tested migrations. Direct Table/SQL Editor edits bypass migration history; SQL Editor may have higher privileges than the app.',
     takeaway:'Confirm the project first; use Table Editor to inspect and SQL Editor for deliberate queries.'
   },
   {
@@ -124,8 +124,8 @@ export const slides = [
     lead:'Use recommendations, trends and individual events together.',
     path:'FINDING → TREND → EVENT',
     columns:['Dashboard section','What you get','When Atif opens it'],
-    rows:[['Advisors','Security and performance findings with suggested fixes.','Inspect a warning about a task policy or index.'],['Observability','Slow queries, connections, resource and service-health reports.','Find slow writes or sessions waiting for a lock.'],['Logs','Searchable, timestamped API, database, Auth and function events.','Match a failed request to its error.']],
-    caution:'Select the right project and time range. A finding is a lead to investigate, not proof of the cause.',
+    rows:[['Advisors','Security and performance findings with suggested fixes.','Triage a task-policy error or index warning.'],['Observability','Slow queries, connections, resource and service-health reports.','Find slow writes or sessions waiting for a lock.'],['Logs','Searchable, timestamped API, database, Auth and function events.','Match a failed request to its error.']],
+    caution:'Review Security Advisor errors and warnings. Investigate each finding before changing permissions; select the right project and time range.',
     takeaway:'Observability shows a pattern; Logs help identify the specific event behind it.'
   },
   {
@@ -139,7 +139,7 @@ export const slides = [
     takeaway:'Next, use organization Usage and Billing to see what these services consume.'
   },
   {
-    id:'usage', section:'OPERATE', duration:300, kind:'usage',
+    id:'usage', section:'OPERATE', duration:260, kind:'usage',
     title:'Read the Usage page before costs surprise you',
     lead:'Usage is measured activity. An allowance is the amount included in a plan; overage rules differ by metric.',
     snapshot:[['Edge invocations','199,095 / 2,000,000','function calls'],['Egress','0.79 / 250 GB','outgoing data'],['Log ingestion','3.07 / 20 GB','collected logs']],
@@ -147,6 +147,14 @@ export const slides = [
     spendCap:'Pro defaults to ON. Turning it OFF permits billable overages for covered usage; keeping it ON may restrict usage at quota. Compute and branch compute remain billable.',
     example:'A PDF repeatedly downloaded without caching can raise egress while storage size barely changes.',
     takeaway:'Before changing Spend Cap, review Usage and Upcoming Invoice. It does not cap the whole bill.'
+  },
+  {
+    id:'habits', section:'OPERATE', duration:100, kind:'table',
+    title:'Five habits for a reliable Supabase project',
+    lead:'A small release routine prevents lockouts, schema drift and unseen failures.',
+    columns:['Habit','What to do','Why it matters'],
+    rows:[['Protect dashboard access','Add and test a backup authenticator on another device; keep another organization owner.','Dashboard two-factor sign-in has no recovery codes. Losing every factor can lock out an account.'],['Change schema through migrations','Create, review and test a migration for each table or column change.','Direct remote edits bypass migration history.'],['Triage Security Advisor','Review errors and warnings; fix issues or document intentional exceptions.','Findings can expose unsafe access or configuration.'],['Watch Observability','Check query, connection and service trends regularly; use Logs to investigate.','A failed request or growing wait should be visible before it spreads.'],['Read official docs first','Check Supabase Developer Docs for behavior, commands and plan rules.','Dashboard and product details change.']],
+    takeaway:'Keep access recoverable, schema in code and production behavior visible.'
   },
   {
     id:'demo', section:'OPERATE', duration:300, kind:'demo',

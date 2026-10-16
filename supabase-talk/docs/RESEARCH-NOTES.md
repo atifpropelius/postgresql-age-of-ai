@@ -2,15 +2,28 @@
 
 Reviewed **16 October 2026**. This file records claims that change over time. Use only the short, qualified versions in the main deck; keep the fuller context here. Recheck linked primary sources before presenting.
 
-## Adoption, valuation, and customer example
+## Adoption, valuation, and named integrations
 
 | Claim suitable for a short context slide | Scope and qualification | Primary source |
 | --- | --- | --- |
 | “Supabase reported nearly 10 million developers building on its platform in June 2026.” | This is Supabase's reported **developer** adoption figure, not monthly active application users, paying customers, or project count. | [Supabase Series F announcement, 4 June 2026](https://supabase.com/blog/series-f) |
 | “Supabase announced a $500 million Series F at a $10 billion pre-money valuation.” | State the funding terms exactly. $10.5 billion is the simple post-financing arithmetic, not the valuation wording in the company announcement; avoid presenting it as a current market price. | [Supabase Series F announcement](https://supabase.com/blog/series-f) |
-| “Udio says it launched on Supabase and uses its Database and Auth.” | This is a named, published customer case study. It describes Udio's reported use; it does not prove how every other service is used by Udio. | [Udio customer story](https://supabase.com/customers/udio) |
+| “Lovable Cloud runs on Supabase; Figma Make offers a Supabase integration.” | The names refer to specific products. Lovable Cloud projects use Supabase behind the scenes; Figma Make can connect to a Supabase project. This does not establish that every Figma product or Figma's own internal infrastructure uses Supabase, nor that either is a paying customer. | [Lovable Cloud announcement, 29 September 2025](https://supabase.com/blog/lovable-cloud-launch), [Supabase on Figma Make, 15 July 2025](https://supabase.com/blog/figma-make-support-for-supabase), [Figma Make help](https://help.figma.com/hc/en-us/articles/32640822050199-Add-a-backend-to-a-functional-prototype-or-web-app) |
 
-The adoption and valuation claims are time-sensitive company statements. Present neither as audited counts nor as a comparison with MAU. The Udio story can be reduced to a single line; the platform architecture should remain the focus of the talk.
+The adoption and valuation claims are time-sensitive company statements. Present neither as audited counts nor as a comparison with MAU. Keep the Lovable/Figma Make example to one short line; the platform architecture should remain the focus of the talk.
+
+## Production-practice source checks
+
+The 19-slide talk adds a compact best-practices slide after Usage. These are practical operational lessons, with source limits:
+
+| Practice | Verified point and qualification | Official source |
+| --- | --- | --- |
+| Back up dashboard MFA | Supabase account MFA uses TOTP, provides no recovery codes and recommends a backup factor in a separate app/device. Supabase says it cannot restore a non-SSO account if all factors are lost. Another organization owner helps project continuity but does not recover an individual's account. | [Account MFA](https://supabase.com/docs/guides/platform/multi-factor-authentication), [lost MFA device](https://supabase.com/docs/guides/troubleshooting/lost-accessforgot-the-mfa-device-nAPT-7), [organization access](https://supabase.com/docs/guides/platform/access-control) |
+| Migrate remote schema | Supabase's migration guide says to make remote schema changes through migration files; remote Table/SQL Editor edits bypass migration history. Local Dashboard edits can be captured with `supabase db diff`. | [Database migrations](https://supabase.com/docs/guides/deployment/database-migrations) |
+| Review advisor findings | Security Advisor reports error/warning findings; triage the affected object and decide whether it reflects intended policy before changing permissions. A finding alone does not prove exploitation. | [Advisors](https://supabase.com/docs/guides/observability/advisors) |
+| Monitor regularly | Observability combines reports, database statistics, advisors and logs; use trends for detection and timed events for diagnosis. Availability and history depend on project configuration and plan. | [Observability](https://supabase.com/docs/guides/observability), [Logs in Studio](https://supabase.com/docs/guides/observability/logs) |
+| Use official docs first | The [Supabase Developer Docs](https://supabase.com/docs) are the primary source for current commands and product behavior. Dashboard screenshots and third-party guides may be stale. | [Supabase Developer Docs](https://supabase.com/docs) |
+| Use familiar HTTP routing where useful | Edge Functions use TypeScript on a Deno runtime. Supabase documents optional Express, Oak and Hono routing inside a function; this is not a Node/EC2 deployment. | [Edge Functions quickstart](https://supabase.com/docs/guides/functions/quickstart), [routing](https://supabase.com/docs/guides/functions/routing) |
 
 ## Optional engineering extension: throttle requests before Supabase
 

@@ -100,6 +100,8 @@ table th:nth-child(2) { width: 37%; }
 .dashboard-table table th:first-child { width: 22%; }
 .dashboard-table table th:nth-child(2) { width: 40%; }
 .dashboard-table tbody th, .dashboard-table tbody td { padding: 19px 13px; font-size: clamp(1rem,1.25vw,1.23rem); line-height: 1.32; }
+.slide-logic tbody th, .slide-logic tbody td,
+.slide-habits tbody th, .slide-habits tbody td { padding: 13px 10px; font-size: clamp(1rem,1.18vw,1.12rem); line-height: 1.3; }
 
 .usage-snapshot { border-top: 2px solid var(--accent); border-bottom: 1px solid #d9dcdf; padding: 9px 0 12px; }
 .snapshot-label { color: #5e656d; font-size: .66rem; font-weight: 760; letter-spacing: .09em; }
@@ -157,6 +159,8 @@ table th:nth-child(2) { width: 37%; }
   .architecture-table tbody th, .architecture-table tbody td { font-size: .86rem; }
   .dashboard-path { padding: 9px 12px; }
   .dashboard-table tbody th, .dashboard-table tbody td { padding: 13px 9px; font-size: 1rem; }
+  .slide-logic tbody th, .slide-logic tbody td,
+  .slide-habits tbody th, .slide-habits tbody td { padding: 9px 8px; font-size: .94rem; }
   table th, table td { padding: 7px 8px; }
   tbody th, tbody td { font-size: .9rem; }
   .definitions > div { padding: 7px 0; }
