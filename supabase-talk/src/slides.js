@@ -61,6 +61,15 @@ export const slides = [
     takeaway:'RPC runs in Postgres. Edge Functions and Compute run separately; Compute is not production-ready yet.'
   },
   {
+    id:'compute-focus', section:'ARCHITECTURE', duration:90, kind:'compute-focus',
+    title:'Supabase Compute: a service beside Postgres',
+    lead:'A managed full Linux runtime for long-running Node.js services or custom Dockerfile apps.',
+    choices:[['Edge Function','Deno request handler for bounded server-side work.'],['Supabase Compute','HTTP API or private worker; may sleep when idle.'],['EC2 / VPS','A separate production server your team manages.']],
+    examples:'Queue consumers · AI agents · bulk processing · long-running tasks',
+    status:'Private Alpha; our project has no access. Supabase allows internal evaluation only, not production or end-customer use.',
+    takeaway:'Compute could host a backend worker near Postgres later; keep production jobs on suitable external hosting for now.'
+  },
+  {
     id:'gateway', section:'ARCHITECTURE', duration:120, kind:'edge-gateway',
     title:'A gateway before expensive requests',
     lead:'An optional Cloudflare Worker can reject abusive traffic before it reaches selected Supabase endpoints.',

@@ -14,7 +14,7 @@ The adoption and valuation claims are time-sensitive company statements. Present
 
 ## Production-practice source checks
 
-The 20-slide talk includes a compact best-practices slide after Usage. These are practical operational lessons, with source limits:
+The 21-slide talk includes a compact best-practices slide after Usage. These are practical operational lessons, with source limits:
 
 | Practice | Verified point and qualification | Official source |
 | --- | --- | --- |
@@ -29,9 +29,11 @@ The 20-slide talk includes a compact best-practices slide after Usage. These are
 
 Supabase's [October 2026 announcement](https://supabase.com/blog/select-2026-build-anything) describes a new Compute product for long-running web services, background jobs and agent sandboxes next to project data. It is different from **database compute**, the CPU/RAM/disk capability used by each project's Postgres instance and counted under [database compute usage](https://supabase.com/docs/guides/platform/manage-your-usage/compute). It is also different from Edge Functions, which run separately in a managed function runtime.
 
+The [Compute product page](https://supabase.com/compute) explicitly names Node and Deno and supports static binaries or Dockerfiles for custom runtimes. It describes public HTTP services plus private services for queue jobs or agent sandboxes, a full Linux environment and no wall-clock execution limit. The same page says idle services can suspend and resume, so a deployed service does **not** guarantee one process remains alive with in-memory state. It does not establish a persistent local disk guarantee, a production SLA, a public price or a general-availability date. [Edge Function limits](https://supabase.com/docs/guides/functions/limits) still permit bounded background tasks during an Edge Function worker's lifetime; the distinction is long-running service hosting, not whether background work is categorically possible.
+
 The [Compute product page](https://supabase.com/compute) labels this feature **Private Alpha** and offers a waitlist. Its terms say access is for **internal evaluation only**, not production workloads or end customers, and that the preview may change or be discontinued. At this review, only projects created in `us-west-2` can access the private alpha. The user's dashboard screenshot says the project has **no access yet**. Therefore, the audience talk can explain why a managed long-running service might eventually replace an external application server for some workloads, but it must not recommend a production migration or claim general availability.
 
-## Slide 8: throttle requests before Supabase
+## Slide 9: throttle requests before Supabase
 
 Use this as a brief architecture example, not a Cloudflare deployment tutorial:
 
@@ -50,4 +52,4 @@ As documented on 16 October 2026, Workers Free allows **100,000 Worker requests 
 
 For a real design, rate-limit by a server-verified identity or carefully chosen route/key, **not a client-supplied user ID**. Keep Supabase and third-party credentials on the server. The original Supabase URL can remain reachable; if a client can call it directly, they can bypass the Worker, so the gateway must not be described as complete origin protection without additional controls. Continue enforcing Supabase Auth, grants, and RLS inside the application and database. IP-only limits can affect unrelated users sharing an address. [Rate Limiting binding](https://developers.cloudflare.com/workers/runtime-apis/bindings/rate-limit/), [Securing the Data API](https://supabase.com/docs/guides/api/securing-your-api)
 
-**Decision for the main talk:** Show the route and one production caution on slide 8. Keep pricing, KV consistency, identity design and bypass details here and in the presenter guide; the talk remains 40 minutes.
+**Decision for the main talk:** Show the route and one production caution on slide 9. Keep pricing, KV consistency, identity design and bypass details here and in the presenter guide; the talk remains 41:30.

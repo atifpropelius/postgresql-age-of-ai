@@ -1,6 +1,6 @@
 # Facilitator guide — Supabase as a Backend: What Runs Where
 
-This is separate from the audience presentation. Reserve **10–12 minutes for the live quiz**, **5 minutes for Q&A**, and **2 minutes for the anonymous feedback link**. These minutes are outside the 35–40 minute technical talk. Use Kahoot, Slido, or Google Forms quiz mode; show the answer and its explanation after each vote. The questions test concepts introduced in the main talk, not dashboard trivia.
+This is separate from the audience presentation. Reserve **10–12 minutes for the live quiz**, **5 minutes for Q&A**, and **2 minutes for the anonymous feedback link**. These minutes are outside the current 41:30 technical talk. Use Kahoot, Slido, or Google Forms quiz mode; show the answer and its explanation after each vote. The questions test concepts introduced in the main talk, not dashboard trivia.
 
 ## Live quiz: 10 questions
 

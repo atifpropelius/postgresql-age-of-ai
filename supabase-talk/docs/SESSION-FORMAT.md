@@ -11,11 +11,11 @@ Source: format supplied by the tech lead/company owner in the conversation on 20
 | Quiz | 10–12 min | 8–10 questions, run live (Kahoot / Slido / Google Forms quiz mode). Presenter answers disputes on the spot. |
 | Feedback form | 2 min | Anonymous link posted in Slack. Open for 24 hours. Fill it before you leave the room, ideally. |
 
-The ranges can total more than 60 minutes at their maximum. For an actual 60-minute booking, rehearse a roughly 35–40-minute talk and leave the rest for Q&A, quiz, feedback, and transitions. The host's 45-minute hard stop still applies. Questions and quiz content belong in a separate file/tool, outside the main deck.
+The ranges can total more than 60 minutes at their maximum. For an actual 60-minute booking, the current route takes 41:30; a 10-minute quiz, 5-minute Q&A and 2-minute feedback leave 1:30 for transitions. If the quiz runs for 12 minutes, shorten the talk during rehearsal. The host's 45-minute hard stop still applies. Questions and quiz content belong in a separate file/tool, outside the main deck.
 
 ## FS-03 application
 
 - Topic: **Supabase as a backend: what runs where** (Tier 1).
-- Main deck: 20-slide, 40-minute route through one task app, including one brief external gateway example, five concise Studio menu slides and a production-habits recap. Put field-by-field dashboard details, SQL, CLI and speaker guidance in separate presenter documents; illustrations are conceptual unless explicitly connected to a live demo project.
+- Main deck: 21-slide, 41:30 route through one task app, including a 90-second Supabase Compute private-alpha explanation, one brief external gateway example, five concise Studio menu slides and a production-habits recap. Put field-by-field dashboard details, SQL, CLI and speaker guidance in separate presenter documents; illustrations are conceptual unless explicitly connected to a live demo project.
 - Keep slides inside the talk segment. No Q&A, quiz, or feedback form slide in the main route.
 - Rehearse the final timings against this format before presenting.
