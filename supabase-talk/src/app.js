@@ -7,27 +7,27 @@ const state = {
   index: Math.max(0, Math.min(slides.length - 1, Number(params.get('slide') || 1) - 1 || 0)),
   step: 0,
   overlay: null,
-  theme: localStorage.getItem('supabase-talk-theme') || 'dark'
+  theme: localStorage.getItem('supabase-talk-theme') || 'light'
 };
 document.documentElement.dataset.theme = state.theme;
 
 const current = () => slides[state.index];
 const highlight = (index) => index === state.step ? 'active' : '';
 const flow = (labels, caption, modifier = '') => `<div class="flow ${modifier}">${labels.map((label,index) => `<div class="flow-node ${highlight(index)}"><span class="node-number">${String(index+1).padStart(2,'0')}</span><strong>${escapeHtml(label)}</strong></div>${index < labels.length-1 ? '<div class="flow-arrow"><span>→</span></div>' : ''}`).join('')}</div><p class="viz-caption">${escapeHtml(caption)}</p>`;
-const card = (label, detail, active = false, icon = '') => `<div class="service-card ${active?'active':''}"><span class="card-icon">${icon}</span><strong>${escapeHtml(label)}</strong><small>${escapeHtml(detail)}</small></div>`;
 const captions = {
-  opening:['One product begins with one data model.','Users need a trusted identity.','Your app needs a way to query data.','Files need a home and access rules.','Live clients can react to changes.'],
-  stack:['The browser or server sends a request.','The gateway routes HTTP requests.','Request services, Queues and Cron have different jobs.','Postgres holds the shared data core.'],
+  opening:['The task itself is a row in Postgres.','Auth identifies the signed-in user.','The Data API reads and writes task rows.','Storage keeps the PDF bytes.','Realtime can notify another screen.'],
+  stack:['Auth identifies users; the Data API serves rows.','Storage handles files; Realtime delivers events.','Edge Functions run trusted server-side code.','Queues hold work; Cron starts scheduled work.'],
   fit:['Integrated backend for a small product.','Auth, RLS and live events for teamwork.','Measure whether a specialist system fits better.'],
   app:['A user proves who they are.','The task is written into a Postgres table.','An attachment goes through Storage.','Other connected screens receive an event.'],
   data:['The table defines a record shape.','A column is a named, typed field.','A row is one task record.','Keys identify and relate records.'],
   api:['The SDK sends a request.','The request carries the publishable key and user token.','PostgREST serves the Data API route.','Postgres applies grants and RLS before returning rows.'],
-  security:['Muskan sees only rows owned by Muskan.','Atif sees only rows owned by Atif.'],
+  security:['Atif sees only rows owned by Atif.','Asha sees only rows owned by Asha.'],
   storage:['A client submits a file.','Access rules decide whether it is allowed.','Postgres stores bucket and object metadata.','Object storage holds the actual bytes.'],
   realtime:['Stream selected database row changes.','Send a message to channel subscribers.','Track who is online in a shared channel.'],
   functions:['The client calls a function.','The function checks the caller.','Trusted code uses a server-side secret.','The function returns a result to the client.'],
   async:['The request creates a task without waiting for email delivery.','A durable queue holds the message for a consumer.','A worker reads, performs the work, then acknowledges it.','Cron separately triggers recurring work on a schedule.'],
   workflow:['Run the local development stack.','Record schema changes as SQL migrations.','Review the diff and test the result.','Apply reviewed changes to the remote project.'],
+  plans:['Free is useful when a pause and manual recovery are acceptable.','Pro fits when users need availability and automatic backups.','Subscription, project compute, add-ons and overages can all affect cost.'],
   'obs-intro':['Ask: what changed for users?','On a custom stack, collect metrics and logs from each service.','Supabase Cloud groups product reports and live database sessions.'],
   'obs-overview':['These cards point to database pressure.','Service health shows where requests are flowing.','Choose a time window, then open the detailed report.'],
   'obs-query':['Calls count how often a statement ran.','Mean, max and min describe one execution.','Total time reveals cumulative cost.','Role, app, rows and cache add context.'],
@@ -42,31 +42,65 @@ function visual(slide) {
   const s = state.step;
   const caption = captions[slide.id][s];
   switch (slide.visual) {
-    case 'opening': return `<div class="opening-visual"><div class="opening-ring ring-one"></div><div class="opening-ring ring-two"></div><div class="hero-center"><span class="hero-orbit">OPEN SOURCE · POSTGRES AT THE CORE</span><b>supabase<span>.</span></b><small>Build the product. Understand the system.</small></div><div class="opening-stats"><div class="opening-stat"><strong>≈10M</strong><span>developers · Jun 2026</span></div><div class="opening-stat"><strong>$10.5B</strong><span>post-money · Jun 2026</span></div><div class="opening-stat"><strong>FREE → PAID</strong><span>paying count undisclosed</span></div></div></div><p class="viz-caption">${escapeHtml(caption)}</p>`;
-    case 'stack': return `<div class="stack-visual"><div class="stack-top ${s===0?'active':''}">YOUR WEB OR MOBILE APP <span class="moving-packet">●</span></div><div class="stack-spine">↓ HTTP request</div><div class="gateway ${s===1?'active':''}">SUPABASE API GATEWAY</div><div class="stack-spine">↓ request services + Postgres-backed jobs</div><div class="services">${card('Auth','identity',s===2,'◈')}${card('Data API','REST rows',s===2,'⌘')}${card('Storage','files',s===2,'▧')}${card('Realtime','events',s===2,'≋')}${card('Functions','code',s===2,'{ }')}${card('Queues','pending work',s===2,'☷')}${card('Cron','schedules',s===2,'◷')}</div><div class="stack-spine">Queues + Cron run from database extensions</div><div class="postgres-core ${s===3?'active':''}"><span class="db-glyph">▤</span><div><strong>POSTGRESQL</strong><small>tables · policies · transactions · extensions</small></div></div></div><p class="viz-caption">${escapeHtml(caption)}</p>`;
+    case 'opening': {
+      const actions = [
+        ['01', 'Save data', 'Postgres stores each task as a row.'],
+        ['02', 'Sign in', 'Auth supplies the user identity.'],
+        ['03', 'Read tasks', 'Data API returns allowed rows.'],
+        ['04', 'Attach file', 'Storage keeps the PDF bytes.'],
+        ['05', 'See update', 'Realtime delivers an event.']
+      ];
+      return `<div class="lesson-visual"><h3>Where does each taskboard action run?</h3><div class="lesson-actions">${actions.map(([number,name,job],i)=>`<div class="lesson-action ${highlight(i)}"><small>${number}</small><strong>${name}</strong><span>${job}</span></div>`).join('')}</div></div><p class="viz-caption">${escapeHtml(caption)}</p>`;
+    }
+    case 'stack': {
+      const services = [
+        ['Auth', 'Signs users in and issues identity tokens.', 'Service', 0],
+        ['Data API', 'Exposes Postgres rows through generated REST routes.', 'PostgREST', 0],
+        ['Storage', 'Stores file bytes and tracks object metadata.', 'Service + object store', 1],
+        ['Realtime', 'Delivers changes, messages and presence over WebSockets.', 'Service', 1],
+        ['Edge Functions', 'Runs trusted code outside the browser.', 'Function runtime', 2],
+        ['Queues', 'Holds messages until a worker processes them.', 'Postgres extension', 3],
+        ['Cron', 'Runs jobs on a recurring schedule.', 'Postgres extension', 3]
+      ];
+      return `<div class="service-guide"><div class="service-guide-head"><span>SERVICE</span><span>ONE-LINE DEFINITION</span><span>WHERE IT RUNS</span></div>${services.map(([name,definition,where,group])=>`<div class="service-guide-row ${s===group?'active':''}"><strong>${name}</strong><span>${definition}</span><small>${where}</small></div>`).join('')}<div class="service-guide-core"><strong>POSTGRES</strong><span>Stores rows, policies and transactions for the project.</span></div></div><p class="viz-caption">${escapeHtml(caption)}</p>`;
+    }
     case 'fit': {
       const cases = [
-        {name:'Product MVP',load:'User accounts + related records + files',choice:'A strong starting point',reason:'One integrated backend speeds up delivery.'},
-        {name:'Collaborative app',load:'Shared data + access rules + live UI',choice:'A natural fit',reason:'Auth, RLS and Realtime work with Postgres.'},
-        {name:'Specialized workload',load:'Huge analytics scans or niche search at scale',choice:'Evaluate other systems too',reason:'A warehouse or search engine may suit the dominant job.'}
-      ]; const item = cases[s];
-      return `<div class="fit-visual"><div class="scenario-tabs">${cases.map((option,i)=>`<button data-step="${i}" class="${highlight(i)}">${escapeHtml(option.name)}</button>`).join('')}</div><div class="fit-card"><span class="micro-label">THE WORKLOAD</span><h3>${escapeHtml(item.load)}</h3><div class="fit-verdict"><span>SUPABASE?</span><strong>${escapeHtml(item.choice)}</strong></div><p>${escapeHtml(item.reason)}</p></div><div class="fit-axis"><span>DATA MODEL</span><span>TEAM SPEED</span><span>OPERATIONS</span><span>COST</span></div></div><p class="viz-caption">${escapeHtml(caption)}</p>`;
+        ['Product MVP', 'Users, related records and files', 'Good fit: one backend for the first release'],
+        ['Collaborative app', 'Private rows and live updates', 'Good fit: Auth, RLS and Realtime cooperate'],
+        ['Specialized workload', 'Large analytics scans or niche search', 'Evaluate a warehouse or search engine too']
+      ];
+      return `<div class="service-guide"><div class="teaching-table-head"><span>WORKLOAD</span><span>WHAT IT NEEDS</span><span>DECISION</span></div>${cases.map(([name,need,decision],i)=>`<div class="teaching-table-row ${highlight(i)}"><strong>${name}</strong><span>${need}</span><span>${decision}</span></div>`).join('')}<div class="service-guide-core"><strong>RULE</strong><span>Start with the dominant data and access pattern. Add a specialist only for a measured need.</span></div></div><p class="viz-caption">${escapeHtml(caption)}</p>`;
     }
     case 'app': {
-      const requirements = [['01','Sign in','Auth'],['02','Save a task','Postgres + Data API'],['03','Attach a PDF','Storage'],['04','See an update','Realtime']];
-      return `<div class="app-visual"><div class="app-phone"><div class="app-phone-top"><span>◉</span><span>TASKBOARD</span><span>•••</span></div><div class="app-user"><span>MU</span><div>Good morning, Muskan<small>Your private workspace</small></div></div><div class="fake-task ${s===1?'active':''}"><b>Review launch copy</b><small>Due today</small></div><div class="fake-task"><b>Send project brief</b><small>Attached: brief.pdf</small></div><div class="app-phone-foot ${s===3?'active':''}">● Live updates connected</div></div><div class="app-requirements">${requirements.map(([number,need,service],i)=>`<div class="requirement ${highlight(i)}"><span>${number}</span><b>${need}</b><small>→ ${service}</small></div>`).join('')}</div></div><p class="viz-caption">${escapeHtml(caption)}</p>`;
+      const requirements = [
+        ['Sign in', 'Auth', 'Identify Atif'],
+        ['Save task', 'Data API + Postgres', 'Write one allowed row'],
+        ['Attach PDF', 'Storage', 'Keep the file bytes'],
+        ['See update', 'Realtime', 'Notify a subscribed screen']
+      ];
+      return `<div class="service-guide"><div class="teaching-table-head"><span>USER ACTION</span><span>SUPABASE PART</span><span>JOB</span></div>${requirements.map(([action,service,job],i)=>`<div class="teaching-table-row ${highlight(i)}"><strong>${action}</strong><span>${service}</span><span>${job}</span></div>`).join('')}<div class="service-guide-core"><strong>DATA RULE</strong><span>RLS checks which task rows this user may access.</span></div></div><p class="viz-caption">${escapeHtml(caption)}</p>`;
     }
-    case 'data': return `<div class="data-visual"><div class="data-path"><span>project database</span><b>›</b><span>public schema</span><b>›</b><strong>tasks table</strong></div><div class="table-wrap ${s===0?'active':''}"><table><thead><tr>${['id','owner_id','title','done'].map((name,i)=>`<th class="${s===1&&i===2?'selected':''}">${name}<small>${['bigint','uuid','text','boolean'][i]}</small></th>`).join('')}</tr></thead><tbody><tr class="${s===2?'selected':''}"><td class="${s===3?'selected':''}">101</td><td>muskan-id</td><td>Review launch copy</td><td>false</td></tr><tr><td>102</td><td>atif-id</td><td>Send brief</td><td>true</td></tr><tr><td>103</td><td>muskan-id</td><td>Call team</td><td>false</td></tr></tbody></table></div><div class="data-legend"><span><b>TABLE</b> record collection</span><span><b>COLUMN</b> named field</span><span><b>ROW</b> one task</span><span><b>KEY</b> identity / link</span></div></div><p class="viz-caption">${escapeHtml(caption)}</p>`;
+    case 'data': return `<div class="data-visual"><div class="data-path"><span>project database</span><b>›</b><span>public schema</span><b>›</b><strong>tasks table</strong></div><div class="table-wrap ${s===0?'active':''}"><table><thead><tr>${['id','owner_id','title','done'].map((name,i)=>`<th class="${s===1&&i===2?'selected':''}">${name}<small>${['bigint','uuid','text','boolean'][i]}</small></th>`).join('')}</tr></thead><tbody><tr class="${s===2?'selected':''}"><td class="${s===3?'selected':''}">101</td><td>atif-id</td><td>Review launch copy</td><td>false</td></tr><tr><td>102</td><td>asha-id</td><td>Send brief</td><td>true</td></tr><tr><td>103</td><td>atif-id</td><td>Call team</td><td>false</td></tr></tbody></table></div><div class="data-legend"><span><b>TABLE</b> record collection</span><span><b>COLUMN</b> named field</span><span><b>ROW</b> one task</span><span><b>KEY</b> identity / link</span></div></div><p class="viz-caption">${escapeHtml(caption)}</p>`;
     case 'api': return `<div class="api-visual">${flow(['Client SDK','User token','Data API','Postgres + RLS'],caption,'api-flow')}<div class="api-response"><span>REQUEST</span><code>GET /rest/v1/tasks?select=id,title,done</code><span>RESPONSE</span><code>[ { id: 101, title: "Review launch copy" } ]</code></div><div class="openapi-note"><b>OpenAPI spec</b><span>describes the exposed REST routes and schemas · it does not execute requests</span></div></div>`;
     case 'security': {
-      const person = s===0?'Muskan':'Atif'; const id = s===0?'muskan-id':'atif-id';
-      return `<div class="security-visual"><div class="identity-switch"><button data-step="0" class="${highlight(0)}"><span>MU</span>Muskan</button><button data-step="1" class="${highlight(1)}"><span>AT</span>Atif</button></div><div class="security-flow"><span>signed-in user<br><b>${person}</b></span><span class="security-arrow">→</span><span>policy checks<br><b>auth.uid() = owner_id</b></span><span class="security-arrow">→</span><span>visible rows<br><b>${s===0?'101 · 103':'102'}</b></span></div><div class="security-table"><div class="security-head"><b>task</b><b>owner</b><b>result</b></div>${[['101','muskan-id'],['102','atif-id'],['103','muskan-id']].map(([task,owner])=>`<div class="security-row ${owner===id?'visible':'blocked'}"><span>${task}</span><span>${owner}</span><span>${owner===id?'VISIBLE':'HIDDEN'}</span></div>`).join('')}</div><div class="security-label">SIMULATED POLICY RESULT · SAME QUERY, DIFFERENT USER</div></div><p class="viz-caption">${escapeHtml(caption)}</p>`;
+      const person = s===0?'Atif':'Asha'; const id = s===0?'atif-id':'asha-id';
+      return `<div class="security-visual"><div class="identity-switch"><button data-step="0" class="${highlight(0)}"><span>AT</span>Atif</button><button data-step="1" class="${highlight(1)}"><span>AS</span>Asha</button></div><div class="security-flow"><span>signed-in user<br><b>${person}</b></span><span class="security-arrow">→</span><span>policy checks<br><b>auth.uid() = owner_id</b></span><span class="security-arrow">→</span><span>visible rows<br><b>${s===0?'101 · 103':'102'}</b></span></div><div class="security-table"><div class="security-head"><b>task</b><b>owner</b><b>result</b></div>${[['101','atif-id'],['102','asha-id'],['103','atif-id']].map(([task,owner])=>`<div class="security-row ${owner===id?'visible':'blocked'}"><span>${task}</span><span>${owner}</span><span>${owner===id?'VISIBLE':'HIDDEN'}</span></div>`).join('')}</div><div class="security-label">SIMULATED POLICY RESULT · SAME QUERY, DIFFERENT USER</div></div><p class="viz-caption">${escapeHtml(caption)}</p>`;
     }
     case 'storage': return `<div class="storage-visual"><div class="storage-flow">${['Client upload','RLS policy','Postgres metadata','Object bytes'].map((label,i)=>`<div class="storage-unit ${highlight(i)}"><span>${['↑','♙','▤','▥'][i]}</span><b>${label}</b><small>${['brief.pdf','is user allowed?','path + bucket','object provider'][i]}</small></div>${i<3?'<span class="storage-arrow">→</span>':''}`).join('')}</div><div class="storage-note"><strong>tasks table</strong><span>attachment path ↔ task ID</span><strong>task-files bucket</strong></div></div><p class="viz-caption">${escapeHtml(caption)}</p>`;
-    case 'realtime': return `<div class="realtime-visual"><div class="realtime-modes">${['DATABASE CHANGES','BROADCAST','PRESENCE'].map((mode,i)=>`<button data-step="${i}" class="${highlight(i)}">${mode}</button>`).join('')}</div><div class="realtime-scene"><div class="client-screen"><b>SCREEN A</b><span>${s===2?'Muskan is online':'Task updated'}</span><i>● connected</i></div><div class="realtime-channel ${s===1?'broadcast':''}"><span>◉</span><strong>${['POSTGRES CHANGE','CHANNEL MESSAGE','SHARED STATE'][s]}</strong><span>◉</span></div><div class="client-screen"><b>SCREEN B</b><span>${s===2?'Atif is online':'Task updated'}</span><i>● connected</i></div></div></div><p class="viz-caption">${escapeHtml(caption)}</p>`;
+    case 'realtime': return `<div class="realtime-visual"><div class="realtime-modes">${['DATABASE CHANGES','BROADCAST','PRESENCE'].map((mode,i)=>`<button data-step="${i}" class="${highlight(i)}">${mode}</button>`).join('')}</div><div class="realtime-scene"><div class="client-screen"><b>SCREEN A</b><span>${s===2?'Atif is online':'Task updated'}</span><i>● connected</i></div><div class="realtime-channel ${s===1?'broadcast':''}"><span>◉</span><strong>${['POSTGRES CHANGE','CHANNEL MESSAGE','SHARED STATE'][s]}</strong><span>◉</span></div><div class="client-screen"><b>SCREEN B</b><span>${s===2?'Asha is online':'Task updated'}</span><i>● connected</i></div></div></div><p class="viz-caption">${escapeHtml(caption)}</p>`;
     case 'functions': return `<div class="function-visual">${flow(['Browser','Edge Function','Mail API','Browser'],caption,'function-flow')}<div class="secret-box ${s===2?'active':''}"><span>SERVER SECRET</span><b>MAIL_API_KEY</b><small>never sent to the browser</small></div></div>`;
     case 'async': return `<div class="async-visual"><div class="async-lane"><span class="async-label">WHEN A TASK IS CREATED</span><div class="async-rail"><div class="async-box ${s===0?'active':''}"><b>API request</b><small>save task · respond</small></div><span class="async-arrow">→</span><div class="async-box ${s===1?'active':''}"><b>Queue</b><small>message waits safely</small></div><span class="async-arrow">→</span><div class="async-box ${s===2?'active':''}"><b>Consumer</b><small>send email · acknowledge</small></div></div></div><div class="async-lane cron-lane ${s===3?'active':''}"><span class="async-label">ON A RECURRING SCHEDULE</span><div class="async-rail"><div class="async-box"><b>Cron</b><small>09:00 · DB timezone</small></div><span class="async-arrow">→</span><div class="async-box"><b>SQL or function</b><small>run scheduled work</small></div></div></div><div class="async-footnote">ILLUSTRATIVE FLOW · QUEUE CONSUMER IS AN APPLICATION WORKER</div></div><p class="viz-caption">${escapeHtml(caption)}</p>`;
     case 'workflow': return `<div class="workflow-visual"><div class="workflow-rail">${[['LOCAL','CLI + Docker'],['GIT','SQL migration'],['REVIEW','test + diff'],['REMOTE','apply changes']].map(([label,detail],i)=>`<div class="workflow-stop ${highlight(i)}"><span>${String(i+1).padStart(2,'0')}</span><b>${label}</b><small>${detail}</small></div>`).join('')}</div><div class="workflow-stamp">SCHEMA HISTORY <b>001 → 002 → 003</b></div></div><p class="viz-caption">${escapeHtml(caption)}</p>`;
+    case 'plans': {
+      const rows = [
+        ['Best for', 'Learning, prototypes, low-stakes demos', 'Apps real users rely on'],
+        ['Inactivity', 'May pause after low activity', 'No inactivity pause'],
+        ['Recovery', 'No automatic database backups', 'Daily backups, 7-day retention'],
+        ['Included capacity', 'Smaller limits', 'Larger limits; check usage']
+      ];
+      return `<div class="plan-guide"><div class="plan-head"><span>DECISION</span><strong class="${s===0?'active':''}">FREE <small>$0 / month</small></strong><strong class="${s===1?'active':''}">PRO <small>from $25 / organization / month</small></strong></div>${rows.map(([label,free,pro])=>`<div class="plan-row"><b>${label}</b><span class="${s===0?'active':''}">${free}</span><span class="${s===1?'active':''}">${pro}</span></div>`).join('')}<div class="plan-note ${s===2?'active':''}">Check the full bill: plan + project compute + add-ons + usage beyond included quotas.</div><div class="plan-date">Published terms checked 15 Oct 2026 · verify current pricing before purchase.</div></div><p class="viz-caption">${escapeHtml(caption)}</p>`;
+    }
     case 'obs-intro': {
       const columns = [
         ['QUESTION', '“Why did saving a task get slow?”', 'Find the change and follow its path.'],
@@ -122,6 +156,10 @@ function visual(slide) {
 }
 
 function sourceLinks(slide) { return slide.source.map((key) => `<a href="${sources[key]}" target="_blank" rel="noopener noreferrer">${escapeHtml(key)} ↗</a>`).join(''); }
+function lessonText(slide) {
+  const definitions = slide.definitions?.map(([term, meaning]) => `<div class="lesson-definition"><strong>${escapeHtml(term)}</strong><p>${escapeHtml(meaning)}</p></div>`).join('') || '';
+  return `<div class="lesson-text">${definitions ? `<div class="lesson-block"><span class="micro-label">IN ONE LINE</span>${definitions}</div>` : ''}${slide.example ? `<div class="lesson-block lesson-example"><span class="micro-label">TASKBOARD EXAMPLE</span><p>${escapeHtml(slide.example)}</p></div>` : ''}<div class="lesson-block lesson-point"><span class="micro-label">THE POINT</span><p>${escapeHtml(slide.takeaway)}</p></div></div>`;
+}
 function panelContent(slide) {
   const code = slide.sql || slide.code;
   const glossary = metricGlossary[slide.id];
@@ -143,7 +181,8 @@ function renderOverlay() {
 
 function render() {
   const slide = current();
-  $('#stage').innerHTML = `<section class="slide slide-${slide.id}" aria-label="Slide ${state.index+1}: ${escapeHtml(slide.title)}"><div class="slide-head"><div class="eyebrow">${escapeHtml(slide.tag)}</div><h1>${escapeHtml(slide.title)}</h1><p class="lead">${escapeHtml(slide.lead)}</p></div><div class="slide-main"><div class="visual-panel" aria-label="Interactive illustration"><div class="illustration-label">INTERACTIVE ILLUSTRATION <span>· ${state.step+1} / ${slide.steps.length}</span></div><div class="visual-content" aria-live="polite">${visual(slide)}</div></div><aside class="slide-side"><div class="side-kicker">THE IDEA</div><p class="takeaway">${escapeHtml(slide.takeaway)}</p><div class="step-list"><span class="micro-label">FOLLOW THE FLOW</span>${slide.steps.map((step,index)=>`<button data-step="${index}" class="${highlight(index)}"><small>${String(index+1).padStart(2,'0')}</small>${escapeHtml(step)}</button>`).join('')}</div></aside></div><div class="slide-foot"><div class="scene-controls"><button data-action="reset" aria-label="Restart illustration">↺</button><button data-action="step">Next step →</button></div><div class="slide-source"><span>FACT CHECKED AGAINST OFFICIAL DOCS</span> ${sourceLinks(slide)}</div></div></section>`;
+  const visualLabel = ({opening:'WORKED EXAMPLE', stack:'SERVICE DEFINITIONS', fit:'DECISION TABLE', app:'TASKBOARD MAP', plans:'PLAN COMPARISON'})[slide.visual] || (slide.visual.startsWith('obs-') ? 'ILLUSTRATIVE DASHBOARD' : 'WORKED EXAMPLE');
+  $('#stage').innerHTML = `<section class="slide slide-${slide.id}" aria-label="Slide ${state.index+1}: ${escapeHtml(slide.title)}"><div class="slide-head"><div class="eyebrow">${escapeHtml(slide.tag)}</div><h1>${escapeHtml(slide.title)}</h1><p class="lead">${escapeHtml(slide.lead)}</p></div><div class="slide-main"><div class="visual-panel" aria-label="Interactive illustration"><div class="illustration-label">${escapeHtml(visualLabel)} <span>· ${state.step+1} / ${slide.steps.length}</span></div><div class="visual-content" aria-live="polite">${visual(slide)}</div></div><aside class="slide-side">${lessonText(slide)}<div class="step-list"><span class="micro-label">FOLLOW THE FLOW</span>${slide.steps.map((step,index)=>`<button data-step="${index}" class="${highlight(index)}"><small>${String(index+1).padStart(2,'0')}</small>${escapeHtml(step)}</button>`).join('')}</div></aside></div><div class="slide-foot"><div class="scene-controls"><button data-action="reset" aria-label="Restart illustration">↺</button><button data-action="step">Next step →</button></div><div class="slide-source"><span>FACT CHECKED AGAINST OFFICIAL DOCS</span> ${sourceLinks(slide)}</div></div></section>`;
   $('#chapterName').textContent = slide.chapter;
   $('#counter').textContent = `${String(state.index+1).padStart(2,'0')} / ${slides.length}`;
   $('#talkTime').textContent = `≈ ${totalMinutes} MIN TALK`;

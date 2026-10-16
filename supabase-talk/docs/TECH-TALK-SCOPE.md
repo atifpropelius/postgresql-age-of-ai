@@ -14,10 +14,11 @@ Included at introductory depth:
 - Auth, identity, JWT and the **purpose** of RLS, with one simple two-user policy example.
 - Storage, Realtime, Edge Functions, **Queues**, and **Cron**. Distinguish queue/worker from schedule/trigger. Queues are built on `pgmq`; Cron is built on `pg_cron`.
 - Local CLI/migrations, deployment workflow, operational checks and when Supabase fits.
+- Free versus Pro: choose by availability, backups, limits and total cost; use the current official pricing page as the source.
 - **Observability tour**: what metrics, logs and live sessions mean; Overview, Query Performance, Database Connections, database resources, API Gateway, Data API, Auth, Edge Functions, Storage and Realtime reports. Explain the visible labels in beginner language. Use one disposable-project blocking demo; keep production monitoring design and query tuning for FS-09.
 - The optional Vector product may be named as part of the platform, but embedding search and RAG mechanics are reserved for AG-04.
 
-Keep this talk within the 45-minute hard stop. The current main route has 20 screens and a suggested duration of about 43 minutes; presenter notes and [OBSERVABILITY-GUIDE.md](OBSERVABILITY-GUIDE.md) carry extra depth. Avoid turning FS-03 into a PostgreSQL internals, RLS, Auth, queue architecture, or RAG deep dive. Do not add Q&A or quiz questions to the deck; those are prepared separately under [SESSION-FORMAT.md](SESSION-FORMAT.md).
+Keep this talk within the 45-minute hard stop. The current main route has 21 screens and a suggested duration of about 45 minutes; presenter notes and [OBSERVABILITY-GUIDE.md](OBSERVABILITY-GUIDE.md) carry extra depth. Avoid turning FS-03 into a PostgreSQL internals, RLS, Auth, queue architecture, or RAG deep dive. Do not add Q&A or quiz questions to the deck; those are prepared separately under [SESSION-FORMAT.md](SESSION-FORMAT.md).
 
 ## Boundaries with other talks
 

@@ -1,6 +1,6 @@
 # Supabase — From Idea to Production
 
-An interactive, 20-screen, approximately 43-minute talk for **FS-03: Supabase as a backend — what runs where**. The main route tells one story: build and ship a private taskboard with Supabase. It covers Database, Data API and OpenAPI, Auth and introductory RLS, Storage, Realtime, Edge Functions, Queues and Cron. It then walks through the Supabase Observability dashboard from first principles. Technical detail and speaker notes are available per screen.
+An interactive, 21-screen, approximately 45-minute talk for **FS-03: Supabase as a backend — what runs where**. The main route tells one story: build and ship a private taskboard with Supabase. It gives one-line definitions before each example, covers Database, Data API and OpenAPI, Auth and introductory RLS, Storage, Realtime, Edge Functions, Queues and Cron, and explains when Free or Pro fits. It then walks through the Supabase Observability dashboard from first principles. Technical detail and speaker notes are available per screen.
 
 Use [TECH-TALK-SCOPE.md](docs/TECH-TALK-SCOPE.md) to keep this talk distinct from the other company sessions. Follow [SESSION-FORMAT.md](docs/SESSION-FORMAT.md) for the 60-minute event. Q&A and quiz questions are prepared separately and are not presentation screens.
 

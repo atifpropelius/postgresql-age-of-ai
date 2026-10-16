@@ -4,7 +4,7 @@ Reviewed: 2026-10-15. Audience: people seeing a backend dashboard for the first 
 
 ## Start with the question
 
-**Observability** means using evidence from a running system to understand what it is doing. A useful opening: “Muskan says her task did not save. Was the request rejected, was the API slow, was the database waiting, or did an Edge Function fail?”
+**Observability** means using evidence from a running system to understand what it is doing. A useful opening: “Atif says his task did not save. Was the request rejected, was the API slow, was the database waiting, or did an Edge Function fail?”
 
 | Signal | In simple words | Example question |
 | --- | --- | --- |
