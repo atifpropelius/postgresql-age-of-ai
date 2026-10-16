@@ -47,7 +47,7 @@ function body(slide) {
     case 'services':
       return table(slide, 'dense-table');
     case 'architecture':
-      return `<div class="architecture-line"><span>Atif’s browser / mobile app</span><b aria-hidden="true">→</b><span>Auth · Data API · Storage · Realtime · Edge Functions</span><b aria-hidden="true">→</b><span>Postgres rows · file bytes · worker</span></div>${table(slide, 'architecture-table')}`;
+      return `<div class="architecture-line"><span>Atif’s browser / mobile app</span><b aria-hidden="true">→</b><span>Auth · Data API · Storage · Realtime · Edge Functions</span><b aria-hidden="true">→</b><span>Postgres · object storage · external worker</span></div>${table(slide, 'architecture-table')}`;
     case 'request':
       return `<div class="request-grid">${slide.stages.map(([number, title, detail]) => `<div class="request-stage"><small>${text(number)}</small><strong>${text(title)}</strong><p>${text(detail)}</p></div>`).join('')}</div><div class="code-line"><span>CLIENT CODE</span><code>${text(slide.code)}</code></div>${note('RLS', slide.definition)}${note('OPENAPI', slide.openapi)}`;
     case 'compute-focus':
