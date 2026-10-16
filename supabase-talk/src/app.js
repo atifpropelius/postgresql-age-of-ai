@@ -51,7 +51,7 @@ function body(slide) {
     case 'request':
       return `<div class="request-grid">${slide.stages.map(([number, title, detail]) => `<div class="request-stage"><small>${text(number)}</small><strong>${text(title)}</strong><p>${text(detail)}</p></div>`).join('')}</div><div class="code-line"><span>CLIENT CODE</span><code>${text(slide.code)}</code></div>${note('RLS', slide.definition)}${note('OPENAPI', slide.openapi)}`;
     case 'workflow':
-      return `${definitions(slide.definitions, 'workflow-definitions')}${rail(slide.steps)}${slide.code ? `<div class="code-line"><span>CLI EXAMPLE</span><code>${text(slide.code)}</code></div>` : ''}${note('PRODUCTION CHECK', slide.caution)}`;
+      return `${definitions(slide.definitions, 'workflow-definitions')}${rail(slide.steps)}${slide.code ? `<div class="code-line"><span>CLI EXAMPLE</span><code>${text(slide.code)}</code></div>` : ''}${note('COST CHOICE', slide.cost)}${note('PRODUCTION CHECK', slide.caution)}`;
     case 'region':
       return `<div class="factor-grid">${slide.factors.map(([term, meaning]) => `<div><strong>${text(term)}</strong><p>${text(meaning)}</p></div>`).join('')}</div>${note('TASK APP EXAMPLE', slide.example)}${note('PLAN AHEAD', slide.caution)}`;
     case 'usage':

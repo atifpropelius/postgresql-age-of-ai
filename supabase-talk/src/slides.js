@@ -75,8 +75,9 @@ export const slides = [
     lead:'A feature branch can validate a migration before it reaches production.',
     definitions:[['Production branch','The main project serving live users.'],['Persistent branch','A long-lived branch for staging or QA.'],['Temporary branch','A preview branch removed after short-lived work.'],['Branch configuration','The branch-specific URLs, keys, secrets and service settings.']],
     steps:['Feature branch','Preview project','Apply migration','Run tests','Merge after review'],
+    cost:'A short-lived preview branch can cost less than keeping a separate test project running all month. Branches still incur compute and usage charges; a persistent branch is not automatically cheaper.',
     caution:'Branches are data-less by default. Check secrets, integrations and cost; availability depends on plan and setup.',
-    takeaway:'A preview branch validates schema and behavior; it is not a complete copy of production.'
+    takeaway:'Use preview branches for temporary tests, then delete them. Compare actual branch usage with a separate project.'
   },
   {
     id:'region', section:'SHIP', duration:120, kind:'region',
