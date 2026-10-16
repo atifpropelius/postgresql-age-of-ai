@@ -43,6 +43,10 @@ button:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
 .overview-group button:hover, .overview-group button[aria-current="page"] { background: #f2f3f4; }
 .overview-group button[aria-current="page"] { border-left-color: #59636b; font-weight: 750; }
 .overview-number { color: #697078; font-variant-numeric: tabular-nums; }
+.overview-resources { display: flex; align-items: baseline; flex-wrap: wrap; gap: 5px 22px; padding: 8px 26px 11px; border-top: 1px solid #d9dcdf; font-size: .8rem; }
+.overview-resources strong { color: #5d656d; font-size: .65rem; letter-spacing: .08em; }
+.overview-resources a { color: #303d46; text-decoration: underline; text-decoration-color: #a8afb5; text-underline-offset: 3px; }
+.overview-resources a:hover { color: var(--accent); }
 #stage { min-height: 0; padding: 12px 24px; display: grid; place-items: center; overflow: hidden; outline: none; }
 .slide { width: min(100%, 1540px); height: 100%; min-height: 0; display: grid; grid-template-rows: auto minmax(0,1fr) auto; border: 1px solid #d6d9dc; background: #fff; }
 .slide-head { padding: 20px 34px 8px; }
@@ -277,6 +281,8 @@ table th:nth-child(2) { width: 37%; }
   .overview-session { gap: 5px 13px; padding: 9px 15px; }
   .overview-session > strong { flex-basis: 100%; }
   .overview-groups { grid-template-columns: 1fr; gap: 13px; padding: 14px 15px 18px; }
+  .overview-resources { gap: 8px 14px; padding: 10px 15px 14px; }
+  .overview-resources strong { flex-basis: 100%; }
   .transport-label, .talk-time { font-size: .6rem; }
   .hero-line { font-size: .65rem; }
   .hero-line span { margin: 0 4px; }

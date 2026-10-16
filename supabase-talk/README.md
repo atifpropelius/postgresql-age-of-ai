@@ -20,7 +20,7 @@ Open <http://127.0.0.1:4173/>. The site is static and uses no packages, credenti
 | Browser Back / Forward | Return to previously visited slides |
 | Overview (top right) | See every section and slide title; select one to jump to it. Escape or Close returns to the slide. |
 
-Slide number and section are shown in the footer. The overview shows the company session format and is generated from the slide list, so its titles and talk time stay in sync with the deck. There are no audience-facing notes or theme controls.
+Slide number and section are shown in the footer. The overview shows the company session format and is generated from the slide list, so its titles and talk time stay in sync with the deck. It also links to the official Docs, CLI reference and Atif's quick command notes. There are no audience-facing notes or theme controls.
 
 ## Supabase project-start references
 
