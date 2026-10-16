@@ -21,7 +21,7 @@ export const slides = [
     id:'context', section:'FOUNDATION', duration:45, kind:'context',
     title:'Why this platform is worth understanding',
     lead:'Adoption provides context. It does not decide whether the architecture fits.',
-    facts:[['Nearly 10 million','developers building on Supabase, reported in June 2026'],['Lovable + Figma','Lovable Cloud runs on Supabase; Figma Make offers a Supabase integration'],['$10.5 billion','post-money valuation implied by $500M at $10B pre-money, June 2026']],
+    facts:[['Nearly 10 million','developers building on Supabase, reported in June 2026'],['Lovable + Figma Make','Supabase powers many Lovable apps; Figma Make integrates with it. Mozilla and 1Password are also named customers.'],['$10.5 billion','post-money valuation implied by $500M at $10B pre-money, June 2026']],
     footnote:'Developers are not paying customers or monthly active users. These are dated, company-reported facts.',
     takeaway:'Evaluate the platform by your workload, constraints and team skills.'
   },
