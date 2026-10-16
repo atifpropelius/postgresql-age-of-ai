@@ -1,6 +1,6 @@
 # Supabase Observability: presenter guide
 
-Reviewed: 2026-10-15. Audience: people seeing a backend dashboard for the first time. The deck reconstructs the views in the presenter's screenshots as **illustrative diagrams**. It does not show live measurements from that project. Open a disposable Supabase project for the optional demonstration in [OBSERVABILITY-DEMO.md](OBSERVABILITY-DEMO.md).
+Reviewed: 2026-10-15. Audience: people seeing a backend dashboard for the first time. This presenter guide explains the views in the supplied screenshots; the main deck does not show those project measurements. Open a disposable Supabase project for the optional demonstration in [OBSERVABILITY-DEMO.md](OBSERVABILITY-DEMO.md).
 
 ## Start with the question
 
@@ -146,9 +146,9 @@ Dashboard path: **Observability → Database**.
 
 **Say:** “Which service owns this feature?” A Realtime chart can be blank because the feature is unused in the selected range or because reporting is delayed. Do not call it broken from that chart alone.
 
-## Teaching route within 45 minutes
+## Use in the current 38-minute talk
 
-The first 12 screens build the application story. Seven Observability screens take about 15 minutes: definition → Overview → Query Performance → Connections → database machine → request services → file/live/function services. Spend the longest on the Connections demo. The final recap keeps the complete talk around 43 minutes. The company Q&A and quiz remain separate.
+The audience deck now gives the Usage page one substantive slide and uses a five-minute task-app demonstration. This detailed Observability glossary is presenter study material for follow-up questions; its old seven-screen walkthrough is no longer in the main route. The optional [lock/wait demonstration](OBSERVABILITY-DEMO.md) is also outside the timed talk.
 
 ## Official references
 

@@ -1,40 +1,40 @@
-# Supabase — From Idea to Production
+# Supabase as a Backend: What Runs Where
 
-An interactive, 21-screen, approximately 45-minute talk for **FS-03: Supabase as a backend — what runs where**. The main route tells one story: build and ship a private taskboard with Supabase. It gives one-line definitions before each example, covers Database, Data API and OpenAPI, Auth and introductory RLS, Storage, Realtime, Edge Functions, Queues and Cron, and explains when Free or Pro fits. It then walks through the Supabase Observability dashboard from first principles. Technical detail and speaker notes are available per screen.
+A **13-slide, 38-minute** internal engineering talk. It teaches the boundaries between Supabase's Postgres database, APIs, Auth, Storage, Realtime, Edge Functions and background work through Atif's private task app. The audience deck is a restrained white presentation; the detailed material is in separate presenter documents.
 
-Use [TECH-TALK-SCOPE.md](docs/TECH-TALK-SCOPE.md) to keep this talk distinct from the other company sessions. Follow [SESSION-FORMAT.md](docs/SESSION-FORMAT.md) for the 60-minute event. Q&A and quiz questions are prepared separately and are not presentation screens.
-
-## Run
+## Run locally
 
 ```bash
 cd supabase-talk
 npm run dev
 ```
 
-Open <http://127.0.0.1:4173/>. For a static build, run `npm run build`; the deployable output is `dist/`. No packages or credentials are required.
+Open <http://127.0.0.1:4173/>. The site is static and uses no packages, credentials or live Supabase connection. Keep the terminal running while presenting.
 
-## Present
+| Key or control | Action |
+| --- | --- |
+| Right arrow / left arrow | Next / previous slide |
+| Home / End | First / last slide |
+| Space (when the page has focus) | Next slide |
+| Footer arrows | Next / previous slide |
+| Browser Back / Forward | Return to previously visited slides |
 
-- **← / →:** previous and next screen
-- **Space / ↓:** next step inside the current illustration
-- **Home / End:** first and last screen
-- **O:** overview
-- **D:** technical details and real SQL/code
-- **N:** speaker notes
-- **Esc:** close a panel
+Slide number and section are shown in the footer. There are no audience-facing notes, theme controls or hidden content panels.
 
-Interactive scenes advance one step at a time and are conceptual demonstrations, clearly labeled where they simulate a result. Real SQL and SDK examples are in the technical details panels; the deck does not connect to a live Supabase project. Product claims link to official Supabase docs; see [SOURCES.md](docs/SOURCES.md).
+## Presenter preparation
 
-For the Observability section, use [OBSERVABILITY-GUIDE.md](docs/OBSERVABILITY-GUIDE.md) for every dashboard label and [OBSERVABILITY-DEMO.md](docs/OBSERVABILITY-DEMO.md) for a safe, optional live lock/wait demonstration. The in-slide dashboard views are illustrative reconstructions based on the screenshots supplied by the presenter. They contain no live project data.
+Start with [PRESENTER-GUIDE.md](docs/PRESENTER-GUIDE.md): it has the exact slide timing and talk track. Study the [dashboard guide](docs/DASHBOARD-GUIDE.md), [Usage guide](docs/USAGE-GUIDE.md), [CLI reference](docs/CLI-REFERENCE.md), and retained [task-app code examples](docs/PRACTICAL-EXAMPLES.md) for questions. The [demo runbook](docs/DEMO-RUNBOOK.md) gives a 4–5 minute live route and a prepared offline fallback. [Facilitator guide](docs/FACILITATOR-GUIDE.md) has the quiz and Q&A separately. [Session format](docs/SESSION-FORMAT.md) and [scope](docs/TECH-TALK-SCOPE.md) preserve the company requirements.
 
-## Edit the talk
+The main deck contains illustrative task data and a labeled example Pro Usage snapshot. It never represents them as live project data. Sources and qualifications are in [SOURCES.md](docs/SOURCES.md). The earlier [Observability reference](docs/OBSERVABILITY-GUIDE.md) remains for optional study.
 
-Slide titles, timing, notes and sources live in `src/slides.js`. The visual renderers and controls live in `src/app.js`; all responsive styling is in `src/style.css`.
+## Build and deploy
 
-## Deploy
+```bash
+cd supabase-talk
+npm run check
+npm run build
+```
 
-Render is configured from the repository root in `../render.yaml`. For a manually created Static Site: root directory `supabase-talk`, build command `npm run build`, publish directory `dist`.
+The static output is `dist/`. Render is configured by [render.yaml](../render.yaml) for automatic deployment from the repository's `main` branch. For a manually created Render Static Site, use root directory `supabase-talk`, build command `npm run build`, and publish directory `dist`. No web service or database is needed for the audience deck.
 
-If an existing manual Render site still builds from `postgresql-age-of-ai`, its `npm run build` now publishes this Supabase talk as well. This keeps the current site working while you switch its root directory when convenient.
-
-The previous PostgreSQL course remains under `../postgresql-age-of-ai/` for reference.
+Edit slide content and timings in `src/slides.js`, rendering in `src/app.js`, and layout in `src/style.css`. The old PostgreSQL course remains in `../postgresql-age-of-ai/`.

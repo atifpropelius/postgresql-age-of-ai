@@ -16,6 +16,6 @@ The ranges can total more than 60 minutes at their maximum. For an actual 60-min
 ## FS-03 application
 
 - Topic: **Supabase as a backend: what runs where** (Tier 1).
-- Main deck: concise, first-principles architecture told through one taskboard app. Show real SQL and SDK code in the details panels; illustrations are conceptual unless explicitly connected to a live project.
+- Main deck: 13-slide, 38-minute route through one task app. Put detailed SQL, CLI, dashboard material and speaker guidance in separate presenter documents; illustrations are conceptual unless explicitly connected to a live demo project.
 - Keep slides inside the talk segment. No Q&A, quiz, or feedback form slide in the main route.
 - Rehearse the final timings against this format before presenting.

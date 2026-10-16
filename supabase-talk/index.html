@@ -3,32 +3,25 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta name="theme-color" content="#e8ecf3">
-  <meta name="description" content="A concise, interactive presentation about building secure applications with Supabase.">
-  <title>Supabase — From Idea to Production</title>
+  <meta name="theme-color" content="#ffffff">
+  <meta name="description" content="A practical engineering talk about what runs where in Supabase.">
+  <title>Supabase as a Backend: What Runs Where</title>
   <link rel="stylesheet" href="./src/style.css">
 </head>
 <body>
   <div id="app">
     <header class="toolbar">
-      <button class="brand" id="homeBtn" aria-label="Go to first slide"><span class="brand-icon">S</span><span>SUPABASE <small>/ FIELD GUIDE</small></span></button>
+      <button class="brand" id="homeBtn" aria-label="Go to first slide">SUPABASE <span>/ WHAT RUNS WHERE</span></button>
       <span class="chapter-name" id="chapterName"></span>
-      <div class="toolbar-actions">
-        <button id="overviewBtn" title="Overview (O)">Overview</button>
-        <button id="techBtn" title="Technical details (D)" aria-pressed="false">Technical details</button>
-        <button id="notesBtn" title="Speaker notes (N)" aria-pressed="false">Notes</button>
-        <button id="themeBtn" class="icon-button" title="Toggle light theme" aria-label="Toggle light theme">☼</button>
-      </div>
+      <span class="session-name">ENGINEERING TALK · FS-03</span>
     </header>
     <main id="stage" tabindex="-1" aria-label="Presentation slide"></main>
     <footer class="transport">
-      <div class="chapter-track" id="chapterTrack"></div>
+      <span class="transport-label" id="sectionLabel"></span>
       <div class="transport-right"><span class="talk-time" id="talkTime"></span><button id="prevBtn" aria-label="Previous slide">←</button><span id="counter"></span><button id="nextBtn" aria-label="Next slide">→</button></div>
       <div class="progress"><span id="progressFill"></span></div>
     </footer>
   </div>
-  <div id="overlay" class="overlay" hidden></div>
-  <div id="printDeck" hidden></div>
   <script type="module" src="./src/app.js"></script>
 </body>
 </html>

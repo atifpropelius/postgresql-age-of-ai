@@ -10,22 +10,23 @@ Included at introductory depth:
 
 - PostgreSQL database, schema/tables, keys, a small SQL migration, and why Postgres is the data core.
 - **Data API**: PostgREST serves REST requests over exposed tables, views, and functions; database permissions and RLS still govern access.
-- **OpenAPI**: machine-readable description of the generated REST API. It documents the surface; it does not execute requests and is not the separate OpenAPI foreign data wrapper.
+- **OpenAPI**: one-line definition next to the Data API request. It describes the generated REST surface; it does not execute requests and is not the separate OpenAPI foreign data wrapper.
 - Auth, identity, JWT and the **purpose** of RLS, with one simple two-user policy example.
 - Storage, Realtime, Edge Functions, **Queues**, and **Cron**. Distinguish queue/worker from schedule/trigger. Queues are built on `pgmq`; Cron is built on `pg_cron`.
 - Local CLI/migrations, deployment workflow, operational checks and when Supabase fits.
-- Free versus Pro: choose by availability, backups, limits and total cost; use the current official pricing page as the source.
-- **Observability tour**: what metrics, logs and live sessions mean; Overview, Query Performance, Database Connections, database resources, API Gateway, Data API, Auth, Edge Functions, Storage and Realtime reports. Explain the visible labels in beginner language. Use one disposable-project blocking demo; keep production monitoring design and query tuning for FS-09.
+- Free versus Pro: keep the detailed plan choice in presenter reference; use the current official pricing page as the source.
+- Migrations, local/staging/production environments, Supabase branching, region choice and a short demo.
+- **Usage in the main talk**: what the principal consumption metrics mean and how to read the example Pro dashboard snapshot. Detailed dashboard and Observability vocabulary are in the presenter guide for questions after the talk.
 - The optional Vector product may be named as part of the platform, but embedding search and RAG mechanics are reserved for AG-04.
 
-Keep this talk within the 45-minute hard stop. The current main route has 21 screens and a suggested duration of about 45 minutes; presenter notes and [OBSERVABILITY-GUIDE.md](OBSERVABILITY-GUIDE.md) carry extra depth. Avoid turning FS-03 into a PostgreSQL internals, RLS, Auth, queue architecture, or RAG deep dive. Do not add Q&A or quiz questions to the deck; those are prepared separately under [SESSION-FORMAT.md](SESSION-FORMAT.md).
+Keep this talk within the 45-minute hard stop. The current main route has 13 slides and a suggested duration of 38 minutes, including a five-minute demo; [PRESENTER-GUIDE.md](PRESENTER-GUIDE.md) carries extra depth. Avoid turning FS-03 into a PostgreSQL internals, RLS, Auth, queue architecture, or RAG deep dive. Do not add Q&A or quiz questions to the deck; those are prepared separately under [SESSION-FORMAT.md](SESSION-FORMAT.md).
 
 ## Boundaries with other talks
 
 | Other session | What FS-03 may say | What belongs in that session |
 | --- | --- | --- |
 | FS-04 API design | Show the generated Data API and OpenAPI description. | REST vs PostgREST vs tRPC, design tradeoffs and webhooks. |
-| FS-09 Performance & observability | Walk through the Supabase dashboard and define its metrics; show a small, safe lock/wait demo. | Query tuning, alerts, monitoring strategy, instrumentation and performance engineering in depth. |
+| FS-09 Performance & observability | Define Usage metrics in the main talk and keep a dashboard glossary in presenter reference. | Query tuning, alerts, monitoring strategy, instrumentation and performance engineering in depth. |
 | AG-04 RAG that works | Mention Vector as an optional Supabase capability. | Embeddings, pgvector, hybrid search and RAG architecture. |
 | AU-03 Webhooks, queues and event-driven design | Show that Queues hold work for a consumer and Cron schedules work. | Delivery semantics, consumers, retries and event architecture in depth. |
 | SEC-01 Supabase RLS from zero to production | Show why one user sees only their own rows. | Policy design, performance and production hardening. |

@@ -1,0 +1,63 @@
+# Supabase Usage page: presenter guide
+
+Reviewed **16 October 2026** against Supabase's [Manage your usage](https://supabase.com/docs/guides/platform/manage-your-usage), [billing](https://supabase.com/docs/guides/platform/billing-on-supabase), and [cost control](https://supabase.com/docs/guides/platform/cost-control) documentation. This is a study reference, not a main-deck slide. Recheck the linked plan pages before presenting: limits, features, billing rules, and dashboard labels can change.
+
+## Read the page before interpreting a number
+
+1. Open the **organization's Usage page**. It shows all projects by default. Select the intended project and billing period before explaining a graph. A project chart and the organization invoice may have different scopes.
+2. Separate **quantity** (“0.79 GB transferred”), **allowance** (“250 GB included in this particular plan snapshot”), **overage rule**, and **operational alert**. They are different facts. The billing rule for one metric does not carry over to another.
+3. Usage graphs are not live telemetry. Supabase [announced](https://supabase.com/changelog/28480-improved-invoices-and-more-timely-usage-data) a rollout of organization Usage and invoice data updating within about one hour; its [database size guide](https://supabase.com/docs/guides/platform/database-size) says disk metrics update daily. The exact refresh interval for every individual chart is not documented. Check the chart timestamp and use Observability or Logs for an incident in progress.
+4. A paid plan can bill overages if its Spend Cap is off; other plans/settings can trigger notifications or a grace period instead. [Compute hours are outside the Spend Cap](https://supabase.com/docs/guides/platform/cost-control). Do not tell the audience that crossing any displayed allowance always means an immediate charge or outage.
+
+## The eleven metrics
+
+| Metric | One-line meaning, unit, and calculation | What makes it rise; what to check | Billing and refresh note |
+|---|---|---|---|
+| **Egress** | GB of data sent **out** from Supabase services to clients; outgoing bytes accumulate through the billing cycle. This includes database/API, Auth, Functions, Realtime, Storage and other service traffic. | A task screen fetching every row and column, repeated polling, or large downloads. Check heavily called Data API paths, query row counts and payload size; return only needed fields, paginate, and avoid unnecessary requests. | [Uncached egress](https://supabase.com/docs/guides/platform/manage-your-usage/egress) has a plan-specific allowance and is separate from cached egress. Usage page is delayed; no metric-specific cadence is stated. |
+| **Cached egress** | GB sent from Supabase's CDN **cache hits**, generally Storage objects; it has a separate running total from uncached egress. | Many users downloading the same public images or PDFs. Check popular objects, cache headers, size and whether transformed assets are needed. | [Cached egress](https://supabase.com/docs/guides/platform/manage-your-usage/egress) has its **own** allowance and overage rule; a cache hit can reduce origin work without making network transfer disappear. |
+| **Database disk** | GB of disk **provisioned** for Postgres. Paid-plan disk billing uses GB-hours (1 GB provisioned for 1 hour); the disk also contains WAL and system data, so it is not identical to the size of table rows. | More records/indexes, WAL retention, new partitions, or disk auto-expansion. Inspect Database/Infrastructure disk distribution, table size and WAL before deciding on cleanup or a resize. | [Disk-size billing](https://supabase.com/docs/guides/platform/manage-your-usage/disk-size) depends on disk type and plan; Free has a separate database-size limit. [Database/disk report metrics update daily](https://supabase.com/docs/guides/platform/database-size). |
+| **Storage size** | Total bytes of objects kept in Storage buckets. Billing tracks GB-hours, effectively average size over the period rather than only today's displayed object total. | PDF uploads, duplicate files, unused versions, or retained temporary objects. Inspect buckets and object metadata; define retention and remove unused objects with the Storage API. | [Storage-size allowance](https://supabase.com/docs/guides/platform/manage-your-usage/storage-size) is plan-specific. Deleting files late in a cycle lowers the average gradually. This is separate from database disk. |
+| **Edge Function invocations** | Number of function executions. A call counts even if it returns an error; CORS preflight `OPTIONS` requests are excluded under the current documentation. | Client retries, an unprotected endpoint, polling or a faulty loop. Check function invocation graphs, status codes and logs; fix retries or add appropriate abuse controls. | [Invocation allowance](https://supabase.com/docs/guides/platform/manage-your-usage/edge-function-invocations) is plan-specific; current paid overages use packages of one million. A quick 500 error still consumes an invocation. |
+| **Monthly Active Users (MAU)** | Distinct Auth user IDs that sign in or refresh a token in the billing cycle; one user counts once even after repeated sign-ins. | More genuine users, automated test accounts or unexpected auth activity. Check Auth usage and logs; distinguish this from registered accounts. | [MAU quota](https://supabase.com/docs/guides/platform/manage-your-usage/monthly-active-users) is plan-specific and resets per billing cycle. SSO and third-party Auth can appear in separate categories. |
+| **Realtime messages** | Count of messages passing through Realtime during the cycle, including Database Changes, Broadcast and Presence. One database event delivered to five listening clients counts as five messages; Broadcast includes the send plus delivered recipients. | Many subscribers per event, chat fan-out or overly broad subscriptions. Inspect channels and subscribed clients; subscribe only where live updates are useful. | [Realtime message allowance](https://supabase.com/docs/guides/platform/manage-your-usage/realtime-messages) is plan-specific; paid overages currently use packages. It is a message count, not a count of database writes. |
+| **Realtime peak connections** | Highest number of simultaneous **successful Realtime client connections** per project in the cycle; for organization billing, project peaks are summed. | More open tabs/devices, clients that do not disconnect, or a live event. Check Realtime connections and client lifecycle; close unused subscriptions. | [Peak-connection allowance](https://supabase.com/docs/guides/platform/manage-your-usage/realtime-peak-connections) is plan-specific. This is **not** the PostgreSQL connection count shown under Database Connections. |
+| **Log ingestion** | GB of log data Supabase receives from Postgres, API Gateway, Auth, Storage, Realtime, Functions and other services. Calculated from bytes ingested during the billing cycle. | Very verbose statement logs, high request volume, noisy function logging or a frequently called RPC logging each call. Use Logs Explorer to identify the source, then lower unnecessary verbosity without removing needed diagnostics. | [Logs Ingest documentation](https://supabase.com/docs/guides/platform/manage-your-usage/logs-ingest) lists plan allowances. **As documented on 16 Oct 2026, billing is in a grace period until the start of 2027.** Recheck before the talk. |
+| **Log query** | GB of stored log data **scanned** when someone searches logs in Studio, the Management API, CLI or another interface. It measures scanned data, not number of searches. | Wide time ranges, unfiltered queries and scripts polling the log endpoint. Narrow time range and source filters before running; use a log drain for continuous delivery. | [Logs Query](https://supabase.com/docs/guides/platform/manage-your-usage/logs-query) is **not directly billed**. The base allowance is 100× the plan's included ingest (for example, 20 GB included ingest gives 2,000 GB query allowance); paid ingest above that can grow it. The documented degraded-state policy is **not yet enforced as of 16 Oct 2026**. Recheck before the talk. |
+| **Compute hours** | Hours each project's database compute instance is running, counted by selected compute size. A partially used hour is charged as a full hour under the current rule; a paused project does not accrue compute usage. | More paid projects, a larger compute size, or long-lived preview/staging projects. Check each project's compute size and run time, plus CPU/memory trends before resizing. | [Compute usage](https://supabase.com/docs/guides/platform/manage-your-usage/compute) is separate from request volume and **not covered by the Spend Cap**. Do not assume one project is free merely because traffic is low. |
+
+### Three comparisons that prevent common mistakes
+
+- **Storage size vs egress:** a 10 MB PDF stored once adds about 10 MB to stored objects, while downloading it 100 times can add roughly 1 GB of outgoing data (before caching and transfer details).
+- **Realtime peak vs database connections:** a browser's Realtime WebSocket is not the same as a PostgreSQL session. Diagnose them in different dashboard areas.
+- **Log ingestion vs log query:** writing logs contributes to ingest; repeatedly scanning them contributes to query usage. A larger log store can make broad searches costlier in query allowance.
+
+## Illustrative Pro dashboard snapshot supplied for this talk
+
+These are **example readings from one Pro-plan dashboard snapshot**, not live readings, universal current limits, or a price quote. The selected organization, project, billing period and plan determine what the dashboard actually shows.
+
+| Metric | Example reading | How to explain it |
+|---|---:|---|
+| Edge Function invocations | 199,095 / 2,000,000 | About 199 thousand function calls have been recorded in the selected period against that snapshot's displayed allowance. |
+| Egress | ~0.79 GB / 250 GB | About 0.79 GB has left Supabase under the relevant egress category; identify whether this is cached or uncached in the actual UI. |
+| Storage size | ~0.34 GB / 100 GB | Roughly 0.34 GB of object storage usage is displayed; billing uses GB-hours, so the invoice period can differ from a live object total. |
+| Log ingestion | ~3.07 GB / 20 GB | Logs from Supabase services were ingested; it is a signal to check verbosity, not proof of an immediate charge during the documented grace period. |
+| Log query | ~471 GB / 2,000 GB | Searches have scanned 471 GB of logs. The displayed 2,000 GB is an allowance in this snapshot, not a per-GB billed rate. |
+| Realtime peak connections | 2 / 500 | The peak simultaneous Realtime client connection count is 2. It does not mean only two Postgres database connections exist. |
+
+## Fast presenter workflow when a metric looks wrong
+
+1. Confirm **organization, project, time range and metric definition**. A spike may belong to another project or billing period.
+2. Decide whether the issue is **traffic, stored bytes, running time, or logging**; the eleven metrics are different measurements.
+3. Go to the relevant project view: API/Query Performance for egress, Storage buckets for object growth, Edge Function logs for invocations, Realtime charts for fan-out, or Logs Explorer for ingest/query volume.
+4. Change one cause, then compare a later period. Historical traffic or bytes already billed do not disappear because you optimized afterward.
+5. Check the current [plan and cost-control policy](https://supabase.com/docs/guides/platform/cost-control) before predicting a charge or restriction.
+
+## Official references
+
+- [Supabase Manage your usage index](https://supabase.com/docs/guides/platform/manage-your-usage)
+- [About billing on Supabase](https://supabase.com/docs/guides/platform/billing-on-supabase)
+- [Cost control and Spend Cap](https://supabase.com/docs/guides/platform/cost-control)
+- [Organization Usage refresh announcement](https://supabase.com/changelog/28480-improved-invoices-and-more-timely-usage-data)
+- [Understanding database and disk size](https://supabase.com/docs/guides/platform/database-size)
+
+The metric names in the table link directly to Supabase's current source page for their calculation and plan rules.
