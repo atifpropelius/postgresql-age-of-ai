@@ -54,6 +54,8 @@ function body(slide) {
       return `${definitions(slide.definitions, 'workflow-definitions')}${rail(slide.steps)}${slide.code ? `<div class="code-line"><span>CLI EXAMPLE</span><code>${text(slide.code)}</code></div>` : ''}${note('COST CHOICE', slide.cost)}${note('PRODUCTION CHECK', slide.caution)}`;
     case 'region':
       return `<div class="factor-grid">${slide.factors.map(([term, meaning]) => `<div><strong>${text(term)}</strong><p>${text(meaning)}</p></div>`).join('')}</div>${note('TASK APP EXAMPLE', slide.example)}${note('PLAN AHEAD', slide.caution)}`;
+    case 'dashboard':
+      return `<div class="dashboard-path"><span>IN STUDIO</span><strong>${text(slide.path)}</strong></div>${table(slide, 'dashboard-table')}${note('WATCH FOR', slide.caution)}`;
     case 'usage':
       return `<div class="usage-snapshot"><div class="snapshot-label">ILLUSTRATIVE PRO DASHBOARD SNAPSHOT · ALLOWANCES CAN CHANGE</div><div class="snapshot-values">${slide.snapshot.map(([name, value, detail]) => `<div><small>${text(name)}</small><strong>${text(value)}</strong><span>${text(detail)}</span></div>`).join('')}</div></div><div class="metric-grid">${slide.metrics.map(([name, meaning]) => `<div><strong>${text(name)}</strong><span>${text(meaning)}</span></div>`).join('')}</div>${note('SPEND CAP', slide.spendCap, 'spend-cap-note')}${note('EXAMPLE', slide.example)}`;
     case 'demo':

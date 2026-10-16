@@ -1,6 +1,6 @@
 # Supabase dashboard: presenter field guide
 
-Reviewed: 16 October 2026. This is a study aid for **Supabase as a Backend: What Runs Where**, not an audience slide. Dashboard labels, menu placement, available charts, retention, controls and billing behavior can vary by product version, organization plan and project configuration. Check the project you will actually present before the session. Use a disposable or sanitized demo project; do not show customer records, tokens, keys or production URLs on screen.
+Reviewed: 16 October 2026. This is the deeper study aid for **Supabase as a Backend: What Runs Where**. The audience deck gives each Studio menu area one short definition and task-app use; this guide explains its fields and cautions. Dashboard labels, menu placement, available charts, retention, controls and billing behavior can vary by product version, organization plan and project configuration. Check the project you will actually present before the session. Use a disposable or sanitized demo project; do not show customer records, tokens, keys or production URLs on screen.
 
 ## First mental model
 

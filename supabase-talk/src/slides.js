@@ -8,7 +8,7 @@ export const slides = [
     takeaway:'A practical introduction, not a tour of every product setting.'
   },
   {
-    id:'what', section:'FOUNDATION', duration:150, kind:'table',
+    id:'what', section:'FOUNDATION', duration:120, kind:'table',
     title:'What is Supabase, and why use it?',
     lead:'Supabase is a managed backend platform built around PostgreSQL.',
     definitions:[['Backend as a Service','Hosted building blocks for data, identity, files and server-side work.'],['Custom backend','Application servers your team designs, deploys and operates.']],
@@ -18,7 +18,7 @@ export const slides = [
     takeaway:'Supabase saves setup time; your team still owns product logic and safe access.'
   },
   {
-    id:'context', section:'FOUNDATION', duration:75, kind:'context',
+    id:'context', section:'FOUNDATION', duration:45, kind:'context',
     title:'Why this platform is worth understanding',
     lead:'Adoption provides context. It does not decide whether the architecture fits.',
     facts:[['Nearly 10 million','developers building on Supabase, reported in June 2026'],['Udio','published a customer story describing Supabase in its backend'],['$10.5 billion','post-money valuation implied by $500M at $10B pre-money, June 2026']],
@@ -26,7 +26,7 @@ export const slides = [
     takeaway:'Evaluate the platform by your workload, constraints and team skills.'
   },
   {
-    id:'components', section:'FOUNDATION', duration:195, kind:'services',
+    id:'components', section:'FOUNDATION', duration:150, kind:'services',
     title:'What does a Supabase project provide?',
     lead:'PostgreSQL is the data core. The other capabilities have separate jobs.',
     columns:['Component','One-line definition','Typical task-app use'],
@@ -34,7 +34,7 @@ export const slides = [
     takeaway:'These pieces work together; they do not all run inside one process.'
   },
   {
-    id:'where', section:'ARCHITECTURE', duration:225, kind:'architecture',
+    id:'where', section:'ARCHITECTURE', duration:180, kind:'architecture',
     title:'The central question: what runs where?',
     lead:'Follow Atif as he signs in, creates a task, attaches a PDF and sees an update.',
     columns:['Action','Entry point','Execution / destination'],
@@ -42,7 +42,7 @@ export const slides = [
     takeaway:'An API request, a database function and a background worker run in different places.'
   },
   {
-    id:'request', section:'ARCHITECTURE', duration:195, kind:'request',
+    id:'request', section:'ARCHITECTURE', duration:150, kind:'request',
     title:'Trace one request: create a task',
     lead:'A signed-in client sends a token and a new task through the Data API.',
     stages:[['01','Frontend','Atif submits a task from the browser.'],['02','Data API','PostgREST receives the request and user token.'],['03','Identity','The token supplies the authenticated user context.'],['04','PostgreSQL','Grants, row policies and constraints decide the write.'],['05','Response','The API returns success or an error.'],['06','Realtime','If configured, subscribers receive a change event.']],
@@ -52,7 +52,7 @@ export const slides = [
     takeaway:'A token identifies the caller; database authorization still decides access.'
   },
   {
-    id:'logic', section:'ARCHITECTURE', duration:165, kind:'table',
+    id:'logic', section:'ARCHITECTURE', duration:135, kind:'table',
     title:'Where should application logic run?',
     lead:'Place work where its data, trust boundary and timing make sense.',
     columns:['Place','Use it for','Example · limitation'],
@@ -61,7 +61,7 @@ export const slides = [
     takeaway:'RPC executes in PostgreSQL. An Edge Function executes in a separate runtime.'
   },
   {
-    id:'migrations', section:'SHIP', duration:210, kind:'workflow',
+    id:'migrations', section:'SHIP', duration:165, kind:'workflow',
     title:'Change the schema safely',
     lead:'Treat database changes as reviewed code that can be replayed.',
     definitions:[['Schema','The structure of tables, views and other database objects.'],['Migration','A versioned SQL file that changes that structure.'],['Migration history','The record of changes already applied.'],['Local / staging / production','Developer machine / validation environment / live user environment.'],['Schema drift','A remote change that the migration files do not describe.']],
@@ -70,7 +70,7 @@ export const slides = [
     takeaway:'Use CLI and Git together. Preview remote changes before applying them.'
   },
   {
-    id:'branching', section:'SHIP', duration:135, kind:'workflow',
+    id:'branching', section:'SHIP', duration:105, kind:'workflow',
     title:'Branches are test environments',
     lead:'A feature branch can validate a migration before it reaches production.',
     definitions:[['Production branch','The main project serving live users.'],['Persistent branch','A long-lived branch for staging or QA.'],['Temporary branch','A preview branch removed after short-lived work.'],['Branch configuration','The branch-specific URLs, keys, secrets and service settings.']],
@@ -80,7 +80,7 @@ export const slides = [
     takeaway:'Use preview branches for temporary tests, then delete them. Compare actual branch usage with a separate project.'
   },
   {
-    id:'region', section:'SHIP', duration:120, kind:'region',
+    id:'region', section:'SHIP', duration:90, kind:'region',
     title:'Choose the project region deliberately',
     lead:'The primary region affects latency and where core project data is hosted.',
     factors:[['Users','Measure latency near the main audience.'],['Data location','Check residency and contractual requirements.'],['Capabilities','Confirm required compute and service availability.'],['Recovery','Plan backup and disaster recovery needs.']],
@@ -89,7 +89,57 @@ export const slides = [
     takeaway:'The closest region is a starting point, not a universal answer.'
   },
   {
-    id:'usage', section:'OPERATE', duration:330, kind:'usage',
+    id:'dashboard-start', section:'STUDIO', duration:100, kind:'dashboard',
+    title:'Open the right project, then inspect data',
+    lead:'These first three menu areas help you find the project, see rows and run a query.',
+    path:'FIND THE PROJECT → INSPECT THE TASK',
+    columns:['Dashboard section','What you get','When Atif opens it'],
+    rows:[['Project Overview','Project identity, status and service shortcuts.','Confirm the demo project before any change.'],['Table Editor','Create or inspect tables, columns and rows visually.','Inspect public.tasks and task 101.'],['SQL Editor','Run or save SQL; inspect results and errors.','Check task rows with a read-only SELECT.']],
+    caution:'SQL Editor may use higher privileges than the app. A dashboard schema edit does not create a reviewed migration.',
+    takeaway:'Confirm the project first; use Table Editor to inspect and SQL Editor for deliberate queries.'
+  },
+  {
+    id:'dashboard-data', section:'STUDIO', duration:100, kind:'dashboard',
+    title:'Find database rules, users and files',
+    lead:'A task row, a signed-in identity and an uploaded PDF have different homes.',
+    path:'ROW → IDENTITY → FILE',
+    columns:['Dashboard section','What you get','When Atif opens it'],
+    rows:[['Database','Schemas, RLS policies, functions, extensions, connections and backups.','Check the tasks RLS policy and database setup.'],['Authentication','Users, sign-in providers, sessions and redirect settings.','Find Atif’s user ID and login configuration.'],['Storage','Buckets, file objects, upload/download tools and access policies.','Find brief.pdf in a private bucket.']],
+    caution:'Signing in does not authorize every row. Storage holds PDF bytes; the task row can hold its path.',
+    takeaway:'Database decides row access, Auth supplies identity, and Storage serves files.'
+  },
+  {
+    id:'dashboard-runtime', section:'STUDIO', duration:100, kind:'dashboard',
+    title:'See server code, capacity and live events',
+    lead:'These areas show work outside a normal table read.',
+    path:'SERVER CODE → DATABASE CAPACITY → LIVE DELIVERY',
+    columns:['Dashboard section','What you get','When Atif opens it'],
+    rows:[['Edge Functions','Deployments, invocations, logs and server-side secrets.','Trace a failed task-email call.'],['Compute','Database size, CPU, memory and disk capacity controls.','Check sustained load before resizing.'],['Realtime','Broadcast, Presence and Postgres Changes channels and reports.','Find why another task screen stayed stale.']],
+    caution:'An Edge Function is separate from a Postgres RPC. Resizing compute changes cost; Realtime delivery needs configuration.',
+    takeaway:'A function error, a busy database and a missed live event need different checks.'
+  },
+  {
+    id:'dashboard-diagnose', section:'STUDIO', duration:100, kind:'dashboard',
+    title:'Find why a request failed or slowed down',
+    lead:'Use recommendations, trends and individual events together.',
+    path:'FINDING → TREND → EVENT',
+    columns:['Dashboard section','What you get','When Atif opens it'],
+    rows:[['Advisors','Security and performance findings with suggested fixes.','Inspect a warning about a task policy or index.'],['Observability','Slow queries, connections, resource and service-health reports.','Find slow writes or sessions waiting for a lock.'],['Logs','Searchable, timestamped API, database, Auth and function events.','Match a failed request to its error.']],
+    caution:'Select the right project and time range. A finding is a lead to investigate, not proof of the cause.',
+    takeaway:'Observability shows a pattern; Logs help identify the specific event behind it.'
+  },
+  {
+    id:'dashboard-configure', section:'STUDIO', duration:100, kind:'dashboard',
+    title:'Connect tools and configure the project',
+    lead:'The final menu areas change how this project connects to other systems and clients.',
+    path:'EXTERNAL TOOL → PROJECT CONFIGURATION',
+    columns:['Dashboard section','What you get','When Atif opens it'],
+    rows:[['Integrations','Partner connections, wrappers and database extensions.','Connect monitoring after checking permissions.'],['Project Settings','Project URL, API keys, database connections and service settings.','Copy the staging project URL and publishable key.']],
+    caution:'A publishable key is for clients only when grants and RLS protect data; secret keys stay server-side. Check integration access and cost.',
+    takeaway:'Next, use organization Usage and Billing to see what these services consume.'
+  },
+  {
+    id:'usage', section:'OPERATE', duration:300, kind:'usage',
     title:'Read the Usage page before costs surprise you',
     lead:'Usage is measured activity. An allowance is the amount included in a plan; overage rules differ by metric.',
     snapshot:[['Edge invocations','199,095 / 2,000,000','function calls'],['Egress','0.79 / 250 GB','outgoing data'],['Log ingestion','3.07 / 20 GB','collected logs']],
@@ -106,7 +156,7 @@ export const slides = [
     takeaway:'The same feature crosses data, identity, API, files and operations.'
   },
   {
-    id:'wrap', section:'FINISH', duration:120, kind:'wrap',
+    id:'wrap', section:'FINISH', duration:100, kind:'wrap',
     title:'Ship with a clear map of responsibilities',
     lead:'Start with the smallest set of Supabase capabilities the product needs.',
     takeaways:[['01','Know where work runs','Client, managed service, Postgres or external worker.'],['02','Make access and changes explicit','Auth, RLS, migrations, staging and region.'],['03','Operate what you ship','Check Usage, Logs and real user impact.']],

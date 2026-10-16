@@ -146,9 +146,9 @@ Dashboard path: **Observability → Database**.
 
 **Say:** “Which service owns this feature?” A Realtime chart can be blank because the feature is unused in the selected range or because reporting is delayed. Do not call it broken from that chart alone.
 
-## Use in the current 38-minute talk
+## Use in the current 40-minute talk
 
-The audience deck now gives the Usage page one substantive slide and uses a five-minute task-app demonstration. This detailed Observability glossary is presenter study material for follow-up questions; its old seven-screen walkthrough is no longer in the main route. The optional [lock/wait demonstration](OBSERVABILITY-DEMO.md) is also outside the timed talk.
+The audience deck gives the Studio Observability menu one short slide, the Usage page one substantive slide and the task app a five-minute demonstration. This detailed Observability glossary is presenter study material for follow-up questions; its old seven-screen walkthrough is outside the timed route. The optional [lock/wait demonstration](OBSERVABILITY-DEMO.md) is also outside the timed talk.
 
 ## Official references
 
