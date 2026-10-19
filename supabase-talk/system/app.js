@@ -1,5 +1,5 @@
-import {slides} from '../src/slides.js';
-import {presenterNotes} from './notes.js';
+import {slides} from '../src/slides.js?v=compute-agent-20261019';
+import {presenterNotes} from './notes.js?v=compute-agent-20261019';
 
 const $ = (selector) => document.querySelector(selector);
 const escapeHtml = (value) => String(value ?? '').replace(/[&<>"']/g, (char) => ({
@@ -61,7 +61,7 @@ function render() {
   $('#pagerCount').textContent = `${pad(index + 1)} / ${pad(slides.length)}`;
   $('#previous').disabled = index === 0;
   $('#next').disabled = index === slides.length - 1;
-  const audienceUrl = `../?slide=${index + 1}`;
+  const audienceUrl = `../?slide=${index + 1}&v=compute-agent-20261019`;
   $('#audienceLink').href = audienceUrl;
   $('#slidePreview').src = audienceUrl;
   document.title = `${pad(index + 1)} · ${slide.title} · Presenter system`;

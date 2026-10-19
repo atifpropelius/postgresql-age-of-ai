@@ -63,15 +63,15 @@ export const slides = [
   },
   {
     id:'compute-focus', section:'ARCHITECTURE', duration:90, kind:'compute-focus',
-    title:'Supabase Compute: can the service sleep?',
-    lead:'Yes. It runs code near Postgres, but Supabase says idle services suspend and resume in under a second.',
+    title:'Supabase Compute: where does an AI agent run?',
+    lead:'Your agent program can run in a Linux service near Postgres. Idle services suspend; active work can run long.',
     flows:[
-      {name:'01 · HTTP request', nodes:['Client','Compute service','PostgreSQL (if needed)'], arrows:['→','→'], detail:'An idle service can resume to handle traffic; it does not need an EC2-style process running 24/7.'},
-      {name:'02 · Active long job', nodes:['App starts job','Compute service','PostgreSQL (if needed)'], arrows:['→','→'], detail:'Active work has no wall-clock limit. An idle pgmq worker auto-waking on a new message is not documented.'}
+      {name:'01 · Agent answers a request', nodes:['App request','Compute: agent code','Model API + project data'], arrows:['→','↔'], detail:'Your code reads permitted Postgres/Storage data, calls a chosen model API and saves the result.'},
+      {name:'02 · Agent runs generated code', nodes:['Agent service','Compute sandbox','Tool result'], arrows:['→','→'], detail:'An isolated sandbox can execute code for one task or session, then suspend with its state preserved.'}
     ],
-    choices:[['Edge Functions','Bounded request handlers.'],['Supabase Compute','Linux service; suspends when idle. Private alpha.'],['PostgreSQL','Stores data and queue messages.'],['EC2 / VPS','Can keep a production worker process running.']],
-    status:'Private Alpha; this project has no access. Internal evaluation only, not production. Future service behavior and plans are not guaranteed.',
-    takeaway:'Compute sleeps when idle; an active job can run long. Today, use other hosting for production.'
+    choices:[['Compute service','Runs your agent app; sleeps when idle.'],['Compute sandbox','Isolates code execution per task/session.'],['PostgreSQL','Stores tasks and agent results.'],['External backend','Run production agents there for now.']],
+    status:'Private Alpha; this project has no access. Internal evaluation only, not production. An idle pgmq worker auto-waking on a new message is not documented.',
+    takeaway:'Compute runs the agent code; the model may be an external API. Private alpha only.'
   },
   {
     id:'database-connections', section:'ARCHITECTURE', duration:60, kind:'connections',
