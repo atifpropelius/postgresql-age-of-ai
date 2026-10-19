@@ -69,7 +69,11 @@ function body(slide) {
     case 'request':
       return `<div class="request-grid">${slide.stages.map(([number, title, detail]) => `<div class="request-stage"><small>${text(number)}</small><strong>${text(title)}</strong><p>${text(detail)}</p></div>`).join('')}</div><div class="code-line"><span>CLIENT CODE</span><code>${text(slide.code)}</code></div>${note('RLS', slide.definition)}${note('OPENAPI', slide.openapi)}`;
     case 'compute-focus':
-      return `<figure class="compute-map" aria-label="A client reaches Supabase services connected to PostgreSQL. A separate Supabase Compute service connects to PostgreSQL to read queued work and store results."><figcaption>CLIENT + SUPABASE PROJECT · CONCEPTUAL FLOW</figcaption><div class="compute-map-grid"><div class="compute-map-node compute-map-client"><strong>Client</strong><span>Browser or mobile app</span></div><span class="compute-map-arrow compute-map-arrow-one" aria-hidden="true">→</span><div class="compute-map-node compute-map-services"><strong>Supabase services</strong><span>Auth · Data API · Edge Functions</span></div><span class="compute-map-arrow compute-map-arrow-two" aria-hidden="true">→</span><div class="compute-map-node compute-map-database"><strong>PostgreSQL</strong><span>Task rows · job queue</span></div><span class="compute-map-link" aria-hidden="true">↕</span><div class="compute-map-node compute-map-worker"><strong>Supabase Compute</strong><span>Node.js API or private worker</span></div></div></figure><div class="compute-compare">${slide.choices.map(([name, meaning]) => `<div><strong>${text(name)}</strong><span>${text(meaning)}</span></div>`).join('')}</div>${note('USE CASES', slide.examples)}${note('ACCESS NOW', slide.status)}`;
+      return `<figure class="compute-map" aria-label="Two conceptual architecture examples for Supabase Compute: an Edge Function calls a Compute service, or a Compute worker reads queued work from PostgreSQL."><figcaption>CONCEPTUAL ARCHITECTURE EXAMPLES</figcaption>${slide.flows.map((flow) => `<div class="compute-flow"><strong class="compute-flow-label">${text(flow.name)}</strong><div class="compute-flow-route">${flow.nodes.map((node, i) => `${i ? `<b aria-hidden="true">${text(flow.arrows[i - 1])}</b>` : ''}<span>${text(node)}</span>`).join('')}</div><p>${text(flow.detail)}</p></div>`).join('')}</figure><div class="compute-compare">${slide.choices.map(([name, meaning]) => `<div><strong>${text(name)}</strong><span>${text(meaning)}</span></div>`).join('')}</div>${note('ACCESS NOW', slide.status)}`;
+    case 'connections':
+      return `<figure class="connections-map" aria-label="Direct, transaction-pooled, and session-pooled routes from application code to PostgreSQL."><figcaption>THREE RAW POSTGRES CONNECTION PATHS</figcaption>${slide.paths.map(([name, use, client, middle, database, detail]) => `<div class="connections-lane"><div class="connections-label"><strong>${text(name)}</strong><span>${text(use)}</span></div><div class="connections-route"><span>${text(client)}</span><b aria-hidden="true">→</b><span>${text(middle)}</span><b aria-hidden="true">→</b><span>${text(database)}</span></div><p>${text(detail)}</p></div>`).join('')}</figure>`;
+    case 'edge-limits':
+      return `${table(slide, 'edge-limits-table')}${note('TIMING', slide.timeout)}${note('PLAN CONTEXT', slide.price)}`;
     case 'edge-gateway':
       return `<div class="gateway-flow">${slide.stages.map(([name, detail]) => `<div><strong>${text(name)}</strong><span>${text(detail)}</span></div>`).join('')}</div>${definitions(slide.definitions, 'gateway-definitions')}${note('WORKERS PRICING', slide.cost)}${note('PRODUCTION CHECK', slide.caution)}`;
     case 'workflow':
@@ -77,7 +81,7 @@ function body(slide) {
     case 'region':
       return `<div class="factor-grid">${slide.factors.map(([term, meaning]) => `<div><strong>${text(term)}</strong><p>${text(meaning)}</p></div>`).join('')}</div>${note('TASK APP EXAMPLE', slide.example)}${note('PLAN AHEAD', slide.caution)}`;
     case 'dashboard':
-      return `<div class="dashboard-path"><span>IN STUDIO</span><strong>${text(slide.path)}</strong></div>${table(slide, 'dashboard-table')}${note('WATCH FOR', slide.caution)}`;
+      return `<div class="dashboard-path"><span>IN STUDIO</span><strong>${text(slide.path)}</strong></div>${table(slide, 'dashboard-table')}${slide.storagePaths ? `<div class="storage-strategy" aria-label="Public and private Storage access paths">${slide.storagePaths.map((path) => `<div class="storage-lane"><div class="storage-lane-label"><strong>${text(path.kind)}</strong><span>${text(path.examples)}</span><small>${text(path.access)}</small></div><div class="storage-route">${path.nodes.map(([name, detail], i) => `${i ? '<b aria-hidden="true">→</b>' : ''}<span><strong>${text(name)}</strong>${detail ? `<small>${text(detail)}</small>` : ''}</span>`).join('')}</div></div>`).join('')}</div>` : ''}${note('WATCH FOR', slide.caution)}`;
     case 'usage':
       return `<div class="usage-snapshot"><div class="snapshot-label">ILLUSTRATIVE PRO DASHBOARD SNAPSHOT · ALLOWANCES CAN CHANGE</div><div class="snapshot-values">${slide.snapshot.map(([name, value, detail]) => `<div><small>${text(name)}</small><strong>${text(value)}</strong><span>${text(detail)}</span></div>`).join('')}</div></div><div class="metric-grid">${slide.metrics.map(([name, meaning]) => `<div><strong>${text(name)}</strong><span>${text(meaning)}</span></div>`).join('')}</div>${note('SPEND CAP', slide.spendCap, 'spend-cap-note')}${note('EXAMPLE', slide.example)}`;
     case 'demo':
@@ -85,7 +89,7 @@ function body(slide) {
     case 'wrap':
       return `<div class="wrap-list">${slide.takeaways.map(([number, title, detail]) => `<div><span>${text(number)}</span><strong>${text(title)}</strong><p>${text(detail)}</p></div>`).join('')}</div><p class="checklist">${text(slide.checklist)}</p>`;
     default:
-      return `${definitions(slide.definitions)}${table(slide)}${note('TASK APP EXAMPLE', slide.example)}`;
+      return `${definitions(slide.definitions)}${table(slide)}${note(slide.exampleLabel || 'TASK APP EXAMPLE', slide.example)}`;
   }
 }
 

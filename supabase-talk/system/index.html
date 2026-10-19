@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#10231e">
+  <meta name="robots" content="noindex,nofollow">
+  <meta name="description" content="Presenter-only slide-by-slide explanation for the Supabase talk.">
+  <title>Presenter system · Supabase as a Backend</title>
+  <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+  <div class="shell">
+    <aside class="sidebar" aria-label="Slide navigation">
+      <div class="side-brand"><span class="brand-mark">S</span><div><strong>SUPABASE TALK</strong><small>PRESENTER SYSTEM</small></div></div>
+      <p class="side-caption">Your presenter workspace. Share the main deck in Google Meet; keep this route open on your own screen.</p>
+      <div class="side-heading">SLIDE INDEX <span id="slideCount"></span></div>
+      <nav id="slideList" aria-label="Presenter slides"></nav>
+      <a class="side-main-link" href="../" target="_blank" rel="noopener noreferrer">Open main PPT ↗</a>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <div><span class="kicker">PRESENTER VIEW</span><span class="topbar-divider">/</span><span id="topSection"></span></div>
+        <div class="top-actions"><span id="duration"></span><a id="audienceLink" href="../" target="_blank" rel="noopener noreferrer">Open audience slide ↗</a></div>
+      </header>
+
+      <div class="content">
+        <div class="page-head"><div><p class="page-number" id="pageNumber"></p><h1 id="pageTitle"></h1><p id="pageLead"></p></div></div>
+        <div class="content-grid">
+          <section class="preview-column" aria-label="Audience slide preview">
+            <div class="section-label"><span>01 / WHAT AUDIENCE SEES</span><span>LIVE SLIDE PREVIEW</span></div>
+            <div class="preview-frame" id="previewFrame"><iframe id="slidePreview" title="Audience slide preview" tabindex="-1"></iframe></div>
+            <div class="takeaway"><small>SLIDE TAKEAWAY</small><p id="takeaway"></p></div>
+            <p class="preview-tip">The preview follows this page number. The audience PPT remains a separate tab.</p>
+          </section>
+
+          <section class="notes-column" aria-label="Presenter explanation">
+            <div class="section-label"><span>02 / YOUR TALK TRACK</span><span id="noteTime"></span></div>
+            <div class="say-card"><small>SAY THIS</small><p id="say"></p></div>
+            <div class="note-pair"><article class="note-card"><small>WHAT</small><p id="what"></p></article><article class="note-card"><small>WHY</small><p id="why"></p></article></div>
+            <article class="note-card how-card"><small>HOW IT WORKS / WHAT TO POINT AT</small><p id="how"></p></article>
+            <div id="deepDive"></div>
+            <div class="sources"><small>OFFICIAL REFERENCES</small><div id="sourceLinks"></div></div>
+          </section>
+        </div>
+      </div>
+
+      <footer class="pager"><button id="previous" type="button" aria-label="Previous slide">← Previous</button><span id="pagerCount"></span><button id="next" type="button" aria-label="Next slide">Next →</button></footer>
+    </main>
+  </div>
+  <script type="module" src="./app.js"></script>
+</body>
+</html>

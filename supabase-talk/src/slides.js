@@ -4,18 +4,19 @@ export const slides = [
     id:'title', section:'START', duration:60, kind:'title',
     title:'Supabase as a Backend: What Runs Where',
     lead:'One task app. One clear map of the services behind it.',
-    objectives:['Understand the components Supabase provides.','Know where application operations execute.','Use a basic workflow to manage a project in production.'],
+    objectives:['Understand the components Supabase provides.','Know where application operations execute.','Learn how to safely develop, test, deploy, and monitor a Supabase project used by real users.'],
     takeaway:'A practical introduction, not a tour of every product setting.'
   },
   {
     id:'what', section:'FOUNDATION', duration:120, kind:'table',
     title:'What is Supabase, and why use it?',
-    lead:'Supabase is a managed backend platform built around PostgreSQL.',
-    definitions:[['Backend as a Service','Hosted building blocks for data, identity, files and server-side work.'],['Custom backend','Application servers your team designs, deploys and operates.']],
+    lead:'Supabase runs a PostgreSQL database and ready-to-use services for login, APIs and files.',
+    definitions:[['Backend as a Service','A provider runs common backend parts; your team builds the app.'],['Custom backend','Your team writes and runs an app server, such as NestJS.']],
     columns:['Decision','Supabase','Custom NestJS / Node.js'],
-    rows:[['Starting point','Database, Auth, APIs and Storage are available.','Build and integrate each capability yourself.'],['Best fit','A product that benefits from an integrated Postgres backend.','Unusual workflows or deep control of runtime and infrastructure.'],['Your responsibility','Data model, RLS, business rules, testing and operations.','The same concerns, plus service infrastructure.']],
-    example:'Atif can build a private task app without first writing an Auth service or file API.',
-    takeaway:'Supabase saves setup time; your team still owns product logic and safe access.'
+    rows:[['Starting point','Postgres stores task rows; Auth handles login; Storage keeps PDFs.','Write API routes and choose how to handle data, login and files.'],['Best fit','A task app: Atif sees his tasks; each task can link to a PDF.','A service that must keep running or needs full server control.'],['Your responsibility','Design task data, decide who can access it, test and monitor.','Do the same, plus deploy and maintain your server.']],
+    exampleLabel:'REAL PRODUCT EXAMPLE',
+    example:'Figma featured Planet Food, built with Figma Make + Supabase: farmers list produce; restaurants place orders.',
+    takeaway:'Supabase runs common backend parts; your team still decides what users can do.'
   },
   {
     id:'context', section:'FOUNDATION', duration:30, kind:'context',
@@ -54,20 +55,44 @@ export const slides = [
   {
     id:'logic', section:'ARCHITECTURE', duration:105, kind:'table',
     title:'Where should application logic run?',
-    lead:'Place work where its data, trust boundary and timing make sense.',
-    columns:['Place','Use it for','Example · limitation'],
-    rows:[['Database function / RPC','Logic near rows and transactions.','Create task + audit row · avoid long network calls.'],['Trigger','Automatic action invoked by a defined database event.','Stamp an audit row · hidden side effects need care.'],['Edge Function','TypeScript HTTP code in a Deno-compatible runtime.','Task email via mail API · log failures.'],['Supabase Compute (alpha)','Long-running Linux API or worker beside Postgres.','Can host a full backend in principle; internal evaluation only today.'],['External backend','Production server you deploy and operate elsewhere.','NestJS on EC2 or Render for a long-running service today.'],['Queue worker','Reliable work after the request returns.','Send queued task email · needs consumer and retry plan.']],
-    example:'A task read can use the Data API. For a custom task email, keep the mail secret in an Edge Function; Auth emails use configured SMTP.',
-    takeaway:'RPC runs in Postgres. Edge Functions and Compute run separately; Compute is not production-ready yet.'
+    lead:'Choose the place based on the work, its duration and whether it needs a database transaction.',
+    columns:['Place','When to use','Task-app example'],
+    rows:[['Database function / RPC','SQL work across rows that must succeed or fail together.','Create a task and audit row atomically.'],['Trigger','Run automatically on INSERT, UPDATE or DELETE.','Write an audit record when a task changes.'],['Edge Function','Server-side TypeScript for webhooks, external APIs and email with protected secrets.','Call a mail provider when a task is assigned.'],['Supabase Compute (private alpha)','Long-running Linux apps or workers near Postgres; not production-ready.','Evaluate a task queue consumer internally.'],['External backend','Persistent NestJS/Node.js service for complex or long-running logic.','Run a production task API on EC2 or Render.'],['Queue worker','Process background jobs with retries after the request returns.','Retry PDF processing from a queued job.']],
+    example:'One task app can use an RPC for an atomic save, an Edge Function for email and a worker for PDF processing.',
+    takeaway:'Keep atomic SQL in Postgres, integrations in server code and retryable jobs in a worker.'
   },
   {
     id:'compute-focus', section:'ARCHITECTURE', duration:90, kind:'compute-focus',
     title:'Supabase Compute: a service beside Postgres',
-    lead:'A managed full Linux runtime for long-running Node.js services or custom Dockerfile apps.',
-    choices:[['Edge Function','Deno request handler for bounded server-side work.'],['Supabase Compute','HTTP API or private worker; may sleep when idle.'],['EC2 / VPS','A separate production server your team manages.']],
-    examples:'Queue consumers · AI agents · bulk processing · long-running tasks',
-    status:'Private Alpha; our project has no access. Supabase allows internal evaluation only, not production or end-customer use.',
-    takeaway:'Compute could host a backend worker near Postgres later; keep production jobs on suitable external hosting for now.'
+    lead:'Compute can receive a request or read queued work; PostgreSQL does not have to trigger it.',
+    flows:[
+      {name:'01 · Start a report', nodes:['Client','Edge Function','Supabase Compute','PostgreSQL (if needed)'], arrows:['→','→','→'], detail:'Edge validates the request and calls a Compute HTTP service; Compute reads data if needed.'},
+      {name:'02 · Process a queued job', nodes:['Edge Function / app','PostgreSQL (job queue)','Supabase Compute worker'], arrows:['→','←'], detail:'The app adds a job; worker code checks pending jobs, processes them, updates status and retries failures.'}
+    ],
+    choices:[['Edge Functions','Short, bounded server-side request handling.'],['Supabase Compute','Intended for long-running Node.js services and private workers.'],['PostgreSQL','Stores app data and job records or queue messages.'],['External backend','EC2 / VPS is a production option while Compute is unavailable.']],
+    status:'Private Alpha; this project has no access. These are intended patterns, not guaranteed integrations. Internal evaluation only, not production.',
+    takeaway:'Compute may serve an HTTP request or pull queued work; PostgreSQL need not invoke it.'
+  },
+  {
+    id:'database-connections', section:'ARCHITECTURE', duration:60, kind:'connections',
+    title:'Supabase Database Connections: Direct vs Transaction Pooler vs Session Pooler',
+    lead:'For server code using a Postgres driver. A PostgreSQL connection is an open database session; the Data API uses HTTPS instead.',
+    paths:[
+      ['Direct','Persistent NestJS / EC2','Application','App pool · pg.Pool','PostgreSQL','Reuse app connections; check network access and the database limit.'],
+      ['Transaction','Lambda / Edge Function','Many serverless functions','Transaction pooler','PostgreSQL','Pooler borrows a connection per transaction and reuses it across invocations.'],
+      ['Session','Session state / IPv4-only app','Application','Session pooler','PostgreSQL','Pooler pins one database connection until disconnect, then reuses it.']
+    ],
+    takeaway:'Direct: persistent backends · Transaction: short-lived serverless requests · Session: session state or connectivity alternative.'
+  },
+  {
+    id:'edge-limits', section:'ARCHITECTURE', duration:60, kind:'edge-limits',
+    title:'Edge Functions: know the limits',
+    lead:'Resource limits help decide whether a task belongs in a request handler or a worker.',
+    columns:['Limit','Free','Pro'],
+    rows:[['Memory per worker','256 MB','256 MB'],['Active CPU per request','2 seconds','2 seconds'],['Maximum worker lifetime','150 seconds','400 seconds'],['Included invocations per month','500,000','2,000,000']],
+    timeout:'A worker is a running function instance. CPU time excludes async waiting; 150/400 seconds is its lifetime. An idle request times out after 150 seconds.',
+    price:'An invocation is one function execution. Free is $0/month; Pro starts at $25/month. Extra usage and projects can cost more.',
+    takeaway:'Use Edge Functions for bounded work. Check current plan limits before designing a long-running job.'
   },
   {
     id:'gateway', section:'ARCHITECTURE', duration:90, kind:'edge-gateway',
@@ -121,12 +146,16 @@ export const slides = [
   {
     id:'dashboard-data', section:'STUDIO', duration:70, kind:'dashboard',
     title:'Find database rules, users and files',
-    lead:'A task row, a signed-in identity and an uploaded PDF have different homes.',
+    lead:'A task row, a signed-in identity and a file have different homes and access rules.',
     path:'ROW → IDENTITY → FILE',
     columns:['Dashboard section','What you get','When Atif opens it'],
     rows:[['Database','Schemas, RLS policies, functions, extensions, connections and backups.','Check the tasks RLS policy and database setup.'],['Authentication','Users, providers, sessions, email templates, SMTP and redirects.','Find Atif’s user ID; check login and Auth email setup.'],['Storage','Buckets, file objects, upload/download tools and access policies.','Find brief.pdf in a private bucket.']],
-    caution:'Signing in does not authorize every row. Storage holds PDF bytes; the task row can hold its path.',
-    takeaway:'Database decides row access, Auth supplies identity, and Storage serves files.'
+    storagePaths:[
+      {kind:'PUBLIC BUCKET', examples:'Product images · logos · banners · public documents', access:'Free: basic WAF custom rules + one restricted rate rule; match the public asset path.', nodes:[['Client',''],['cdn.example.com','Cloudflare CDN cache · WAF · rate limit\n/storage/v1/object/public/'],['Supabase Storage','Public bucket']]},
+      {kind:'PRIVATE BUCKET', examples:'Invoices · lab reports · identity documents · confidential PDFs', access:'Use Storage RLS or a short-lived signed URL issued after an access check.', nodes:[['Authorized user',''],['Supabase Auth / Storage RLS','Access check'],['Supabase Storage','Private bucket']]}
+    ],
+    caution:'Only traffic routed through Cloudflare gets its rules: direct Supabase Storage URLs bypass cdn.example.com. A public bucket stays public; rate limits reduce abuse, not every attack or storage/egress cost.',
+    takeaway:'Storage holds file bytes; task rows can keep paths. Supabase enforces private access; Cloudflare filters only proxied public traffic.'
   },
   {
     id:'dashboard-runtime', section:'STUDIO', duration:70, kind:'dashboard',
