@@ -198,11 +198,22 @@ export const presenterNotes = {
     links: [['Database tables', 'https://supabase.com/docs/guides/database/tables'], ['Row Level Security', 'https://supabase.com/docs/guides/database/postgres/row-level-security']]
   },
   'dashboard-data': {
-    say: 'Task row database mein hai, user Auth mein, aur PDF Storage mein. Private PDF par access check zaroori hai.',
-    what: 'Database, Authentication aur Storage dashboard areas.',
-    why: 'Public asset aur confidential document ki access strategy ek jaisi nahi ho sakti.',
-    how: 'Public image CDN se serve ho sakti hai; confidential PDF private bucket + Storage RLS ya checked signed URL use kare.',
-    links: [['Storage bucket access', 'https://supabase.com/docs/guides/storage/buckets/fundamentals'], ['Storage access control', 'https://supabase.com/docs/guides/storage/security/access-control']]
+    say: 'Proxied ka matlab VPN request nahi. Client cdn.example.com par request bhejta hai, Cloudflare beech mein WAF/rate-limit laga kar Supabase Storage tak forward karta hai. Ye public aur private dono file paths par ho sakta hai. Private file ki permission JWT + Storage RLS ya pehle authorize kiye gaye signed URL se hi decide hogi.',
+    what: 'Task row database mein, file bytes Storage mein. Cloudflare reverse proxy traffic filter karta hai; Supabase Storage private access check karta hai.',
+    why: 'WAF abuse reduce karta hai, lekin user ko private PDF padhne ka haq hai ya nahi, ye Supabase ki authorization decide karti hai.',
+    how: 'Public: client → Cloudflare hostname → public Storage path. Private: JWT/signed URL wala client → wahi Cloudflare hostname (private path par WAF/rate rule, extra cache bypass) → Supabase Storage (RLS ya signed token check). Ye extra Cloudflare route optional example hai; Supabase Storage ka apna CDN bhi hai. Direct project.supabase.co URL aapke Cloudflare hostname ko bypass karta hai; private bucket phir bhi Supabase auth se protected rehta hai.',
+    links: [['Cloudflare proxied HTTP traffic', 'https://developers.cloudflare.com/dns/proxy-status/use-cases/'], ['Supabase private buckets', 'https://supabase.com/docs/guides/storage/buckets/fundamentals'], ['Cloudflare cache behavior', 'https://developers.cloudflare.com/cache/concepts/default-cache-behavior/']],
+    deepDive: [{
+      title: 'Proxy aur private access ka farq',
+      badge: 'WAF ≠ AUTHORIZATION',
+      lines: [
+        'Proxy: browser/app cdn.example.com call karti hai; Cloudflare HTTP request receive karke Supabase ko forward karta hai. VPN use ho ya na ho, isse farq nahi padta.',
+        'Public aur private dono paths par Cloudflare WAF/rate-limit rule lag sakta hai, agar request usi proxied hostname se guzarti ho. Rule ko hostname aur path ke hisaab se scope karo.',
+        'Private bucket mein JWT ke saath Storage RLS check hota hai; ya access check (user RLS ya trusted server code) ke baad limited-time signed URL issue hota hai. Cloudflare WAF user-level permission ka replacement nahi hai.',
+        'Direct Supabase project URL Cloudflare ke custom hostname ko bypass karta hai. Private responses par apni extra Cloudflare cache force mat karo; signed URL caching aur token expiry ka behavior alag verify karo.'
+      ],
+      links: [['Cloudflare proxied records', 'https://developers.cloudflare.com/dns/proxy-status/use-cases/'], ['Supabase bucket access', 'https://supabase.com/docs/guides/storage/buckets/fundamentals'], ['Signed URL caching', 'https://supabase.com/docs/guides/storage/cdn/smart-cdn']]
+    }]
   },
   'dashboard-runtime': {
     say: 'Edge Functions request code chalati hain; Compute private alpha mein longer work ke liye hai; Realtime subscribed clients tak update push karta hai.',

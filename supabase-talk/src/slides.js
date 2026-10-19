@@ -151,11 +151,11 @@ export const slides = [
     columns:['Dashboard section','What you get','When Atif opens it'],
     rows:[['Database','Schemas, RLS policies, functions, extensions, connections and backups.','Check the tasks RLS policy and database setup.'],['Authentication','Users, providers, sessions, email templates, SMTP and redirects.','Find Atif’s user ID; check login and Auth email setup.'],['Storage','Buckets, file objects, upload/download tools and access policies.','Find brief.pdf in a private bucket.']],
     storagePaths:[
-      {kind:'PUBLIC BUCKET', examples:'Product images · logos · banners · public documents', access:'Free: basic WAF custom rules + one restricted rate rule; match the public asset path.', nodes:[['Client',''],['cdn.example.com','Cloudflare CDN cache · WAF · rate limit\n/storage/v1/object/public/'],['Supabase Storage','Public bucket']]},
-      {kind:'PRIVATE BUCKET', examples:'Invoices · lab reports · identity documents · confidential PDFs', access:'Use Storage RLS or a short-lived signed URL issued after an access check.', nodes:[['Authorized user',''],['Supabase Auth / Storage RLS','Access check'],['Supabase Storage','Private bucket']]}
+      {kind:'PUBLIC BUCKET', examples:'Product images · logos · banners · public documents', access:'Cloudflare can filter this path; the public Supabase URL remains reachable directly.', nodes:[['Client',''],['cdn.example.com','Cloudflare WAF · rate limit · optional cache\n/public/'],['Supabase Storage','Public bucket']]},
+      {kind:'PRIVATE BUCKET', examples:'Invoices · lab reports · identity documents · confidential PDFs', access:'Cloudflare can filter this path too; Storage RLS or a signed URL decides access.', nodes:[['Client with JWT / signed URL',''],['cdn.example.com','Cloudflare WAF · rate limit · bypass extra cache\n/authenticated/ or /sign/'],['Supabase Storage','Private bucket · JWT + RLS / signed URL']]}
     ],
-    caution:'Only traffic routed through Cloudflare gets its rules: direct Supabase Storage URLs bypass cdn.example.com. A public bucket stays public; rate limits reduce abuse, not every attack or storage/egress cost.',
-    takeaway:'Storage holds file bytes; task rows can keep paths. Supabase enforces private access; Cloudflare filters only proxied public traffic.'
+    caution:'Direct project.supabase.co Storage URLs bypass your Cloudflare rules. Keep Supabase access checks for private files; avoid caching private responses in the extra proxy.',
+    takeaway:'Proxied means the request passes through Cloudflare, not VPN. Its WAF can filter both paths; Storage decides private access.'
   },
   {
     id:'dashboard-runtime', section:'STUDIO', duration:70, kind:'dashboard',
