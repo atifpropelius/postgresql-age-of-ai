@@ -22,11 +22,11 @@ export const presenterNotes = {
     links: [['Supabase Series F announcement', 'https://supabase.com/blog/series-f'], ['Figma Make integration', 'https://supabase.com/blog/figma-make-support-for-supabase']]
   },
   components: {
-    say: 'Is table mein har row ek alag responsibility hai. Data API ke peeche PostgREST server, Realtime ke peeche WebSocket service, aur Queues ke peeche pgmq extension hai.',
+    say: 'Is table mein har row ek alag responsibility hai. Data API ke peeche PostgREST, Edge Functions ke peeche Supabase Edge Runtime, Realtime ke peeche WebSocket service, aur Queues ke peeche pgmq extension hai.',
     what: 'PostgreSQL data core hai. Data API, Auth, Storage, Realtime aur Edge Functions alag services hain; pgmq aur pg_cron extensions ke examples hain.',
     why: 'Naam dekhkar sabko PostgreSQL extension samajhna easy hai. Service aur database feature ka farq samjhana zaroori hai.',
-    how: 'Data API, Realtime aur Queues rows par point karo. Teenon ke technical flows neeche diye hain; phir baaki rows ko ek line mein cover karo.',
-    links: [['Supabase architecture', 'https://supabase.com/docs/guides/getting-started/architecture'], ['PostgREST architecture', 'https://docs.postgrest.org/en/v16/explanations/architecture.html'], ['Realtime architecture', 'https://supabase.com/docs/guides/realtime/architecture'], ['Supabase Queues', 'https://supabase.com/docs/guides/queues']],
+    how: 'Data API, Edge Functions, Realtime aur Queues rows par point karo. Inke technical flows neeche diye hain; phir baaki rows ko ek line mein cover karo.',
+    links: [['Supabase architecture', 'https://supabase.com/docs/guides/getting-started/architecture'], ['PostgREST architecture', 'https://docs.postgrest.org/en/v16/explanations/architecture.html'], ['Edge Functions', 'https://supabase.com/docs/guides/functions'], ['Realtime architecture', 'https://supabase.com/docs/guides/realtime/architecture'], ['Supabase Queues', 'https://supabase.com/docs/guides/queues']],
     deepDive: [
       {
         title: 'Data API / PostgREST',
@@ -38,6 +38,17 @@ export const presenterNotes = {
           'Route dikhne se data public nahi ho jaata. Grants aur RLS decide karte hain ki caller kya padh sakta hai.'
         ],
         links: [['PostgREST official docs', 'https://docs.postgrest.org/en/v16/'], ['PostgREST architecture', 'https://docs.postgrest.org/en/v16/explanations/architecture.html'], ['Supabase Data API', 'https://supabase.com/docs/guides/api']]
+      },
+      {
+        title: 'Edge Functions / Edge Runtime',
+        badge: 'SUPABASE WEB RUNTIME + YOUR CODE',
+        lines: [
+          'Edge Functions PostgreSQL ka extension nahi hain. Inhe chalane ke liye Supabase apna open-source Edge Runtime use karta hai, jo Deno par based web server hai.',
+          'PostgREST ready-made generic CRUD logic chalata hai. Edge Function mein HTTP handler ka TypeScript code aap likhte aur deploy karte ho; function ke naam se /functions/v1/send-task-email jaisa endpoint milta hai.',
+          'Client → Supabase gateway → Edge Runtime → aapka function → Supabase API, direct PostgreSQL connection, ya external mail/payment API → HTTP response.',
+          'Function database ke bahar run hoti hai. Supabase client use kare to Data API/PostgREST se baat kar sakti hai; Postgres driver use kare to direct/pooler connection se bhi. Authorization function ke flow ke hisaab se check karni hoti hai.'
+        ],
+        links: [['Edge Functions official docs', 'https://supabase.com/docs/guides/functions'], ['Supabase Edge Runtime source', 'https://github.com/supabase/edge-runtime'], ['Function quickstart', 'https://supabase.com/docs/guides/functions/quickstart']]
       },
       {
         title: 'Realtime',
@@ -90,11 +101,21 @@ export const presenterNotes = {
     }]
   },
   logic: {
-    say: 'Atomic row work database function mein, external email Edge Function mein, aur retryable long work worker mein rakho.',
+    say: 'Atomic row work database function mein, external email Edge Function mein, aur retryable long work worker mein rakho. Edge Function ka HTTP handler hum khud likhte hain.',
     what: 'SQL function/RPC, trigger, Edge Function, Compute aur external backend ke roles.',
     why: 'Kaam ki duration, secrets aur transaction needs execution location decide karti hain.',
-    how: 'RPC/trigger Postgres ke andar run karte hain. Edge Function separate Deno runtime hai. Email queue ka consumer Edge Function ho sakta hai; Cron usko invoke kare, function message read/process/delete kare.',
-    links: [['Database functions', 'https://supabase.com/docs/guides/database/functions'], ['Edge Functions', 'https://supabase.com/docs/guides/functions'], ['Queue consumer with Edge Functions', 'https://supabase.com/docs/guides/queues/consuming-messages-with-edge-functions']]
+    how: 'RPC/trigger Postgres ke andar run karte hain. Edge Function separate Deno-based runtime mein aapka TypeScript HTTP code chalati hai. Email queue ka consumer bhi Edge Function ho sakta hai; Cron invoke kare, function message read/process/delete kare.',
+    links: [['Database functions', 'https://supabase.com/docs/guides/database/functions'], ['Edge Functions', 'https://supabase.com/docs/guides/functions'], ['Edge Runtime source', 'https://github.com/supabase/edge-runtime'], ['Queue consumer with Edge Functions', 'https://supabase.com/docs/guides/queues/consuming-messages-with-edge-functions']],
+    deepDive: [{
+      title: 'PostgREST aur Edge Function ka farq',
+      badge: 'AUTOMATIC ROUTE VS CUSTOM CODE',
+      lines: [
+        'PostgREST: products table expose karo → /rest/v1/products route par generic server SQL generate karta hai. Har table ke liye HTTP handler code nahi likhna padta.',
+        'Edge Function: send-task-email function ka TypeScript handler aap likhte/deploy karte ho → /functions/v1/send-task-email route par Edge Runtime us code ko chalata hai.',
+        'Function ke andar Supabase client se PostgREST Data API call ho sakti hai, ya suitable PostgreSQL driver se direct/pooler connection ho sakta hai. External API bhi call ho sakti hai.'
+      ],
+      links: [['Edge Functions', 'https://supabase.com/docs/guides/functions'], ['PostgREST architecture', 'https://docs.postgrest.org/en/v16/explanations/architecture.html']]
+    }]
   },
   'compute-focus': {
     say: 'Yahan Compute ek alag long-running service ka idea hai, database CPU/RAM ka naam nahi. Abhi private alpha hai aur is project mein access nahi hai.',
