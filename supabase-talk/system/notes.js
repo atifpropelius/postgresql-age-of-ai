@@ -118,11 +118,11 @@ export const presenterNotes = {
     }]
   },
   'compute-focus': {
-    say: 'Yahan Compute ek alag long-running service ka idea hai, database CPU/RAM ka naam nahi. Abhi private alpha hai aur is project mein access nahi hai.',
-    what: 'HTTP service aur queue worker ke conceptual Compute flows.',
-    why: 'Edge request handlers aur persistent work ki runtime needs alag hoti hain.',
-    how: 'Diagram ke do paths follow karo: request se service, ya queue se worker. Current preview ko production solution ki tarah promise mat karo.',
-    links: [['Supabase Compute', 'https://supabase.com/compute'], ['Edge Function limits', 'https://supabase.com/docs/guides/functions/limits']]
+    say: 'Seedha jawab: haan, Supabase Compute ki service idle hone par sleep/suspend hoti hai; Supabase kehta hai under ek second mein resume hoti hai. Active job ke liye wall-clock limit nahi. Ye 24/7 chalta EC2 process assume mat karo.',
+    what: 'Postgres ke paas managed Linux/microVM service. Ye database ki CPU/RAM setting nahi hai.',
+    why: 'HTTP service ko idle par pause kiya ja sakta hai; chal raha lamba kaam fixed execution timeout ke bina run kar sakta hai.',
+    how: 'Pehla path: request → Compute HTTP service → zarurat par Postgres. Doosra: app job start kare → Compute active work kare. pgmq mein message aate hi sleeping private worker khud kaise jaagega, public docs abhi specify nahi karte. Compute private alpha hai, sirf internal evaluation ke liye; future mein EC2-jaisa always-running option milega ya nahi, announced nahi hai.',
+    links: [['Supabase Compute: sleep, runtime, alpha terms', 'https://supabase.com/compute'], ['Edge Function limits', 'https://supabase.com/docs/guides/functions/limits']]
   },
   'database-connections': {
     say: 'Ye teen choices sirf raw Postgres driver ke liye hain. Browser ka supabase-js Data API call HTTPS use karta hai.',

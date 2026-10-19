@@ -63,15 +63,15 @@ export const slides = [
   },
   {
     id:'compute-focus', section:'ARCHITECTURE', duration:90, kind:'compute-focus',
-    title:'Supabase Compute: a service beside Postgres',
-    lead:'Compute can receive a request or read queued work; PostgreSQL does not have to trigger it.',
+    title:'Supabase Compute: can the service sleep?',
+    lead:'Yes. It runs code near Postgres, but Supabase says idle services suspend and resume in under a second.',
     flows:[
-      {name:'01 · Start a report', nodes:['Client','Edge Function','Supabase Compute','PostgreSQL (if needed)'], arrows:['→','→','→'], detail:'Edge validates the request and calls a Compute HTTP service; Compute reads data if needed.'},
-      {name:'02 · Process a queued job', nodes:['Edge Function / app','PostgreSQL (job queue)','Supabase Compute worker'], arrows:['→','←'], detail:'The app adds a job; worker code checks pending jobs, processes them, updates status and retries failures.'}
+      {name:'01 · HTTP request', nodes:['Client','Compute service','PostgreSQL (if needed)'], arrows:['→','→'], detail:'An idle service can resume to handle traffic; it does not need an EC2-style process running 24/7.'},
+      {name:'02 · Active long job', nodes:['App starts job','Compute service','PostgreSQL (if needed)'], arrows:['→','→'], detail:'Active work has no wall-clock limit. An idle pgmq worker auto-waking on a new message is not documented.'}
     ],
-    choices:[['Edge Functions','Short, bounded server-side request handling.'],['Supabase Compute','Intended for long-running Node.js services and private workers.'],['PostgreSQL','Stores app data and job records or queue messages.'],['External backend','EC2 / VPS is a production option while Compute is unavailable.']],
-    status:'Private Alpha; this project has no access. These are intended patterns, not guaranteed integrations. Internal evaluation only, not production.',
-    takeaway:'Compute may serve an HTTP request or pull queued work; PostgreSQL need not invoke it.'
+    choices:[['Edge Functions','Bounded request handlers.'],['Supabase Compute','Linux service; suspends when idle. Private alpha.'],['PostgreSQL','Stores data and queue messages.'],['EC2 / VPS','Can keep a production worker process running.']],
+    status:'Private Alpha; this project has no access. Internal evaluation only, not production. Future service behavior and plans are not guaranteed.',
+    takeaway:'Compute sleeps when idle; an active job can run long. Today, use other hosting for production.'
   },
   {
     id:'database-connections', section:'ARCHITECTURE', duration:60, kind:'connections',
