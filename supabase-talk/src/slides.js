@@ -64,12 +64,12 @@ export const slides = [
   {
     id:'compute-focus', section:'ARCHITECTURE', duration:90, kind:'compute-focus',
     title:'Supabase Compute: where does an AI agent run?',
-    lead:'Your agent program can run in a Linux service near Postgres. Idle services suspend; active work can run long.',
+    lead:'A managed Linux service near Postgres can run your app from code or a Dockerfile. Idle services suspend.',
     flows:[
       {name:'01 · Agent answers a request', nodes:['App request','Compute: agent code','Model API + project data'], arrows:['→','↔'], detail:'Your code reads permitted Postgres/Storage data, calls a chosen model API and saves the result.'},
       {name:'02 · Agent runs generated code', nodes:['Agent service','Compute sandbox','Tool result'], arrows:['→','→'], detail:'An isolated sandbox can execute code for one task or session, then suspend with its state preserved.'}
     ],
-    choices:[['Compute service','Runs your agent app; sleeps when idle.'],['Compute sandbox','Isolates code execution per task/session.'],['PostgreSQL','Stores tasks and agent results.'],['External backend','Run production agents there for now.']],
+    choices:[['Compute service','Runs your Linux app or Dockerfile; sleeps when idle.'],['Compute sandbox','Isolates code execution per task/session.'],['PostgreSQL','Stores tasks and agent results.'],['External backend','Run production agents there for now.']],
     status:'Private Alpha; this project has no access. Internal evaluation only, not production. An idle pgmq worker auto-waking on a new message is not documented.',
     takeaway:'Compute runs the agent code; the model may be an external API. Private alpha only.'
   },

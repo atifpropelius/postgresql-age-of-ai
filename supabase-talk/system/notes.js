@@ -118,8 +118,8 @@ export const presenterNotes = {
     }]
   },
   'compute-focus': {
-    say: 'AI agent ka program hum likhte hain. Compute ka Linux service us program ko chala sakta hai: data padho, model API ko call karo, tool use karo, result save karo. Agar agent ko generated code chalana ho, har task ke liye alag Compute sandbox mil sakta hai. Ye Compute private alpha mein hai.',
-    what: 'Do forms: agent framework/API ke liye Compute service; isolated code execution ke liye per-task ya per-session sandbox. PostgreSQL task aur result store karta hai.',
+    say: 'Linux runtime ka matlab Supabase-managed Linux OS environment hai jahan aapka app process chalega. Apni custom app Dockerfile se bhi package kar sakte ho. AI agent ka code us service mein data padhta, model API call karta aur result save karta hai. Ye Compute private alpha mein hai.',
+    what: 'Compute service ko apna Linux environment, CPU aur memory milte hain. Node/Python/custom Dockerfile app chal sakti hai. Agent code execution ke liye per-task sandbox alag option hai.',
     why: 'Agent ka orchestration code aur code-execution environment alag needs hain. Service request/job handle karti hai; sandbox untrusted generated code ko isolate karta hai.',
     how: 'Example: Atif PDF ka summary maangta hai → app Compute agent service ko call karti hai → agent allowed Storage/Postgres data padhta hai → chosen external LLM API se summary leta hai → result Postgres mein save karta hai. Code chalana ho to agent Compute API/MCP se sandbox create kar sakta hai. Service idle par suspend aur under ek second resume hoti hai; active work par wall-clock limit nahi. pgmq message se sleeping worker ka automatic wake-up public docs mein specified nahi hai.',
     links: [['Supabase Compute: services, sandboxes, sleep, alpha', 'https://supabase.com/compute'], ['Supabase Select Compute announcement', 'https://supabase.com/blog/supabase-select-2026-recap']],
@@ -127,6 +127,8 @@ export const presenterNotes = {
       title: 'AI agent Compute par kya chalata hai?',
       badge: 'SERVICE + OPTIONAL SANDBOX',
       lines: [
+        'Linux runtime: aapke app ko Supabase-managed microVM mein Linux OS environment, CPU aur memory milte hain. Ye PostgreSQL ke andar chalne wala SQL extension nahi hai.',
+        'Dockerfile support: custom app aur uski dependencies Dockerfile mein define karke Compute service ke roop mein chalane ka announced support hai. Iska matlab VM ke andar Docker daemon, docker-compose ya privileged containers ka support assume nahi karna chahiye.',
         'Agent code: aapka Node/Python/other runtime program instructions, tool calls aur model API call decide karta hai. Compute us program ka Linux runtime deta hai; model apne aap Supabase se nahi milta.',
         'Example: task app ka agent PDF padhta hai, external LLM se summary mangta hai, aur Postgres mein summary/status likhta hai. Database sirf data rakhta hai; agent loop Compute service mein chalta hai.',
         'Agar agent ko code execute karna ho, per-task/session isolated sandbox create ho sakta hai. Supabase page sandbox state-preserving suspend/resume describe karti hai.',
