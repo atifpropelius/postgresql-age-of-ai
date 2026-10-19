@@ -214,11 +214,16 @@ export const slides = [
   },
   {
     id:'wrap', section:'FINISH', duration:90, kind:'wrap',
-    title:'Ship with a clear map of responsibilities',
-    lead:'Start with the smallest set of Supabase capabilities the product needs.',
-    takeaways:[['01','Know where work runs','Client, managed service, Postgres or external worker.'],['02','Make access and changes explicit','Auth, RLS, migrations, staging and region.'],['03','Operate what you ship','Review Advisors, error Logs, Observability and Usage.']],
-    checklist:'Before release: test permissions · review migrations · validate staging · inspect usage · plan recovery.',
-    takeaway:'Supabase supplies backend parts. Engineering choices make them a reliable product.'
+    title:'What we learned: the Supabase checklist',
+    lead:'The practical choices to build, ship and operate a project.',
+    groups:[
+      ['01','Postgres powers it',['PostgREST turns exposed tables into the Data API.','Postgres Changes uses WAL + a Realtime service.','pgvector and supported extensions add features.','Build reusable SQL extensions for each project.']],
+      ['02','Ship changes safely',['Keep schema changes in migration files.','Use persistent staging; control GitHub sync.','Choose region early for users and residency.','RPC for atomic SQL; Edge Functions for integrations.']],
+      ['03','Keep it efficient',['Choose direct or pooled DB connections.','Index and tune slow queries using logs and plans.','Watch Realtime messages and connections.','Use S3-compatible Storage; protect private files.']],
+      ['04','Protect and operate',['Cloudflare Free on your domain; rate-limit paths.','Workers give fast pre-API checks or early 429s.','Fix Advisor findings; check DB and Edge logs.','Monitor errors, Usage, billing and recovery.']]
+    ],
+    checklist:'Release loop: migration → staging → Auth/RLS test → query check → deploy → logs and Usage.',
+    takeaway:'Revisit this checklist whenever you change or release a Supabase project.'
   }
 ];
 

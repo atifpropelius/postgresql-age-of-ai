@@ -258,10 +258,54 @@ export const presenterNotes = {
     links: [['Data API routes', 'https://supabase.com/docs/guides/api/creating-routes'], ['Realtime architecture', 'https://supabase.com/docs/guides/realtime/architecture']]
   },
   wrap: {
-    say: 'Yaad rakho: work kahan run hota hai, access kaun decide karta hai, aur release ke baad kaise observe karna hai.',
-    what: 'Talk ka three-point recap.',
-    why: 'Clear ownership ke bina managed services bhi unreliable product bana sakti hain.',
-    how: 'Checklist repeat karo: permissions test, migration review, staging validation, usage inspection aur recovery plan.',
-    links: [['Supabase Developer Docs', 'https://supabase.com/docs']]
+    say: 'Aaj humne 4 practical areas cover kiye: Postgres se Data API, Realtime aur extensions; migrations, staging aur region; connections, queries, Realtime aur files; phir Cloudflare, logs, Advisors aur Usage. Ye slide agli Supabase release ki checklist hai.',
+    what: '16 short lessons from the full talk, grouped so you can recap them in about 90 seconds.',
+    why: 'Audience ko yaad rahe ki feature banana, schema badalna, traffic protect karna aur incident debug karna alag decisions hain.',
+    how: 'Har column ka heading aur ek concrete example bolo. SQL atomic transaction ho to RPC; external mail/API ho to Edge Function. Slow query par logs/query plan se index choose karo. Trigger error Database logs mein trace karo; Edge Function error uske Function Logs mein. Last line ko release order ki tarah read karo.',
+    links: [['Supabase Developer Docs', 'https://supabase.com/docs'], ['Branching and GitHub integration', 'https://supabase.com/docs/guides/deployment/branching/github-integration'], ['Postgres extensions', 'https://supabase.com/docs/guides/database/extensions'], ['Realtime architecture', 'https://supabase.com/docs/guides/realtime/architecture'], ['Storage S3 compatibility', 'https://supabase.com/docs/guides/storage/s3/compatibility']],
+    deepDive: [
+      {
+        title: 'Postgres powers more than tables',
+        badge: 'API · REALTIME · EXTENSIONS',
+        lines: [
+          'PostgREST ek separate HTTP server hai jo exposed Postgres tables/views/functions par Data API deta hai. Ye PostgreSQL ka built-in REST feature nahi hai.',
+          'Postgres Changes ka Realtime path WAL/logical replication se events leta hai; alag Realtime WebSocket service clients tak bhejti hai. Har Realtime mode ko extension mat bolo.',
+          'pgvector jaise supported extensions enable karo. Apna pure SQL ya pg_tle extension migration/package ke through doosre projects mein install kar sakte ho; arbitrary native compiled extension hosted project mein simply upload nahi hoti.'
+        ],
+        links: [['PostgREST', 'https://docs.postgrest.org/en/v16/'], ['Realtime architecture', 'https://supabase.com/docs/guides/realtime/architecture'], ['Extensions', 'https://supabase.com/docs/guides/database/extensions']]
+      },
+      {
+        title: 'Schema aur environment ko control karo',
+        badge: 'MIGRATIONS · BRANCHES · REGION',
+        lines: [
+          'Reviewed SQL migration files ko schema history rakho; local aur staging par test karke production mein apply karo.',
+          'Long-lived staging/QA ke liye persistent branch. Short PR previews ephemeral ho sakte hain. Agar manual GitHub sync chahiye to automatic branching/deploy settings off rakho aur migration deploy process explicit banao.',
+          'Project region users, latency aur primary data location dekh kar pehle choose karo; later move ko new project, data copy aur migrations chahiye.',
+          'Related row changes ek transaction mein chahiye to RPC/SQL; external provider, secret ya HTTP integration ke liye Edge Function.'
+        ],
+        links: [['Migrations', 'https://supabase.com/docs/guides/deployment/database-migrations'], ['Branching', 'https://supabase.com/docs/guides/deployment/branching'], ['Regions', 'https://supabase.com/docs/guides/platform/regions']]
+      },
+      {
+        title: 'Performance aur file access',
+        badge: 'POOL · INDEX · REALTIME · STORAGE',
+        lines: [
+          'Persistent backend ke liye direct connection + app pool; serverless burst ke liye suitable pooler. Connection count aur wait time monitor karo.',
+          'Slow query ko logs/Observability aur query plan se samjho; useful index add karo aur query rewrite test karo, blindly index mat banao.',
+          'Realtime subscriptions, messages aur peak connections ko feature ki zarurat tak limit karo; usage page mein counts dekho.',
+          'Supabase Storage S3-compatible API deta hai, AWS S3 ka har feature nahi. Private bucket ke liye JWT + RLS ya checked signed URL use karo.'
+        ],
+        links: [['Database connections', 'https://supabase.com/docs/guides/database/connecting-to-postgres'], ['Realtime usage', 'https://supabase.com/docs/guides/platform/manage-your-usage/realtime-messages'], ['S3 compatibility', 'https://supabase.com/docs/guides/storage/s3/compatibility']]
+      },
+      {
+        title: 'Traffic, debugging aur operations',
+        badge: 'CLOUDFLARE · LOGS · ADVISORS',
+        lines: [
+          'Apna domain lo, Cloudflare Free DNS mein add karo, DNS record ko proxied rakho, phir hostname/path par WAF aur rate rule lagao. Workers ka free workers.dev subdomain demos ke liye milta hai; registered domain free nahi milta. Supabase native custom domain paid add-on hai. Proxy rules sirf Cloudflare se guzri requests par lagte hain.',
+          'Cloudflare Worker request ko Supabase tak bhejne se pehle validate, rate-limit ya early 429 de sakta hai. Ye fast gateway decision hai, instant database query ka promise nahi.',
+          'Security Advisor findings ignore mat karo. Trigger/query failures Database logs mein; Edge Function failures Function Logs mein dekho. Usage, billing, error trends aur backup/recovery plan review karo.'
+        ],
+        links: [['Cloudflare DNS Free', 'https://developers.cloudflare.com/dns/faq/'], ['Workers subdomain', 'https://developers.cloudflare.com/workers/configuration/routing/workers-dev/'], ['Supabase custom domains', 'https://supabase.com/docs/guides/platform/custom-domains'], ['Advisors', 'https://supabase.com/docs/guides/observability/advisors'], ['Logs', 'https://supabase.com/docs/guides/observability/logs']]
+      }
+    ]
   }
 };

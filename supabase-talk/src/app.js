@@ -1,4 +1,4 @@
-import {slides, totalSeconds} from './slides.js?v=storage-proxy-20261020';
+import {slides, totalSeconds} from './slides.js?v=recap-checklist-20261020';
 
 const $ = (selector) => document.querySelector(selector);
 const escapeHtml = (value) => String(value == null ? '' : value).replace(/[&<>"']/g, (char) => ({
@@ -87,7 +87,7 @@ function body(slide) {
     case 'demo':
       return `<div class="demo-layout"><ol class="demo-list">${slide.stops.map(([place, action], i) => `<li class="${i === demoStep ? 'active' : ''}"><button data-demo-step="${i}"><span>${String(i + 1).padStart(2,'0')}</span><strong>${text(place)}</strong><small>${text(action)}</small></button></li>`).join('')}</ol><div class="demo-screen"><div class="demo-screen-head"><span>PREPARED ILLUSTRATION · NOT LIVE PROJECT DATA</span><b>${text(demoScenes[demoStep].location)}</b></div><div class="demo-screen-body ${demoScenes[demoStep].type}">${demoScenes[demoStep].content}</div><p>${text(demoScenes[demoStep].lesson)}</p><button class="demo-next" data-demo-next>${demoStep === demoScenes.length - 1 ? 'Restart walkthrough ↺' : 'Next stop →'}</button></div></div>`;
     case 'wrap':
-      return `<div class="wrap-list">${slide.takeaways.map(([number, title, detail]) => `<div><span>${text(number)}</span><strong>${text(title)}</strong><p>${text(detail)}</p></div>`).join('')}</div><p class="checklist">${text(slide.checklist)}</p>`;
+      return `<div class="recap-grid">${slide.groups.map(([number, title, points]) => `<section class="recap-card"><div class="recap-card-head"><span>${text(number)}</span><h2>${text(title)}</h2></div><ul>${points.map((point) => `<li>${text(point)}</li>`).join('')}</ul></section>`).join('')}</div><p class="checklist">${text(slide.checklist)}</p>`;
     default:
       return `${definitions(slide.definitions)}${table(slide)}${note(slide.exampleLabel || 'TASK APP EXAMPLE', slide.example)}`;
   }
