@@ -1,4 +1,4 @@
-import {slides, totalSeconds} from './slides.js?v=compute-linux-docker-20261019';
+import {slides, totalSeconds} from './slides.js?v=region-location-20261019';
 
 const $ = (selector) => document.querySelector(selector);
 const escapeHtml = (value) => String(value == null ? '' : value).replace(/[&<>"']/g, (char) => ({

@@ -173,11 +173,22 @@ export const presenterNotes = {
     links: [['Supabase branching', 'https://supabase.com/docs/guides/deployment/branching'], ['Branching usage', 'https://supabase.com/docs/guides/platform/manage-your-usage/branching']]
   },
   region: {
-    say: 'Region users ke latency aur data location dono ko affect karta hai. Later change ke liye naya project aur migration chahiye.',
-    what: 'Project region ka selection.',
-    why: 'Wrong region performance aur residency requirements ko affect kar sakta hai.',
-    how: 'User location, legal requirements aur connected services ki location compare karo; production se pehle decide karo.',
-    links: [['Available regions', 'https://supabase.com/docs/guides/platform/regions'], ['Change project region', 'https://supabase.com/docs/guides/troubleshooting/change-project-region-eWJo5Z']]
+    say: 'Mumbai region choose karne ka matlab har calculation Mumbai mein nahi hogi. Normal setup mein Postgres rows aur SQL/RPC Mumbai mein; Edge Function ka code default par caller ke nearest region mein chal sakta hai. London se call aaye to function London side run karke Mumbai database ko call karega. Function ko Mumbai mein invoke karna ho to region explicitly set karo.',
+    what: 'Teen locations alag samjho: primary Postgres/Auth/Storage origin, Edge Function execution, aur Storage CDN cache.',
+    why: 'Legal ya customer data-location requirement mein sirf database ka region dekhna kaafi nahi; function processing aur cached files bhi dekhni hain.',
+    how: 'Example: London user → Edge Function near caller → Mumbai Postgres. SQL query Mumbai mein execute hoti hai; function ka TypeScript near caller execute hota hai. Database-heavy ya locality-sensitive function ke invoke par x-region: ap-south-1 (Mumbai) ya SDK region option set karo. Response ka x-sb-edge-region header ya Function Logs se actual region verify karo. Storage origin Mumbai ho sakta hai, lekin CDN file copy overseas cache kar sakta hai.',
+    links: [['Project regions', 'https://supabase.com/docs/guides/platform/regions'], ['Edge Function regional invocation', 'https://supabase.com/docs/guides/functions/regional-invocation'], ['Storage CDN', 'https://supabase.com/docs/guides/storage/cdn/fundamentals'], ['Data residency FAQ', 'https://supabase.com/legal/privacy-resources/data-residency-and-transfers-faq']],
+    deepDive: [{
+      title: 'Mumbai project, London user: processing kahan?',
+      badge: 'DATA ≠ FUNCTION ≠ CDN',
+      lines: [
+        'Browser ka GET /rest/v1/tasks gateway se aa sakta hai, lekin normal project mein actual PostgreSQL SQL query Mumbai database mein execute hoti hai.',
+        'Agar browser Edge Function call karta hai, default par function code caller ke nearest supported region mein run hota hai. Woh Mumbai database ko network request bhej sakta hai; project region function ko automatically pin nahi karta.',
+        'Function processing Mumbai mein chahiye to invocation par ap-south-1 select karo. x-sb-edge-region response header ya Function Logs se confirm karo ki execution wahi hua.',
+        'Storage ke original object aur backups project region mein hain, par CDN bytes overseas cache kar sakta hai. Logs, support access aur external API providers ki locations bhi assess karo; region selection akela compliance proof nahi.'
+      ],
+      links: [['Regional invocation docs', 'https://supabase.com/docs/guides/functions/regional-invocation'], ['Supabase data residency FAQ', 'https://supabase.com/legal/privacy-resources/data-residency-and-transfers-faq']]
+    }]
   },
   'dashboard-start': {
     say: 'Overview environment confirm karta hai; Table Editor rows dikhata hai; SQL Editor deliberate query run karta hai.',

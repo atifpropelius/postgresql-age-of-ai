@@ -126,12 +126,12 @@ export const slides = [
   },
   {
     id:'region', section:'SHIP', duration:75, kind:'region',
-    title:'Choose the project region deliberately',
-    lead:'The primary region affects latency and where core project data is hosted.',
-    factors:[['Users','Measure latency near the main audience.'],['Data location','Check residency and contractual requirements.'],['Capabilities','Confirm required compute and service availability.'],['Recovery','Plan backup and disaster recovery needs.']],
-    example:'For users in India, evaluate a nearby supported region such as Mumbai, then check customer and legal requirements.',
-    caution:'Moving a project to another region requires a new project and migration.',
-    takeaway:'The closest region is a starting point, not a universal answer.'
+    title:'Project region and edge execution are different',
+    lead:'Core data stays in the project region; Edge Function code may execute in another region.',
+    factors:[['Postgres + SQL','Rows and SQL/RPC run in the project region by default.'],['Edge Function','Code runs near the caller by default; choose a region when needed.'],['Storage CDN','Original files stay in the project region; cached copies may be elsewhere.'],['Residency','Review logs, support access and external services too.']],
+    example:'Mumbai project + London caller: SQL runs in Mumbai; an Edge Function may run near London and call that database.',
+    caution:'Set the Function invocation to Mumbai if needed; verify its region. Moving the project itself requires migration.',
+    takeaway:'Choosing Mumbai does not automatically keep Edge Function processing or CDN copies there.'
   },
   {
     id:'dashboard-start', section:'STUDIO', duration:70, kind:'dashboard',
