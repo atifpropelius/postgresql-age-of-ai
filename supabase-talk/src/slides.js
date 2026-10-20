@@ -209,7 +209,7 @@ export const slides = [
     title:'What we learned: the Supabase checklist',
     lead:'The practical choices to build, ship and operate a project.',
     groups:[
-      ['01','Postgres powers it',['PostgREST turns exposed tables into the Data API.','Postgres Changes uses WAL + a Realtime service.','pgvector and supported extensions add features.','Build reusable SQL extensions for each project.']],
+      ['01','Postgres powers it',['PostgREST turns exposed tables into the Data API.','Postgres Changes uses WAL + a Realtime service.','pgvector and supported extensions add features.']],
       ['02','Ship changes safely',['Keep schema changes in migration files.','Use persistent staging; control GitHub sync.','Choose region early for users and residency.','RPC for atomic SQL; Edge Functions for integrations.']],
       ['03','Keep it efficient',['Choose direct or pooled DB connections.','Index and tune slow queries using logs and plans.','Watch Realtime messages and connections.','Use S3-compatible Storage; protect private files.']],
       ['04','Protect and operate',['Cloudflare Free on your domain; rate-limit paths.','Workers give fast pre-API checks or early 429s.','Fix Advisor findings; check DB and Edge logs.','Monitor errors, Usage, billing and recovery.']]

@@ -250,7 +250,7 @@ export const presenterNotes = {
         lines: [
           'PostgREST ek separate HTTP server hai jo exposed Postgres tables/views/functions par Data API deta hai. Ye PostgreSQL ka built-in REST feature nahi hai.',
           'Postgres Changes ka Realtime path WAL/logical replication se events leta hai; alag Realtime WebSocket service clients tak bhejti hai. Har Realtime mode ko extension mat bolo.',
-          'pgvector jaise supported extensions enable karo. Apna pure SQL ya pg_tle extension migration/package ke through doosre projects mein install kar sakte ho; arbitrary native compiled extension hosted project mein simply upload nahi hoti.'
+          'pgvector jaise supported extensions enable karo.'
         ],
         links: [['PostgREST', 'https://docs.postgrest.org/en/v16/'], ['Realtime architecture', 'https://supabase.com/docs/guides/realtime/architecture'], ['Extensions', 'https://supabase.com/docs/guides/database/extensions']]
       },
