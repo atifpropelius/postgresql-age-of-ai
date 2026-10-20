@@ -4,7 +4,14 @@ export const slides = [
     id:'title', section:'START', duration:60, kind:'title',
     title:'Supabase as a Backend: What Runs Where',
     lead:'One task app. One clear map of the services behind it.',
-    objectives:['Understand the components Supabase provides.','Know where application operations execute.','Learn how to safely develop, test, deploy, and monitor a Supabase project used by real users.'],
+    objectives:[
+      'Explain Supabase capabilities and limits before making promises to clients.',
+      'Understand pricing and when to enable point-in-time recovery (PITR).',
+      'Work safely with Supabase and avoid serious production issues.',
+      'Read logs and improve query performance.',
+      'Use branches to manage staging and production.',
+      'Choose the right region when creating a project.'
+    ],
     takeaway:'A practical introduction, not a tour of every product setting.'
   },
   {
