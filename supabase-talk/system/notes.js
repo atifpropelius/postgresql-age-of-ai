@@ -8,10 +8,10 @@ export const presenterNotes = {
     links: [['Supabase architecture', 'https://supabase.com/docs/guides/getting-started/architecture']]
   },
   what: {
-    say: 'Atif sign in karta hai, task save karta hai aur PDF attach karta hai. Supabase common backend parts deta hai; access rules humein define karne hain.',
-    what: 'Supabase managed Postgres ke saath Auth, Data API, Storage aur doosri services deta hai.',
-    why: 'Basic backend setup jaldi milta hai. Team phir bhi data model, permissions, testing aur operations ki owner rehti hai.',
-    how: 'Task row Postgres mein, identity Auth mein, PDF bytes Storage mein. NestJS jaisa custom server tab add hota hai jab apna runtime chahiye.',
+    say: 'Online store socho: ek customer ke kai orders hain, aur har order mein kai items. Ye relational PostgreSQL project hai. Aise project mein Supabase ke saath ja sakte ho. Auth, API aur Storage ready milte hain, isliye developer aur DevOps dono ka time bachta hai.',
+    what: 'Example: customers, orders aur order items aapas mein linked hain.',
+    why: 'PostgreSQL aur common backend services ready milne se setup time bachta hai.',
+    how: 'Customer → orders → items ka relation dikhao, phir time-saving point bolo.',
     links: [['Supabase architecture', 'https://supabase.com/docs/guides/getting-started/architecture']]
   },
   context: {

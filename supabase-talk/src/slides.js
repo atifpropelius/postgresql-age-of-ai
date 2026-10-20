@@ -8,15 +8,12 @@ export const slides = [
     takeaway:'A practical introduction, not a tour of every product setting.'
   },
   {
-    id:'what', section:'FOUNDATION', duration:120, kind:'table',
-    title:'What is Supabase, and why use it?',
-    lead:'Supabase runs a PostgreSQL database and ready-to-use services for login, APIs and files.',
-    definitions:[['Backend as a Service','A provider runs common backend parts; your team builds the app.'],['Custom backend','Your team writes and runs an app server, such as NestJS.']],
-    columns:['Decision','Supabase','Custom NestJS / Node.js'],
-    rows:[['Starting point','Postgres stores task rows; Auth handles login; Storage keeps PDFs.','Write API routes and choose how to handle data, login and files.'],['Best fit','A task app: Atif sees his tasks; each task can link to a PDF.','A service that must keep running or needs full server control.'],['Your responsibility','Design task data, decide who can access it, test and monitor.','Do the same, plus deploy and maintain your server.']],
-    exampleLabel:'REAL PRODUCT EXAMPLE',
-    example:'Figma featured Planet Food, built with Figma Make + Supabase: farmers list produce; restaurants place orders.',
-    takeaway:'Supabase runs common backend parts; your team still decides what users can do.'
+    id:'what', section:'FOUNDATION', duration:60, kind:'table',
+    title:'Why use Supabase?',
+    lead:'Supabase saves developer and DevOps time.',
+    columns:['Project','Why Supabase?'],
+    rows:[['Online store','Customers → orders → order items: relational data for PostgreSQL.'],['Ready to use','PostgreSQL, Auth, API and Storage.']],
+    takeaway:'If your project needs PostgreSQL, you can go with Supabase.'
   },
   {
     id:'context', section:'FOUNDATION', duration:30, kind:'context',
