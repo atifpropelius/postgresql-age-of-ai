@@ -66,18 +66,6 @@ export const slides = [
     takeaway:'Keep atomic SQL in Postgres, integrations in server code and retryable jobs in a worker.'
   },
   {
-    id:'compute-focus', section:'ARCHITECTURE', duration:90, kind:'compute-focus',
-    title:'Supabase Compute: where does an AI agent run?',
-    lead:'A managed Linux service near Postgres can run your app from code or a Dockerfile. Idle services suspend.',
-    flows:[
-      {name:'01 · Agent answers a request', nodes:['App request','Compute: agent code','Model API + project data'], arrows:['→','↔'], detail:'Your code reads permitted Postgres/Storage data, calls a chosen model API and saves the result.'},
-      {name:'02 · Agent runs generated code', nodes:['Agent service','Compute sandbox','Tool result'], arrows:['→','→'], detail:'An isolated sandbox can execute code for one task or session, then suspend with its state preserved.'}
-    ],
-    choices:[['Compute service','Runs your Linux app or Dockerfile; sleeps when idle.'],['Compute sandbox','Isolates code execution per task/session.'],['PostgreSQL','Stores tasks and agent results.'],['External backend','Run production agents there for now.']],
-    status:'Private Alpha; this project has no access. Internal evaluation only, not production. An idle pgmq worker auto-waking on a new message is not documented.',
-    takeaway:'Compute runs the agent code; the model may be an external API. Private alpha only.'
-  },
-  {
     id:'database-connections', section:'ARCHITECTURE', duration:60, kind:'connections',
     title:'Supabase Database Connections: Direct vs Transaction Pooler vs Session Pooler',
     lead:'For server code using a Postgres driver. A PostgreSQL connection is an open database session; the Data API uses HTTPS instead.',
