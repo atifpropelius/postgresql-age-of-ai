@@ -22,7 +22,7 @@ export const presenterNotes = {
     links: [['Supabase Series F announcement', 'https://supabase.com/blog/series-f'], ['Figma Make integration', 'https://supabase.com/blog/figma-make-support-for-supabase']]
   },
   components: {
-    say: 'Is table mein har row ek alag responsibility hai. Data API ke peeche PostgREST, Edge Functions ke peeche Supabase Edge Runtime, Realtime ke peeche WebSocket service, aur Queues ke peeche pgmq extension hai.',
+    say: 'Supabase ki kaafi power PostgreSQL ki wajah se hai: data, SQL, RLS, functions, queues aur cron. Data API isi data ko expose karta hai, aur Realtime ka database-changes mode PG se updates leta hai. Auth, Storage, Edge Functions aur Compute alag services hain.',
     what: 'PostgreSQL data core hai. Data API, Auth, Storage, Realtime aur Edge Functions alag services hain; pgmq aur pg_cron extensions ke examples hain.',
     why: 'Naam dekhkar sabko PostgreSQL extension samajhna easy hai. Service aur database feature ka farq samjhana zaroori hai.',
     how: 'Data API, Edge Functions, Realtime aur Queues rows par point karo. Inke technical flows neeche diye hain; phir baaki rows ko ek line mein cover karo.',
